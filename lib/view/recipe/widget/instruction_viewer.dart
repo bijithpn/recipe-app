@@ -103,8 +103,7 @@ class InstructionViewer extends StatelessWidget {
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
                                     color: Colors.white),
-                                imageUrl:
-                                    ' https://img.spoonacular.com/equipment_100x100/${equipment.image}',
+                                imageUrl: equipment.image,
                                 width: 60,
                                 height: 60,
                                 errorWidget: Container(
