@@ -135,15 +135,17 @@ class ApiClient {
         backgroundColor: ColorPalette.primary,
         textColor: Colors.white,
       );
-    } else if (error.type == DioExceptionType.badResponse) {
-      notificationService.showSnackBar(
-        context: context,
-        message:
-            'Server Error (${error.response?.statusCode}): ${error.message}',
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
-    } else if (error.type == DioExceptionType.cancel) {
+    }
+    // else if (error.type == DioExceptionType.badResponse) {
+    //   notificationService.showSnackBar(
+    //     context: context,
+    //     message:
+    //         'Server Error (${error.response?.statusCode}): ${error.message}',
+    //     backgroundColor: Colors.red,
+    //     textColor: Colors.white,
+    //   );
+    // }
+    else if (error.type == DioExceptionType.cancel) {
       notificationService.showSnackBar(
         context: context,
         message: AppStrings.requestCancel,

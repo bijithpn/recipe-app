@@ -26,7 +26,7 @@ class HomeProvider extends ChangeNotifier {
       if (error is DioException) {
         notificationService.showSnackBar(
             context: navigatorKey.currentContext!,
-            message: error.message ?? AppStrings.error);
+            message: error.response?.data['message'] ?? AppStrings.error);
       } else {
         notificationService.showSnackBar(
             context: navigatorKey.currentContext!, message: error.toString());

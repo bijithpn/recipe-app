@@ -24,11 +24,9 @@ class CookingTipsScreen extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 10),
         ...tipsList.map((tip) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 10),
               child: Card(
-                  margin: const EdgeInsets.symmetric(vertical: 4.0),
                   elevation: 2,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -47,7 +45,7 @@ class CookingTipsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Column(
         children: [
           if (tips.health.isNotEmpty)

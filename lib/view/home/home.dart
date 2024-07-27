@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return SafeArea(
       top: true,
       child: Consumer<HomeProvider>(
@@ -93,31 +96,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SearchWidget(),
                           const SizedBox(height: 16),
                           Text(
-                            'Categories',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge!
-                                .copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 16),
-                          SizedBox(
-                            height: 90,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: const [
-                                CategoryCard(
-                                    name: 'Breakfast',
-                                    icon: Icons.breakfast_dining),
-                                CategoryCard(
-                                    name: 'Lunch', icon: Icons.lunch_dining),
-                                CategoryCard(
-                                    name: 'Dinner', icon: Icons.dinner_dining),
-                                CategoryCard(name: 'Dessert', icon: Icons.cake),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
                             homeProvider.isSearch
                                 ? "Search Results"
                                 : 'Recommendations',
@@ -163,12 +141,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                     )
                                   : SliverGrid(
                                       gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        crossAxisSpacing: 15.0,
-                                        mainAxisSpacing: 15.0,
-                                        childAspectRatio: 0.6,
-                                      ),
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 2,
+                                              crossAxisSpacing: 15.0,
+                                              mainAxisSpacing: 15.0,
+                                              childAspectRatio: min(
+                                                  (size.width /
+                                                      (size.height / 1.68)),
+                                                  0.6)),
                                       delegate: SliverChildBuilderDelegate(
                                         (context, index) {
                                           var recipe = homeProvider
@@ -209,12 +189,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                     )
                                   : SliverGrid(
                                       gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        crossAxisSpacing: 15.0,
-                                        mainAxisSpacing: 15.0,
-                                        childAspectRatio: 0.7,
-                                      ),
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 2,
+                                              crossAxisSpacing: 15.0,
+                                              mainAxisSpacing: 15.0,
+                                              childAspectRatio: min(
+                                                (size.width /
+                                                    (size.height / 1.68)),
+                                                0.7,
+                                              )),
                                       delegate: SliverChildBuilderDelegate(
                                         (context, index) {
                                           var recipe =

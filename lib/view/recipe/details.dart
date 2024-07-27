@@ -201,6 +201,7 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                               ListView.builder(
                                   physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
+                                  padding: EdgeInsets.zero,
                                   itemCount: detailProvider.recipeDetail!
                                       .analyzedInstructions.length,
                                   itemBuilder: (_, i) {
@@ -209,6 +210,7 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                                           .analyzedInstructions[i],
                                     );
                                   }),
+                              const SizedBox(height: 16),
                               CookingTipsScreen(
                                 tips: detailProvider.recipeDetail!.tips,
                               )
@@ -219,26 +221,6 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                     ),
                   ),
                 ],
-              ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: detailProvider.isLoading
-            ? const SizedBox()
-            : ElevatedButton.icon(
-                onPressed: () {
-                  //todo lucnh url
-                },
-                icon: Icon(
-                  Icons.info_outline,
-                  color: ColorPalette.white,
-                ),
-                label: Text(
-                  'Know more',
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                ),
               ),
       );
     });

@@ -15,12 +15,11 @@ class InstructionViewer extends StatelessWidget {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
       itemCount: instruction.steps.length,
       itemBuilder: (context, index) {
         final step = instruction.steps[index];
         return Card(
-          margin: const EdgeInsets.symmetric(vertical: 8.0),
           elevation: 2,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
