@@ -8,11 +8,11 @@ import 'package:recipe_app/main.dart';
 import '../data/repositories/recipe_repositrory.dart';
 
 class HomeProvider extends ChangeNotifier {
-  List<Recipe> recipeList = [];
-  final notificationService = NotificationService();
   List<Recipe> filteredRecipeList = [];
   bool isLoading = false;
   bool isSearch = false;
+  final notificationService = NotificationService();
+  List<Recipe> recipeList = [];
   final recipeRepository = RecipeRepository();
 
   Future<void> getRecipes() async {
@@ -58,5 +58,11 @@ class HomeProvider extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
     }
+  }
+
+  void clearSearchData() {
+    isSearch = false;
+    filteredRecipeList.clear();
+    notifyListeners();
   }
 }

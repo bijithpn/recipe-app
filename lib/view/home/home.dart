@@ -40,10 +40,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 slivers: [
                   SliverAppBar(
                     expandedHeight: 110.0,
-                    floating: false,
-                    pinned: true,
+                    pinned: false,
+                    floating: true,
                     flexibleSpace: FlexibleSpaceBar(
-                      // title: const Text("Recipes"),
+                      expandedTitleScale: 2,
                       background: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 10),

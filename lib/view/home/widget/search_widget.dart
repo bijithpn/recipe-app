@@ -42,7 +42,7 @@ class _SearchWidgetState extends State<SearchWidget> {
       showDragHandle: true,
       isScrollControlled: false,
       builder: (BuildContext context) {
-        return FilterBottomSheet();
+        return const FilterBottomSheet();
       },
     );
   }
@@ -51,6 +51,8 @@ class _SearchWidgetState extends State<SearchWidget> {
   Widget build(BuildContext context) {
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
     return SearchAnchor.bar(
+      keyboardType: TextInputType.text,
+      textInputAction: TextInputAction.done,
       barBackgroundColor: WidgetStateProperty.all(ColorPalette.white),
       searchController: _searchController,
       barHintText: "Search you recipe....",
@@ -60,9 +62,7 @@ class _SearchWidgetState extends State<SearchWidget> {
           IconButton(
             onPressed: () {
               _searchController.clear();
-              homeProvider.isSearch = false;
-              homeProvider.filteredRecipeList.clear();
-              setState(() {});
+              homeProvider.clearSearchData();
             },
             icon: Icon(Icons.close, color: ColorPalette.primary),
           ),
