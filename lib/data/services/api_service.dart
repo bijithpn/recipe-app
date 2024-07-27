@@ -50,7 +50,7 @@ class ApiClient {
     _dio.interceptors.add(DioCacheInterceptor(options: cacheOptions));
     _dio.interceptors.add(LogInterceptor(
       request: false,
-      requestHeader: true,
+      requestHeader: false,
       requestBody: false,
       responseHeader: false,
       responseBody: true,

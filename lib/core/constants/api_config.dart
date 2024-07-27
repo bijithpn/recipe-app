@@ -1,5 +1,5 @@
 class ApiConfig {
-  static const String baseUrl = 'https://api.spoonacular.com';
+  static const String baseUrl = 'https://api.spoonacular.com/';
 }
 
 class ApiEndpoint {

@@ -8,6 +8,7 @@ import 'package:recipe_app/core/constants/api_config.dart';
 import 'package:recipe_app/core/constants/colors.dart';
 import 'package:recipe_app/data/services/api_service.dart';
 import 'package:recipe_app/view/home/home.dart';
+import 'package:recipe_app/view_models/details_provider.dart';
 import 'package:recipe_app/view_models/home_provider.dart';
 
 final getIt = GetIt.instance;
@@ -46,6 +47,9 @@ class _MyAppState extends State<MyApp> {
         Provider<ApiClient>(create: (_) => ApiClient()),
         ChangeNotifierProvider(
           create: (context) => HomeProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => DetailsProvider(),
         ),
       ],
       child: MaterialApp(
