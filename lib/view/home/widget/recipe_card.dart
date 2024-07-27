@@ -71,32 +71,33 @@ class RecipeCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Positioned(
-                        left: 10,
-                        top: 10,
-                        child: GlassDropEffect(
-                          sigma: 10,
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.recommend,
-                                color: ColorPalette.primary,
-                                size: 22,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                "${recipe.aggregateLikes}",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge!
-                                    .copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                              ),
-                            ],
-                          ),
-                        )),
+                    if (recipe.aggregateLikes != null)
+                      Positioned(
+                          left: 10,
+                          top: 10,
+                          child: GlassDropEffect(
+                            sigma: 10,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.recommend,
+                                  color: ColorPalette.primary,
+                                  size: 22,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  "${recipe.aggregateLikes}",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          )),
                   ],
                 ),
               ),
@@ -116,7 +117,7 @@ class RecipeCard extends StatelessWidget {
                           Expanded(
                             child: Text(recipe.title,
                                 maxLines: 2,
-                                textAlign: TextAlign.justify,
+                                textAlign: TextAlign.start,
                                 overflow: TextOverflow.ellipsis,
                                 style: Theme.of(context)
                                     .textTheme
@@ -125,14 +126,15 @@ class RecipeCard extends StatelessWidget {
                                         fontWeight: FontWeight.bold,
                                         letterSpacing: .5)),
                           ),
-                          Image.asset(
-                            AssetsImages.veg,
-                            width: 25,
-                            height: 25,
-                            color: (recipe.vegetarian ?? false)
-                                ? ColorPalette.primary
-                                : ColorPalette.red,
-                          )
+                          if (recipe.vegetarian != null)
+                            Image.asset(
+                              AssetsImages.veg,
+                              width: 25,
+                              height: 25,
+                              color: recipe.vegetarian!
+                                  ? ColorPalette.primary
+                                  : ColorPalette.red,
+                            )
                         ],
                       ),
                     ),
@@ -149,28 +151,62 @@ class RecipeCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Row(
-                          children: [
-                            const Icon(Icons.timer_outlined),
-                            const SizedBox(width: 4),
-                            Text(
-                              "${recipe.readyInMinutes}m",
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            const Icon(Icons.local_dining),
-                            const SizedBox(width: 4),
-                            Text(
-                              "${recipe.servings}",
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            )
-                          ],
-                        ),
+                        if (recipe.readyInMinutes != null)
+                          Row(
+                            children: [
+                              const Icon(Icons.timer_outlined),
+                              const SizedBox(width: 4),
+                              Text(
+                                "${recipe.readyInMinutes}m",
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              )
+                            ],
+                          ),
+                        if (recipe.servings != null)
+                          Row(
+                            children: [
+                              const Icon(Icons.local_dining),
+                              const SizedBox(width: 4),
+                              Text(
+                                "${recipe.servings}",
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              )
+                            ],
+                          ),
                       ],
                     ),
+                    if (recipe.usedIngredientCount != null)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Row(
+                          children: [
+                            Icon(Icons.check_box_outlined,
+                                color: ColorPalette.primary),
+                            const SizedBox(width: 4),
+                            Text(
+                              "Owned: ${recipe.usedIngredientCount}",
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            )
+                          ],
+                        ),
+                      ),
+                    if (recipe.missedIngredientCount != null)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.disabled_by_default_outlined,
+                              color: Colors.red,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              "Missing: ${recipe.missedIngredientCount}",
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            )
+                          ],
+                        ),
+                      ),
                   ],
                 ),
               ),

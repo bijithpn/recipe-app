@@ -20,6 +20,7 @@ class Recipe {
   final List<String>? dishTypes;
   final int? usedIngredientCount;
   final int? missedIngredientCount;
+  final int? likes;
 
   Recipe({
     this.vegetarian,
@@ -30,7 +31,7 @@ class Recipe {
     this.pricePerServing,
     required this.id,
     required this.title,
-    required this.sourceName,
+    this.sourceName = 'Unknown',
     this.readyInMinutes,
     this.servings,
     required this.image,
@@ -38,6 +39,7 @@ class Recipe {
     this.dishTypes,
     this.usedIngredientCount,
     this.missedIngredientCount,
+    this.likes = 0, 
   });
 
   factory Recipe.fromJson(Map<String, dynamic> json) => _$RecipeFromJson(json);
@@ -56,4 +58,5 @@ class Recipe {
   int get usedIngredientCountOrDefault => usedIngredientCount ?? 0;
   int get missedIngredientCountOrDefault => missedIngredientCount ?? 0;
   bool get vegetarianOrDefault => vegetarian ?? false;
+  int get likesOrDefault => likes ?? 0; // Default value for likes
 }

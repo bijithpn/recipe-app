@@ -4,9 +4,8 @@ import 'package:recipe_app/data/services/api_service.dart';
 import 'package:recipe_app/main.dart';
 
 class RecipeRepository {
-  final apiClient = getIt<ApiClient>();
-
   RecipeRepository();
+  final apiClient = getIt<ApiClient>();
 
   Future<List<dynamic>> getRecipes() async {
     try {
@@ -17,7 +16,7 @@ class RecipeRepository {
       });
       return res.data['recipes'];
     } catch (e) {
-      throw Exception('Failed to load recipe');
+      rethrow;
     }
   }
 
@@ -27,8 +26,21 @@ class RecipeRepository {
           .get(ApiEndpoint.details, queryParameters: {"ids": id});
       return RecipeDetail.fromJson(res.data[0]);
     } catch (e) {
-      print(e.toString());
-      throw Exception('Failed to load recipe');
+      rethrow;
+    }
+  }
+
+  Future<List<dynamic>> searchByIngredients(String ingredients) async {
+    try {
+      final res = await apiClient.get(ApiEndpoint.search, queryParameters: {
+        "ingredients": ingredients,
+        "number": 10,
+        "limitLicense": true,
+        "ranking": 1,
+      });
+      return res.data;
+    } catch (e) {
+      rethrow;
     }
   }
 }

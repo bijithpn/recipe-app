@@ -5,4 +5,5 @@ class AssetsImages {
   static const cookingColor = 'assets/images/cooking_color.png';
   static const ingredients = 'assets/images/ingredients.png';
   static const cookingTool = 'assets/images/cooking-tools.png';
+  static const empty = 'assets/images/food.png';
 }

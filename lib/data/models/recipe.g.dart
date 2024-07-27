@@ -15,7 +15,7 @@ Recipe _$RecipeFromJson(Map<String, dynamic> json) => Recipe(
       pricePerServing: (json['pricePerServing'] as num?)?.toDouble(),
       id: (json['id'] as num).toInt(),
       title: json['title'] as String,
-      sourceName: json['sourceName'] as String,
+      sourceName: json['sourceName'] as String? ?? 'Unknown',
       readyInMinutes: (json['readyInMinutes'] as num?)?.toInt(),
       servings: (json['servings'] as num?)?.toInt(),
       image: json['image'] as String,
@@ -25,6 +25,7 @@ Recipe _$RecipeFromJson(Map<String, dynamic> json) => Recipe(
           .toList(),
       usedIngredientCount: (json['usedIngredientCount'] as num?)?.toInt(),
       missedIngredientCount: (json['missedIngredientCount'] as num?)?.toInt(),
+      likes: (json['likes'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$RecipeToJson(Recipe instance) => <String, dynamic>{
@@ -44,4 +45,5 @@ Map<String, dynamic> _$RecipeToJson(Recipe instance) => <String, dynamic>{
       'dishTypes': instance.dishTypes,
       'usedIngredientCount': instance.usedIngredientCount,
       'missedIngredientCount': instance.missedIngredientCount,
+      'likes': instance.likes,
     };
