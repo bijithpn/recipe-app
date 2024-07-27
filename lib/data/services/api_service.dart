@@ -49,10 +49,10 @@ class ApiClient {
 
     _dio.interceptors.add(DioCacheInterceptor(options: cacheOptions));
     _dio.interceptors.add(LogInterceptor(
-      request: true,
+      request: false,
       requestHeader: true,
-      requestBody: true,
-      responseHeader: true,
+      requestBody: false,
+      responseHeader: false,
       responseBody: true,
       error: true,
     ));

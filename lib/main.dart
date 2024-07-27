@@ -1,7 +1,16 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:recipe_app/data/services/api_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:get_it/get_it.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+import 'package:recipe_app/core/constants/api_config.dart';
+import 'package:recipe_app/core/constants/colors.dart';
+import 'package:recipe_app/data/services/api_service.dart';
+import 'package:recipe_app/view/home/home.dart';
+import 'package:recipe_app/view_models/home_provider.dart';
+
+final getIt = GetIt.instance;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -9,88 +18,51 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
+  State<MyApp> createState() => _MyAppState();
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
+class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    initData();
     super.initState();
+    initData();
   }
 
   initData() async {
-    ApiClient().initialize(
-        'https://api.spoonacular.com', dotenv.env['SPOONACULAR_KEY']!);
-
-    ApiClient().get('/recipes/random',
-        queryParameters: {"limitLicense": true, "number": 12}).then((response) {
-      print(response.data);
-    }).catchError((error) {
-      if (error is DioException && error.error == 'No internet connection') {
-        // Notify user about no internet connection
-        print('No internet connection');
-      } else {
-        print('Error: $error');
-      }
-    });
+    final apiClient = ApiClient();
+    apiClient.initialize(
+        ApiConfig.baseUrl, dotenv.env['SPOONACULAR_KEY'] ?? '');
+    getIt.registerSingleton<ApiClient>(apiClient);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+    return MultiProvider(
+      providers: [
+        Provider<ApiClient>(create: (_) => ApiClient()),
+        ChangeNotifierProvider(
+          create: (context) => HomeProvider(),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      ],
+      child: MaterialApp(
+        title: 'Recipe App',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: ColorPalette.primary),
+          useMaterial3: true,
+          scaffoldBackgroundColor: ColorPalette.scaffoldBg,
+          appBarTheme: AppBarTheme(
+              backgroundColor: ColorPalette.scaffoldBg,
+              foregroundColor: ColorPalette.scaffoldBg,
+              surfaceTintColor: ColorPalette.scaffoldBg,
+              elevation: 0,
+              scrolledUnderElevation: 0),
+          textTheme: GoogleFonts.poppinsTextTheme(),
+        ),
+        home: const HomeScreen(),
       ),
     );
   }
