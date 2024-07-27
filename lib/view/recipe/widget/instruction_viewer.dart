@@ -26,7 +26,7 @@ class InstructionViewer extends StatelessWidget {
             borderRadius: BorderRadius.circular(15.0),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -47,7 +47,7 @@ class InstructionViewer extends StatelessWidget {
                 const SizedBox(height: 10),
                 if (step.ingredients.isNotEmpty) ...[
                   Text('Ingredients:',
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                           fontWeight: FontWeight.bold,
                           color: ColorPalette.primary)),
                   const SizedBox(height: 5),
@@ -68,7 +68,7 @@ class InstructionViewer extends StatelessWidget {
                                   errorWidget: Container(
                                       width: 60,
                                       height: 60,
-                                      padding: const EdgeInsets.all(3),
+                                      padding: const EdgeInsets.all(10),
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(10),
@@ -91,35 +91,44 @@ class InstructionViewer extends StatelessWidget {
                 ],
                 if (step.equipment.isNotEmpty) ...[
                   Text('Equipment:',
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                           fontWeight: FontWeight.bold,
                           color: ColorPalette.primary)),
                   const SizedBox(height: 5),
                   Column(
                     children: step.equipment
-                        .map((equipment) => ListTile(
-                              leading: ImageWidget(
-                                padding: const EdgeInsets.all(3),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white),
-                                imageUrl: equipment.image,
-                                width: 60,
-                                height: 60,
-                                errorWidget: Container(
-                                  width: 60,
-                                  height: 60,
+                        .map((equipment) => Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: ListTile(
+                                leading: ImageWidget(
                                   padding: const EdgeInsets.all(3),
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
                                       color: Colors.white),
-                                  child: Image.asset(
-                                    AssetsImages.cookingTool,
-                                    width: 50,
+                                  imageUrl: equipment.image,
+                                  width: 60,
+                                  height: 60,
+                                  errorWidget: Container(
+                                    width: 60,
+                                    height: 60,
+                                    padding: const EdgeInsets.all(3),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.white),
+                                    child: Image.asset(
+                                      AssetsImages.cookingTool,
+                                      width: 50,
+                                    ),
                                   ),
                                 ),
+                                title: Text(
+                                  equipment.localizedName,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .copyWith(fontWeight: FontWeight.bold),
+                                ),
                               ),
-                              title: Text(equipment.localizedName),
                             ))
                         .toList(),
                   ),

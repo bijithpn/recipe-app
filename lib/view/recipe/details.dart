@@ -26,6 +26,18 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
     super.initState();
   }
 
+  String editSummary(String summary) {
+    const String targetPhrase = "liked this recipe";
+    int targetIndex = summary.indexOf(targetPhrase);
+    String processedHtmlData;
+    if (targetIndex != -1) {
+      processedHtmlData = summary.substring(0, targetIndex);
+    } else {
+      processedHtmlData = summary;
+    }
+    return processedHtmlData;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DetailsProvider>(builder: (_, detailProvider, __) {
@@ -123,7 +135,12 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                                         fontWeight: FontWeight.bold,
                                       )),
                               const SizedBox(height: 4),
-                              HtmlWidget(detailProvider.recipeDetail!.summary),
+                              HtmlWidget(
+                                editSummary(
+                                    detailProvider.recipeDetail!.summary),
+                                textStyle:
+                                    Theme.of(context).textTheme.bodyLarge,
+                              ),
                               const SizedBox(height: 16),
                               Text('Ingredients',
                                   style: Theme.of(context)

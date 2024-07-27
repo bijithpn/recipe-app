@@ -7,9 +7,10 @@ import 'package:provider/provider.dart';
 import 'package:recipe_app/core/constants/api_config.dart';
 import 'package:recipe_app/core/constants/colors.dart';
 import 'package:recipe_app/data/services/api_service.dart';
-import 'package:recipe_app/view/home/home.dart';
 import 'package:recipe_app/view_models/details_provider.dart';
 import 'package:recipe_app/view_models/home_provider.dart';
+
+import 'core/routes/routes.dart';
 
 final getIt = GetIt.instance;
 
@@ -66,7 +67,8 @@ class _MyAppState extends State<MyApp> {
               scrolledUnderElevation: 0),
           textTheme: GoogleFonts.poppinsTextTheme(),
         ),
-        home: const HomeScreen(),
+        initialRoute: '/',
+        onGenerateRoute: RouteGenerator.generateRoute,
       ),
     );
   }

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:recipe_app/core/constants/colors.dart';
 import 'package:recipe_app/core/constants/image.dart';
 import 'package:recipe_app/data/models/recipe.dart';
-import 'package:recipe_app/view/recipe/details.dart';
 
 import 'widget.dart';
 
@@ -19,12 +18,11 @@ class RecipeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => RecipeDetailsPage(
-                      recipeId: recipe.id.toString(),
-                    )));
+        Navigator.pushNamed(
+          context,
+          '/details',
+          arguments: recipe.id.toString(),
+        );
       },
       child: Card(
         elevation: 3,

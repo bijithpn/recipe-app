@@ -8,7 +8,8 @@ class CookingTipsScreen extends StatelessWidget {
   const CookingTipsScreen({super.key, required this.tips});
 
   Widget _buildTipsList(
-      String title, List<String> tipsList, IconData icon, Color color) {
+      String title, List<String> tipsList, IconData icon, Color color,
+      {BuildContext? context}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -24,13 +25,20 @@ class CookingTipsScreen extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 10),
-        ...tipsList.map((tip) => Card(
-            margin: const EdgeInsets.symmetric(vertical: 4.0),
-            elevation: 2,
-            child: Padding(
+        ...tipsList.map((tip) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              child: HtmlWidget(tip),
-            ))),
+              child: Card(
+                  margin: const EdgeInsets.symmetric(vertical: 4.0),
+                  elevation: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 10),
+                    child: HtmlWidget(
+                      tip,
+                      textStyle: Theme.of(context!).textTheme.bodyLarge,
+                    ),
+                  )),
+            )),
         const SizedBox(height: 20),
       ],
     );
@@ -44,16 +52,20 @@ class CookingTipsScreen extends StatelessWidget {
         children: [
           if (tips.health.isNotEmpty)
             _buildTipsList('Health Tips', tips.health, Icons.health_and_safety,
-                Colors.green),
+                Colors.green,
+                context: context),
           if (tips.price.isNotEmpty)
             _buildTipsList(
-                'Budget Tips', tips.price, Icons.attach_money, Colors.blue),
+                'Budget Tips', tips.price, Icons.attach_money, Colors.blue,
+                context: context),
           if (tips.cooking.isNotEmpty)
             _buildTipsList(
-                'Cooking Tips', tips.cooking, Icons.kitchen, Colors.orange),
+                'Cooking Tips', tips.cooking, Icons.kitchen, Colors.orange,
+                context: context),
           if (tips.green.isNotEmpty)
             _buildTipsList(
-                'Eco-Friendly Tips', tips.green, Icons.eco, Colors.teal),
+                'Eco-Friendly Tips', tips.green, Icons.eco, Colors.teal,
+                context: context),
         ],
       ),
     );
