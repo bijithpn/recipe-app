@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:recipe_app/core/constants/image.dart';
+import 'package:recipe_app/core/constants/strings.dart';
 import 'package:recipe_app/db/db.dart';
 import 'package:recipe_app/db/model/recipe.dart';
 import 'package:recipe_app/main.dart';
@@ -27,6 +29,7 @@ class _SavedRecipeState extends State<SavedRecipe> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text("Saved",
@@ -37,17 +40,47 @@ class _SavedRecipeState extends State<SavedRecipe> {
       ),
       body: RefreshIndicator(
         onRefresh: () => getSavedList(),
-        child: ListView.separated(
-            separatorBuilder: (_, __) => const SizedBox(height: 15),
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-            itemCount: savedRecipe.length,
-            itemBuilder: (_, i) {
-              var recipe = savedRecipe[i];
-              return SavedRecipeCard(
-                recipe: recipe,
-                callBack: () => getSavedList(),
-              );
-            }),
+        child: savedRecipe.isEmpty
+            ? Center(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        AssetsImages.emptySave,
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        AppStrings.saveEmpty,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      )
+                    ],
+                  ),
+                ),
+              )
+            : CustomScrollView(slivers: [
+                SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 15.0,
+                    mainAxisSpacing: 15.0,
+                    childAspectRatio: size.width > 400 ? 0.77 : 0.7,
+                  ),
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    var recipe = savedRecipe[index];
+                    return GridTile(
+                      child: SavedRecipeCard(
+                        recipe: recipe,
+                        callBack: () => getSavedList(),
+                      ),
+                    );
+                  }, childCount: savedRecipe.length),
+                ),
+              ]),
       ),
     );
   }

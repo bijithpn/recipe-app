@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:recipe_app/core/constants/colors.dart';
 import 'package:recipe_app/core/constants/image.dart';
+import 'package:recipe_app/core/constants/strings.dart';
 import 'package:recipe_app/view/saved_recipe/saved_recipe.dart';
 
 import 'package:recipe_app/view_models/home_provider.dart';
@@ -109,8 +110,23 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
+  double calculateAspectRatio(double width, double height,
+      {double min = 0.7, double max = .71}) {
+    double result = (width / 2) / (width / 2);
+    double minValue = min;
+    double maxValue = max;
+    if (result < minValue) {
+      result = minValue;
+    } else if (result > maxValue) {
+      result = maxValue;
+    }
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    print(size.width);
     return SafeArea(
       top: true,
       child: Consumer<HomeProvider>(
@@ -203,12 +219,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: Column(
                                         children: [
                                           Image.asset(
-                                            AssetsImages.empty,
+                                            AssetsImages.emptyState,
                                             height: 250,
                                           ),
                                           const SizedBox(height: 10),
                                           Text(
-                                            'No recipes available right now. We\'re working on adding more recipes soon!',
+                                            AppStrings.noRecipe,
                                             textAlign: TextAlign.center,
                                             style: Theme.of(context)
                                                 .textTheme
@@ -221,14 +237,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ],
                                       ),
                                     )
-                                  : SliverList.builder(
-                                      itemCount: homeProvider
-                                          .filteredRecipeList.length,
-                                      itemBuilder: (_, i) {
-                                        var recipe =
-                                            homeProvider.filteredRecipeList[i];
-                                        return RecipeCard(recipe: recipe);
-                                      }))
+                                  : SliverGrid(
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        crossAxisSpacing: 15.0,
+                                        mainAxisSpacing: 15.0,
+                                        childAspectRatio:
+                                            size.width > 400 ? 0.66 : 0.6,
+                                      ),
+                                      delegate: SliverChildBuilderDelegate(
+                                        (context, index) {
+                                          var recipe = homeProvider
+                                              .filteredRecipeList[index];
+                                          return GridTile(
+                                            child: RecipeCard(recipe: recipe),
+                                          );
+                                        },
+                                        childCount: homeProvider
+                                            .filteredRecipeList.length,
+                                      ),
+                                    ),
+                            )
                           : SliverPadding(
                               padding: const EdgeInsets.all(10),
                               sliver: homeProvider.recipeList.isEmpty
@@ -236,12 +266,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: Column(
                                         children: [
                                           Image.asset(
-                                            AssetsImages.empty,
+                                            AssetsImages.emptyState,
                                             height: 250,
                                           ),
                                           const SizedBox(height: 10),
                                           Text(
-                                            'No recipes available right now. We\'re working on adding more recipes soon!',
+                                            AppStrings.noRecipe,
                                             textAlign: TextAlign.center,
                                             style: Theme.of(context)
                                                 .textTheme
@@ -254,15 +284,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ],
                                       ),
                                     )
-                                  : SliverList.builder(
-                                      itemCount: homeProvider.recipeList.length,
-                                      itemBuilder: (_, i) {
-                                        var recipe = homeProvider.recipeList[i];
-                                        return GridTile(
-                                          child: RecipeCard(recipe: recipe),
-                                        );
-                                      },
-                                    )),
+                                  : SliverGrid(
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        crossAxisSpacing: 15.0,
+                                        mainAxisSpacing: 15.0,
+                                        childAspectRatio:
+                                            size.width > 400 ? 0.77 : 0.7,
+                                      ),
+                                      delegate: SliverChildBuilderDelegate(
+                                        (context, index) {
+                                          var recipe =
+                                              homeProvider.recipeList[index];
+                                          return GridTile(
+                                            child: RecipeCard(recipe: recipe),
+                                          );
+                                        },
+                                        childCount:
+                                            homeProvider.recipeList.length,
+                                      ),
+                                    ),
+                            ),
                 ],
               ),
             ),

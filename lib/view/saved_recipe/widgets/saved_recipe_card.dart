@@ -82,8 +82,8 @@ class _SavedRecipeCardState extends State<SavedRecipeCard> {
                       child: GlassDropEffect(
                         sigma: 10,
                         shape: BoxShape.circle,
-                        child: IconButton(
-                          onPressed: () async {
+                        child: InkWell(
+                          onTap: () async {
                             try {
                               await provider.recipeDb
                                   .deleteRecipe(widget.recipe.id);
@@ -97,7 +97,7 @@ class _SavedRecipeCardState extends State<SavedRecipeCard> {
                             }
                             setState(() {});
                           },
-                          icon: Icon(
+                          child: Icon(
                             Icons.bookmark,
                             size: 22,
                             color: ColorPalette.primary,
@@ -209,38 +209,6 @@ class _SavedRecipeCardState extends State<SavedRecipeCard> {
                           ),
                       ],
                     ),
-                    if (widget.recipe.usedIngredientCount != null)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2),
-                        child: Row(
-                          children: [
-                            Icon(Icons.check_box_outlined,
-                                color: ColorPalette.primary),
-                            const SizedBox(width: 4),
-                            Text(
-                              "Owned: ${widget.recipe.usedIngredientCount}",
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            )
-                          ],
-                        ),
-                      ),
-                    if (widget.recipe.missedIngredientCount != null)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.disabled_by_default_outlined,
-                              color: Colors.red,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              "Missing: ${widget.recipe.missedIngredientCount}",
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            )
-                          ],
-                        ),
-                      ),
                     const SizedBox(height: 5)
                   ],
                 ),

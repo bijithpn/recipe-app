@@ -71,40 +71,52 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                           Align(
                             alignment: Alignment.topLeft,
                             child: IconButton(
+                                style: IconButton.styleFrom(
+                                    backgroundColor: ColorPalette.primary),
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                icon: const Icon(Icons.arrow_back)),
+                                icon: const Icon(
+                                  Icons.arrow_back,
+                                  color: Colors.white,
+                                )),
                           ),
-                          Image.asset(AssetsImages.noInternet),
-                          Text(
-                            "Unable to load details. Please check your internet connection or try again later.",
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge!
-                                .copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: .6),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 50),
+                            child: Column(
+                              children: [
+                                Image.asset(AssetsImages.noInternet),
+                                Text(
+                                  "Unable to load details. Please check your internet connection or try again later.",
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: .6),
+                                ),
+                                const SizedBox(height: 10),
+                                ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: ColorPalette.primary),
+                                    onPressed: () {
+                                      Provider.of<DetailsProvider>(context,
+                                              listen: false)
+                                          .getDetails(widget.recipeId);
+                                    },
+                                    child: Text(
+                                      "Try again",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge!
+                                          .copyWith(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                    )),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 10),
-                          ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: ColorPalette.primary),
-                              onPressed: () {
-                                Provider.of<DetailsProvider>(context,
-                                        listen: false)
-                                    .getDetails(widget.recipeId);
-                              },
-                              child: Text(
-                                "Try again",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge!
-                                    .copyWith(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                              )),
                         ],
                       ),
                     )

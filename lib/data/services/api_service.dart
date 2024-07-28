@@ -86,8 +86,8 @@ class ApiClient {
     try {
       final response = await _dio.get(path, queryParameters: queryParameters);
       return response;
-    } on DioException catch (e) {
-      _handleError(e, navigatorKey.currentContext!);
+    } on DioException {
+      // _handleError(e, navigatorKey.currentContext!);
       rethrow;
     }
   }
@@ -112,8 +112,8 @@ class ApiClient {
     try {
       final response = await _dio.post(path, data: data);
       return response;
-    } on DioException catch (e) {
-      _handleError(e, navigatorKey.currentContext!);
+    } on DioException {
+      // _handleError(e, navigatorKey.currentContext!);
       rethrow;
     }
   }

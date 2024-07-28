@@ -8,4 +8,5 @@ class AssetsImages {
   static const empty = 'assets/images/food.png';
   static const emptyState = 'assets/images/empty.png';
   static const noInternet = 'assets/images/no_connection.png';
+  static const emptySave = 'assets/images/empty_saves.jpg';
 }

@@ -24,7 +24,7 @@ class RecipeCard extends StatefulWidget {
 
 class _RecipeCardState extends State<RecipeCard> {
   bool isSaved = false;
-
+  final notificationService = NotificationService();
   @override
   void initState() {
     Provider.of<HomeProvider>(context, listen: false)
@@ -87,26 +87,35 @@ class _RecipeCardState extends State<RecipeCard> {
                       child: GlassDropEffect(
                         sigma: 10,
                         shape: BoxShape.circle,
-                        child: IconButton(
-                          onPressed: () async {
+                        child: InkWell(
+                          onTap: () async {
                             try {
-                              var json = widget.recipe.toJson();
-                              await provider.recipeDb
-                                  .addOrUpdateRecipe(RecipeDB.fromJson(json));
+                              if (isSaved) {
+                                await provider.recipeDb
+                                    .deleteRecipe(widget.recipe.id);
+                                notificationService.showSnackBar(
+                                    context: context,
+                                    message: "Recipe removed");
+                              } else {
+                                var json = widget.recipe.toJson();
+                                await provider.recipeDb
+                                    .addOrUpdateRecipe(RecipeDB.fromJson(json));
+                                notificationService.showSnackBar(
+                                    context: context, message: "Recipe added");
+                              }
                               isSaved = await provider.recipeDb
                                   .recipeExists(widget.recipe.id);
-                              print('bool $isSaved');
                             } catch (error) {
                               print(error.toString());
                               if (context.mounted) {
-                                NotificationService().showSnackBar(
+                                notificationService.showSnackBar(
                                     context: context,
                                     message: error.toString());
                               }
                             }
                             setState(() {});
                           },
-                          icon: Icon(
+                          child: Icon(
                             isSaved ? Icons.bookmark : Icons.bookmark_outline,
                             size: 22,
                             color:
@@ -149,6 +158,7 @@ class _RecipeCardState extends State<RecipeCard> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
@@ -251,7 +261,6 @@ class _RecipeCardState extends State<RecipeCard> {
                           ],
                         ),
                       ),
-                    const SizedBox(height: 5)
                   ],
                 ),
               ),
