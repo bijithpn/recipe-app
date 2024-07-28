@@ -84,37 +84,39 @@ class _RecipeCardState extends State<RecipeCard> {
                     Positioned(
                       right: 10,
                       top: 10,
-                      child: GlassDropEffect(
-                        sigma: 10,
-                        shape: BoxShape.circle,
-                        child: InkWell(
-                          onTap: () async {
-                            try {
-                              if (isSaved) {
-                                await provider.recipeDb
-                                    .deleteRecipe(widget.recipe.id);
-                                notificationService.showSnackBar(
-                                    context: context,
-                                    message: "Recipe removed");
-                              } else {
-                                var json = widget.recipe.toJson();
-                                await provider.recipeDb
-                                    .addOrUpdateRecipe(RecipeDB.fromJson(json));
-                                notificationService.showSnackBar(
-                                    context: context, message: "Recipe added");
-                              }
-                              isSaved = await provider.recipeDb
-                                  .recipeExists(widget.recipe.id);
-                            } catch (error) {
-                              print(error.toString());
+                      child: InkWell(
+                        onTap: () async {
+                          try {
+                            if (isSaved) {
+                              await provider.recipeDb
+                                  .deleteRecipe(widget.recipe.id);
                               if (context.mounted) {
                                 notificationService.showSnackBar(
                                     context: context,
-                                    message: error.toString());
+                                    message: "Recipe removed");
+                              }
+                            } else {
+                              var json = widget.recipe.toJson();
+                              await provider.recipeDb
+                                  .addOrUpdateRecipe(RecipeDB.fromJson(json));
+                              if (context.mounted) {
+                                notificationService.showSnackBar(
+                                    context: context, message: "Recipe added");
                               }
                             }
-                            setState(() {});
-                          },
+                            isSaved = await provider.recipeDb
+                                .recipeExists(widget.recipe.id);
+                          } catch (error) {
+                            if (context.mounted) {
+                              notificationService.showSnackBar(
+                                  context: context, message: error.toString());
+                            }
+                          }
+                          setState(() {});
+                        },
+                        child: GlassDropEffect(
+                          sigma: 10,
+                          shape: BoxShape.circle,
                           child: Icon(
                             isSaved ? Icons.bookmark : Icons.bookmark_outline,
                             size: 22,

@@ -40,30 +40,31 @@ class _SavedRecipeState extends State<SavedRecipe> {
       ),
       body: RefreshIndicator(
         onRefresh: () => getSavedList(),
-        child: savedRecipe.isEmpty
-            ? Center(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        AssetsImages.emptySave,
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        AppStrings.saveEmpty,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      )
-                    ],
+        child: CustomScrollView(slivers: [
+          savedRecipe.isEmpty
+              ? SliverFillRemaining(
+                  child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 25, vertical: 10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          AssetsImages.emptySave,
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          AppStrings.saveEmpty,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              )
-            : CustomScrollView(slivers: [
-                SliverGrid(
+                ))
+              : SliverGrid(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 15.0,
@@ -80,7 +81,7 @@ class _SavedRecipeState extends State<SavedRecipe> {
                     );
                   }, childCount: savedRecipe.length),
                 ),
-              ]),
+        ]),
       ),
     );
   }

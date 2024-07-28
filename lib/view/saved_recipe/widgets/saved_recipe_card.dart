@@ -31,6 +31,7 @@ class _SavedRecipeCardState extends State<SavedRecipeCard> {
     super.initState();
   }
 
+  final notificationService = NotificationService();
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<HomeProvider>(context, listen: false);
@@ -79,24 +80,27 @@ class _SavedRecipeCardState extends State<SavedRecipeCard> {
                     Positioned(
                       right: 10,
                       top: 10,
-                      child: GlassDropEffect(
-                        sigma: 10,
-                        shape: BoxShape.circle,
-                        child: InkWell(
-                          onTap: () async {
-                            try {
-                              await provider.recipeDb
-                                  .deleteRecipe(widget.recipe.id);
-                              widget.callBack!();
-                            } catch (error) {
-                              if (context.mounted) {
-                                NotificationService().showSnackBar(
-                                    context: context,
-                                    message: error.toString());
-                              }
+                      child: InkWell(
+                        onTap: () async {
+                          try {
+                            await provider.recipeDb
+                                .deleteRecipe(widget.recipe.id);
+                            if (context.mounted) {
+                              notificationService.showSnackBar(
+                                  context: context, message: "Recipe removed");
                             }
-                            setState(() {});
-                          },
+                            widget.callBack!();
+                          } catch (error) {
+                            if (context.mounted) {
+                              notificationService.showSnackBar(
+                                  context: context, message: error.toString());
+                            }
+                          }
+                          setState(() {});
+                        },
+                        child: GlassDropEffect(
+                          sigma: 10,
+                          shape: BoxShape.circle,
                           child: Icon(
                             Icons.bookmark,
                             size: 22,
