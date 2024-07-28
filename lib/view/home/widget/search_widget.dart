@@ -48,89 +48,104 @@ class _SearchWidgetState extends State<SearchWidget> {
   }
 
   @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _dismissKeyboard() {
+    _focusNode.unfocus();
+  }
+
+  FocusNode _focusNode = FocusNode();
+  @override
   Widget build(BuildContext context) {
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
-    return SearchAnchor.bar(
-      keyboardType: TextInputType.text,
-      textInputAction: TextInputAction.done,
-      barBackgroundColor: WidgetStateProperty.all(ColorPalette.white),
-      searchController: _searchController,
-      barHintText: "Search you recipe....",
-      barLeading: Icon(Icons.search, color: ColorPalette.primary),
-      barTrailing: [
-        if (homeProvider.isSearch)
+    return Focus(
+      autofocus: false,
+      focusNode: _focusNode,
+      child: SearchAnchor.bar(
+        keyboardType: TextInputType.text,
+        textInputAction: TextInputAction.done,
+        barBackgroundColor: WidgetStateProperty.all(ColorPalette.white),
+        searchController: _searchController,
+        barHintText: "Search you recipe....",
+        barLeading: Icon(Icons.search, color: ColorPalette.primary),
+        barTrailing: [
+          if (homeProvider.isSearch)
+            IconButton(
+              onPressed: () {
+                _searchController.clear();
+                homeProvider.clearSearchData();
+              },
+              icon: Icon(Icons.close, color: ColorPalette.primary),
+            ),
           IconButton(
             onPressed: () {
-              _searchController.clear();
-              homeProvider.clearSearchData();
+              showFilterBottomSheet(context);
             },
-            icon: Icon(Icons.close, color: ColorPalette.primary),
+            icon: Icon(Icons.tune, color: ColorPalette.primary),
           ),
-        IconButton(
-          onPressed: () {
-            showFilterBottomSheet(context);
-          },
-          icon: Icon(Icons.tune, color: ColorPalette.primary),
-        ),
-      ],
-      onSubmitted: (value) {
-        FocusManager.instance.primaryFocus?.unfocus();
-        Provider.of<HomeProvider>(context, listen: false).searchRecipe(value);
-        Navigator.pop(context);
-      },
-      viewTrailing: [
-        IconButton(
-          onPressed: () {
-            FocusManager.instance.primaryFocus?.unfocus();
-            Provider.of<HomeProvider>(context, listen: false)
-                .searchRecipe(_searchController.text);
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.search,
-            color: ColorPalette.primary,
-          ),
-        )
-      ],
-      suggestionsBuilder:
-          (BuildContext context, SearchController searchController) {
-        final query = searchController.value.text;
-        if (query.isEmpty) {
-          return const Iterable<Widget>.empty();
-        }
-        final currentText = query.split(',').last.trim().toLowerCase();
-        final suggestions = _ingredients.where(
-            (ingredient) => ingredient.toLowerCase().startsWith(currentText));
-        return suggestions.map((suggestion) => ListTile(
-              title: Text(
-                suggestion,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              onTap: () {
-                setState(() {
-                  List<String> currentTextList = _searchController.text
-                      .split(',')
-                      .map((e) => e.trim())
-                      .where((e) => e.isNotEmpty)
-                      .toList();
-                  if (currentTextList.isNotEmpty &&
-                      currentTextList.last
-                          .toLowerCase()
-                          .startsWith(currentText)) {
-                    currentTextList.removeLast();
-                  }
-                  currentTextList.add(suggestion);
-                  _searchController.text = '${currentTextList.join(', ')}, ';
-                  _searchController.selection = TextSelection.fromPosition(
-                    TextPosition(offset: _searchController.text.length),
-                  );
-                  if (!_selectedIngredients.contains(suggestion)) {
-                    _selectedIngredients.add(suggestion);
-                  }
-                });
-              },
-            ));
-      },
+        ],
+        onSubmitted: (value) {
+          _dismissKeyboard();
+          Provider.of<HomeProvider>(context, listen: false).searchRecipe(value);
+          Navigator.pop(context);
+        },
+        viewTrailing: [
+          IconButton(
+            onPressed: () {
+              _dismissKeyboard();
+              Provider.of<HomeProvider>(context, listen: false)
+                  .searchRecipe(_searchController.text);
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.search,
+              color: ColorPalette.primary,
+            ),
+          )
+        ],
+        suggestionsBuilder:
+            (BuildContext context, SearchController searchController) {
+          final query = searchController.value.text;
+          if (query.isEmpty) {
+            return const Iterable<Widget>.empty();
+          }
+          final currentText = query.split(',').last.trim().toLowerCase();
+          final suggestions = _ingredients.where(
+              (ingredient) => ingredient.toLowerCase().startsWith(currentText));
+          return suggestions.map((suggestion) => ListTile(
+                title: Text(
+                  suggestion,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                onTap: () {
+                  setState(() {
+                    List<String> currentTextList = _searchController.text
+                        .split(',')
+                        .map((e) => e.trim())
+                        .where((e) => e.isNotEmpty)
+                        .toList();
+                    if (currentTextList.isNotEmpty &&
+                        currentTextList.last
+                            .toLowerCase()
+                            .startsWith(currentText)) {
+                      currentTextList.removeLast();
+                    }
+                    currentTextList.add(suggestion);
+                    _searchController.text = '${currentTextList.join(', ')}, ';
+                    _searchController.selection = TextSelection.fromPosition(
+                      TextPosition(offset: _searchController.text.length),
+                    );
+                    if (!_selectedIngredients.contains(suggestion)) {
+                      _selectedIngredients.add(suggestion);
+                    }
+                  });
+                },
+              ));
+        },
+      ),
     );
   }
 }
