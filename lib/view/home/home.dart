@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:recipe_app/core/constants/colors.dart';
 import 'package:recipe_app/core/constants/image.dart';
 import 'package:recipe_app/view/saved_recipe/saved_recipe.dart';
@@ -32,32 +33,60 @@ class _HomeNavigationState extends State<HomeNavigation> {
     ),
   ];
 
-  final List<BottomNavigationBarItem> _bottomNavigationBarItems = [
-    const BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-    const BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: ''),
-    const BottomNavigationBarItem(icon: Icon(Icons.notifications), label: ''),
-    const BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
-    const BottomNavigationBarItem(icon: Icon(Icons.settings), label: ''),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: _bottomNavigationBarItems,
-        backgroundColor: ColorPalette.primary,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: ColorPalette.white,
-        unselectedItemColor: Colors.black,
+      body: IndexedStack(index: _selectedIndex, children: _screens),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 20,
+              color: Colors.black.withOpacity(.1),
+            )
+          ],
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+            child: GNav(
+              rippleColor: Colors.grey[300]!,
+              hoverColor: Colors.grey[100]!,
+              gap: 8,
+              activeColor: ColorPalette.primary,
+              iconSize: 24,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              duration: const Duration(milliseconds: 400),
+              tabBackgroundColor: Colors.grey[100]!,
+              color: Colors.black,
+              tabs: const [
+                GButton(
+                  icon: Icons.home,
+                  text: 'Home',
+                ),
+                GButton(
+                  icon: Icons.bookmark,
+                  text: 'Saved',
+                ),
+                GButton(
+                  icon: Icons.notifications,
+                  text: 'Notifications',
+                ),
+                GButton(
+                  icon: Icons.person,
+                  text: 'Profile',
+                ),
+              ],
+              selectedIndex: _selectedIndex,
+              onTabChange: (index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -80,24 +109,8 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  double calculateAspectRatio(double width, double height,
-      {double min = 0.7, double max = .71}) {
-    double result = (width / 2) / (width / 2 * 1.5);
-    // double minValue = min;
-    // double maxValue = max;
-
-    // if (result < minValue) {
-    //   result = minValue;
-    // } else if (result > maxValue) {
-    //   result = maxValue;
-    // }
-
-    return result;
-  }
-
   @override
   Widget build(BuildContext context) {
-    // var size = MediaQuery.of(context).size;
     return SafeArea(
       top: true,
       child: Consumer<HomeProvider>(
@@ -267,6 +280,15 @@ class Screens extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          title,
+          style: Theme.of(context)
+              .textTheme
+              .titleLarge!
+              .copyWith(fontWeight: FontWeight.bold),
+        ),
+      ),
       body: Center(
         child: Text(
           title,

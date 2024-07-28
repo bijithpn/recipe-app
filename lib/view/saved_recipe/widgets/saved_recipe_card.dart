@@ -7,7 +7,7 @@ import 'package:recipe_app/data/services/notification_service.dart';
 import 'package:recipe_app/db/model/recipe.dart';
 import 'package:recipe_app/view_models/home_provider.dart';
 
-import '../view.dart';
+import '../../view.dart';
 
 class SavedRecipeCard extends StatefulWidget {
   final RecipeDB recipe;

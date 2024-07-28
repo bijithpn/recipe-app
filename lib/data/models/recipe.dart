@@ -46,13 +46,13 @@ class Recipe {
   Map<String, dynamic> toJson() => _$RecipeToJson(this);
 
   String get imageTypeOrDefault => imageType ?? 'Not provided';
-  int get preparationMinutesOrDefault => preparationMinutes ?? 0;
-  int get cookingMinutesOrDefault => cookingMinutes ?? 0;
+  int get preparationMinutesOrDefault => preparationMinutes ?? 20;
+  int get cookingMinutesOrDefault => cookingMinutes ?? 20;
   int get aggregateLikesOrDefault => aggregateLikes ?? 0;
   int get healthScoreOrDefault => healthScore ?? 0;
   double get pricePerServingOrDefault => pricePerServing ?? 0.0;
-  int get readyInMinutesOrDefault => readyInMinutes ?? 0;
-  int get servingsOrDefault => servings ?? 0;
+  int get readyInMinutesOrDefault => readyInMinutes ?? 20;
+  int get servingsOrDefault => servings ?? 3;
   List<String> get dishTypesOrDefault => dishTypes ?? [];
   int get usedIngredientCountOrDefault => usedIngredientCount ?? 0;
   int get missedIngredientCountOrDefault => missedIngredientCount ?? 0;
