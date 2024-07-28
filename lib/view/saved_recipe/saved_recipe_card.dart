@@ -3,36 +3,31 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:recipe_app/core/constants/colors.dart';
 import 'package:recipe_app/core/constants/image.dart';
-import 'package:recipe_app/data/models/recipe.dart';
 import 'package:recipe_app/data/services/notification_service.dart';
 import 'package:recipe_app/db/model/recipe.dart';
 import 'package:recipe_app/view_models/home_provider.dart';
 
-import 'widget.dart';
+import '../view.dart';
 
-class RecipeCard extends StatefulWidget {
-  final Recipe recipe;
+class SavedRecipeCard extends StatefulWidget {
+  final RecipeDB recipe;
+  final VoidCallback? callBack;
 
-  const RecipeCard({
+  const SavedRecipeCard({
     super.key,
     required this.recipe,
+    this.callBack,
   });
 
   @override
-  State<RecipeCard> createState() => _RecipeCardState();
+  State<SavedRecipeCard> createState() => _SavedRecipeCardState();
 }
 
-class _RecipeCardState extends State<RecipeCard> {
+class _SavedRecipeCardState extends State<SavedRecipeCard> {
   bool isSaved = false;
 
   @override
   void initState() {
-    Provider.of<HomeProvider>(context, listen: false)
-        .recipeDb
-        .recipeExists(widget.recipe.id)
-        .then((value) => setState(() {
-              isSaved = value;
-            }));
     super.initState();
   }
 
@@ -90,14 +85,10 @@ class _RecipeCardState extends State<RecipeCard> {
                         child: IconButton(
                           onPressed: () async {
                             try {
-                              var json = widget.recipe.toJson();
                               await provider.recipeDb
-                                  .addOrUpdateRecipe(RecipeDB.fromJson(json));
-                              isSaved = await provider.recipeDb
-                                  .recipeExists(widget.recipe.id);
-                              print('bool $isSaved');
+                                  .deleteRecipe(widget.recipe.id);
+                              widget.callBack!();
                             } catch (error) {
-                              print(error.toString());
                               if (context.mounted) {
                                 NotificationService().showSnackBar(
                                     context: context,
@@ -107,10 +98,9 @@ class _RecipeCardState extends State<RecipeCard> {
                             setState(() {});
                           },
                           icon: Icon(
-                            isSaved ? Icons.bookmark : Icons.bookmark_outline,
+                            Icons.bookmark,
                             size: 22,
-                            color:
-                                isSaved ? ColorPalette.primary : Colors.white,
+                            color: ColorPalette.primary,
                           ),
                         ),
                       ),

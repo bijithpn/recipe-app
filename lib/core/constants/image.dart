@@ -6,4 +6,6 @@ class AssetsImages {
   static const ingredients = 'assets/images/ingredients.png';
   static const cookingTool = 'assets/images/cooking-tools.png';
   static const empty = 'assets/images/food.png';
+  static const emptyState = 'assets/images/empty.png';
+  static const noInternet = 'assets/images/no_connection.png';
 }

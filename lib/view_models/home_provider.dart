@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:recipe_app/core/constants/strings.dart';
 import 'package:recipe_app/data/models/recipe.dart';
 import 'package:recipe_app/data/services/notification_service.dart';
+import 'package:recipe_app/db/db.dart';
 import 'package:recipe_app/main.dart';
 
 import '../data/repositories/recipe_repositrory.dart';
@@ -14,6 +15,7 @@ class HomeProvider extends ChangeNotifier {
   final notificationService = NotificationService();
   List<Recipe> recipeList = [];
   final recipeRepository = RecipeRepository();
+  final recipeDb = getIt<RecipeDatabase>();
 
   Future<void> getRecipes() async {
     isLoading = true;

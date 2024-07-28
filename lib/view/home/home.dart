@@ -1,13 +1,67 @@
-import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:recipe_app/core/constants/colors.dart';
 import 'package:recipe_app/core/constants/image.dart';
+import 'package:recipe_app/view/saved_recipe/saved_recipe.dart';
 
 import 'package:recipe_app/view_models/home_provider.dart';
 
 import 'widget/widget.dart';
+
+class HomeNavigation extends StatefulWidget {
+  const HomeNavigation({super.key});
+
+  @override
+  State<HomeNavigation> createState() => _HomeNavigationState();
+}
+
+class _HomeNavigationState extends State<HomeNavigation> {
+  int _selectedIndex = 0;
+  final List<Widget> _screens = [
+    const HomeScreen(),
+    const SavedRecipe(),
+    const Screens(
+      title: "Notifications",
+    ),
+    const Screens(
+      title: "Profile",
+    ),
+    const Screens(
+      title: "Settings",
+    ),
+  ];
+
+  final List<BottomNavigationBarItem> _bottomNavigationBarItems = [
+    const BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
+    const BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: ''),
+    const BottomNavigationBarItem(icon: Icon(Icons.notifications), label: ''),
+    const BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
+    const BottomNavigationBarItem(icon: Icon(Icons.settings), label: ''),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        items: _bottomNavigationBarItems,
+        backgroundColor: ColorPalette.primary,
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: ColorPalette.white,
+        unselectedItemColor: Colors.black,
+      ),
+    );
+  }
+}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,9 +80,24 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
+  double calculateAspectRatio(double width, double height,
+      {double min = 0.7, double max = .71}) {
+    double result = (width / 2) / (width / 2 * 1.5);
+    // double minValue = min;
+    // double maxValue = max;
+
+    // if (result < minValue) {
+    //   result = minValue;
+    // } else if (result > maxValue) {
+    //   result = maxValue;
+    // }
+
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    // var size = MediaQuery.of(context).size;
     return SafeArea(
       top: true,
       child: Consumer<HomeProvider>(
@@ -139,29 +208,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ],
                                       ),
                                     )
-                                  : SliverGrid(
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 2,
-                                              crossAxisSpacing: 15.0,
-                                              mainAxisSpacing: 15.0,
-                                              childAspectRatio: min(
-                                                  (size.width /
-                                                      (size.height / 1.68)),
-                                                  0.6)),
-                                      delegate: SliverChildBuilderDelegate(
-                                        (context, index) {
-                                          var recipe = homeProvider
-                                              .filteredRecipeList[index];
-                                          return GridTile(
-                                            child: RecipeCard(recipe: recipe),
-                                          );
-                                        },
-                                        childCount: homeProvider
-                                            .filteredRecipeList.length,
-                                      ),
-                                    ),
-                            )
+                                  : SliverList.builder(
+                                      itemCount: homeProvider
+                                          .filteredRecipeList.length,
+                                      itemBuilder: (_, i) {
+                                        var recipe =
+                                            homeProvider.filteredRecipeList[i];
+                                        return RecipeCard(recipe: recipe);
+                                      }))
                           : SliverPadding(
                               padding: const EdgeInsets.all(10),
                               sliver: homeProvider.recipeList.isEmpty
@@ -187,35 +241,37 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ],
                                       ),
                                     )
-                                  : SliverGrid(
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 2,
-                                              crossAxisSpacing: 15.0,
-                                              mainAxisSpacing: 15.0,
-                                              childAspectRatio: min(
-                                                (size.width /
-                                                    (size.height / 1.68)),
-                                                0.7,
-                                              )),
-                                      delegate: SliverChildBuilderDelegate(
-                                        (context, index) {
-                                          var recipe =
-                                              homeProvider.recipeList[index];
-                                          return GridTile(
-                                            child: RecipeCard(recipe: recipe),
-                                          );
-                                        },
-                                        childCount:
-                                            homeProvider.recipeList.length,
-                                      ),
-                                    ),
-                            ),
+                                  : SliverList.builder(
+                                      itemCount: homeProvider.recipeList.length,
+                                      itemBuilder: (_, i) {
+                                        var recipe = homeProvider.recipeList[i];
+                                        return GridTile(
+                                          child: RecipeCard(recipe: recipe),
+                                        );
+                                      },
+                                    )),
                 ],
               ),
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class Screens extends StatelessWidget {
+  final String title;
+  const Screens({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text(
+          title,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
       ),
     );
   }

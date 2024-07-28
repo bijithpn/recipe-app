@@ -52,7 +52,10 @@ class ImageWidget extends StatelessWidget {
           Container(
             width: width,
             height: height,
-            color: Colors.grey.shade300,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.grey.shade300,
+            ),
             child: const Icon(Icons.error_outline),
           ),
     );

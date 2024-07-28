@@ -26,6 +26,7 @@ class NotificationService {
       duration: duration,
       behavior: behavior,
     );
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 

@@ -175,6 +175,12 @@ class ApiClient {
     Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
       _isNetworkAvailable = result != ConnectivityResult.none;
       if (_isNetworkAvailable) {
+        Future.delayed(Duration.zero, () {
+          if (navigatorKey.currentContext != null) {
+            ScaffoldMessenger.of(navigatorKey.currentContext!)
+                .hideCurrentSnackBar();
+          }
+        });
         _processRequestQueue();
       }
     });

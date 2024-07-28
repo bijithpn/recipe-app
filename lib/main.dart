@@ -3,10 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'package:recipe_app/core/constants/colors.dart';
 import 'package:recipe_app/data/services/api_service.dart';
+import 'package:recipe_app/db/db.dart';
+import 'package:recipe_app/db/model/recipe.dart';
 import 'package:recipe_app/view_models/details_provider.dart';
 import 'package:recipe_app/view_models/home_provider.dart';
 
@@ -19,6 +23,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
   initializeClient();
+  final appDocumentDir = await getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDir.path);
+  Hive.registerAdapter(RecipeDBAdapter());
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -28,6 +35,7 @@ Future<void> main() async {
 
 initializeClient() async {
   final apiClient = ApiClient();
+  getIt.registerSingleton<RecipeDatabase>(RecipeDatabase.instance);
   getIt.registerSingleton<ApiClient>(apiClient);
 }
 

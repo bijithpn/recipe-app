@@ -1,28 +1,63 @@
+import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'recipe.g.dart';
 
+@HiveType(typeId: 0)
 @JsonSerializable()
-class Recipe {
+class RecipeDB {
+  @HiveField(0)
   final bool? vegetarian;
+
+  @HiveField(1)
   final int? preparationMinutes;
+
+  @HiveField(2)
   final int? cookingMinutes;
+
+  @HiveField(3)
   final int? aggregateLikes;
+
+  @HiveField(4)
   final int? healthScore;
+
+  @HiveField(5)
   final double? pricePerServing;
+
+  @HiveField(6)
   final int id;
+
+  @HiveField(7)
   final String title;
+
+  @HiveField(8)
   final String sourceName;
+
+  @HiveField(9)
   final int? readyInMinutes;
+
+  @HiveField(10)
   final int? servings;
+
+  @HiveField(11)
   final String image;
+
+  @HiveField(12)
   final String? imageType;
+
+  @HiveField(13)
   final List<String>? dishTypes;
+
+  @HiveField(14)
   final int? usedIngredientCount;
+
+  @HiveField(15)
   final int? missedIngredientCount;
+
+  @HiveField(16)
   final int? likes;
 
-  Recipe({
+  RecipeDB({
     this.vegetarian,
     this.preparationMinutes,
     this.cookingMinutes,
@@ -42,20 +77,7 @@ class Recipe {
     this.likes = 0,
   });
 
-  factory Recipe.fromJson(Map<String, dynamic> json) => _$RecipeFromJson(json);
-  Map<String, dynamic> toJson() => _$RecipeToJson(this);
-
-  String get imageTypeOrDefault => imageType ?? 'Not provided';
-  int get preparationMinutesOrDefault => preparationMinutes ?? 0;
-  int get cookingMinutesOrDefault => cookingMinutes ?? 0;
-  int get aggregateLikesOrDefault => aggregateLikes ?? 0;
-  int get healthScoreOrDefault => healthScore ?? 0;
-  double get pricePerServingOrDefault => pricePerServing ?? 0.0;
-  int get readyInMinutesOrDefault => readyInMinutes ?? 0;
-  int get servingsOrDefault => servings ?? 0;
-  List<String> get dishTypesOrDefault => dishTypes ?? [];
-  int get usedIngredientCountOrDefault => usedIngredientCount ?? 0;
-  int get missedIngredientCountOrDefault => missedIngredientCount ?? 0;
-  bool get vegetarianOrDefault => vegetarian ?? false;
-  int get likesOrDefault => likes ?? 0;
+  factory RecipeDB.fromJson(Map<String, dynamic> json) =>
+      _$RecipeDBFromJson(json);
+  Map<String, dynamic> toJson() => _$RecipeDBToJson(this);
 }
