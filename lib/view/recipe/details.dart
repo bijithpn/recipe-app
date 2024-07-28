@@ -4,8 +4,10 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:provider/provider.dart';
 import 'package:recipe_app/core/constants/colors.dart';
 import 'package:recipe_app/core/constants/image.dart';
+import 'package:recipe_app/db/model/recipe.dart';
 import 'package:recipe_app/view_models/details_provider.dart';
 
+import '../../data/services/notification_service.dart';
 import '../../widgets/widgets.dart';
 import 'widget/widget.dart';
 
@@ -23,10 +25,16 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final provider = Provider.of<DetailsProvider>(context, listen: false);
+      provider.recipeDb
+          .recipeExists(int.parse(widget.recipeId))
+          .then((value) => isSaved = value);
       provider.getDetails(widget.recipeId);
     });
     super.initState();
   }
+
+  final notificationService = NotificationService();
+  bool isSaved = false;
 
   String editSummary(String summary) {
     const String targetPhrase = "liked this recipe";
@@ -146,10 +154,44 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                                 backgroundColor: Colors.white,
                               ),
                               icon: Icon(
-                                Icons.bookmark_outline,
+                                isSaved
+                                    ? Icons.bookmark
+                                    : Icons.bookmark_outline,
                                 color: ColorPalette.primary,
                               ),
-                              onPressed: () {},
+                              onPressed: () async {
+                                try {
+                                  if (isSaved) {
+                                    await detailProvider.recipeDb.deleteRecipe(
+                                        int.parse(widget.recipeId));
+                                    if (context.mounted) {
+                                      notificationService.showSnackBar(
+                                          context: context,
+                                          message: "Recipe removed");
+                                    }
+                                  } else {
+                                    var json =
+                                        detailProvider.recipeDetail?.toJson();
+                                    await detailProvider.recipeDb
+                                        .addOrUpdateRecipe(
+                                            RecipeDB.fromJson(json ?? {}));
+                                    if (context.mounted) {
+                                      notificationService.showSnackBar(
+                                          context: context,
+                                          message: "Recipe added");
+                                    }
+                                  }
+                                  isSaved = await detailProvider.recipeDb
+                                      .recipeExists(int.parse(widget.recipeId));
+                                } catch (error) {
+                                  if (context.mounted) {
+                                    notificationService.showSnackBar(
+                                        context: context,
+                                        message: error.toString());
+                                  }
+                                }
+                                setState(() {});
+                              },
                             ),
                           ],
                           flexibleSpace: FlexibleSpaceBar(
