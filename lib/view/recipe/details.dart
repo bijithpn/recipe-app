@@ -375,6 +375,27 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                         ),
                       ],
                     ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: ElevatedButton.icon(
+              onPressed: () async {
+                await detailProvider.shareRecipe();
+              },
+              style: ElevatedButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  backgroundColor: ColorPalette.primary),
+              icon: const Icon(
+                Icons.share,
+                color: Colors.white,
+              ),
+              label: Text(
+                "Share Recipe",
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge!
+                    .copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+              )),
         ),
       );
     });
