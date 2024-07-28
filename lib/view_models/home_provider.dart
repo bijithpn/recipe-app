@@ -12,10 +12,12 @@ class HomeProvider extends ChangeNotifier {
   List<Recipe> filteredRecipeList = [];
   bool isLoading = false;
   bool isSearch = false;
+  List<String> dietTypes = [];
+  List<String> dishTypes = [];
   final notificationService = NotificationService();
+  final recipeDb = getIt<RecipeDatabase>();
   List<Recipe> recipeList = [];
   final recipeRepository = RecipeRepository();
-  final recipeDb = getIt<RecipeDatabase>();
 
   Future<void> getRecipes() async {
     isLoading = true;
@@ -23,6 +25,8 @@ class HomeProvider extends ChangeNotifier {
     try {
       final temp = await recipeRepository.getRecipes();
       temp.map((e) => recipeList.add(Recipe.fromJson(e))).toList();
+      dishTypes = _getDishTypes(recipeList);
+      dietTypes = _getDiets(recipeList);
       notifyListeners();
     } catch (error) {
       if (error is DioException) {
@@ -66,5 +70,19 @@ class HomeProvider extends ChangeNotifier {
     isSearch = false;
     filteredRecipeList.clear();
     notifyListeners();
+  }
+
+  List<String> _getDishTypes(List<Recipe> recipes) {
+    return recipes
+        .expand((recipe) => recipe.dishTypes ?? <String>[])
+        .toSet()
+        .toList();
+  }
+
+  List<String> _getDiets(List<Recipe> recipes) {
+    return recipes
+        .expand((recipe) => recipe.diets ?? <String>[])
+        .toSet()
+        .toList();
   }
 }

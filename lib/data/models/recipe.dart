@@ -18,6 +18,7 @@ class Recipe {
   final String image;
   final String? imageType;
   final List<String>? dishTypes;
+  final List<String>? diets;
   final int? usedIngredientCount;
   final int? missedIngredientCount;
   final int? likes;
@@ -37,6 +38,7 @@ class Recipe {
     required this.image,
     this.imageType,
     this.dishTypes,
+    this.diets,
     this.usedIngredientCount,
     this.missedIngredientCount,
     this.likes = 0,
@@ -54,6 +56,7 @@ class Recipe {
   int get readyInMinutesOrDefault => readyInMinutes ?? 20;
   int get servingsOrDefault => servings ?? 3;
   List<String> get dishTypesOrDefault => dishTypes ?? [];
+  List<String> get dietsOrDefault => diets ?? [];
   int get usedIngredientCountOrDefault => usedIngredientCount ?? 0;
   int get missedIngredientCountOrDefault => missedIngredientCount ?? 0;
   bool get vegetarianOrDefault => vegetarian ?? false;

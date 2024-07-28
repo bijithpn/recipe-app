@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:recipe_app/core/constants/colors.dart';
 import 'package:recipe_app/view_models/home_provider.dart';
 
 class SearchWidget extends StatefulWidget {
-  const SearchWidget({super.key});
+  final List<String> diets;
+  final List<String> dishTypes;
+  const SearchWidget({
+    super.key,
+    required this.diets,
+    required this.dishTypes,
+  });
 
   @override
   State<SearchWidget> createState() => _SearchWidgetState();
@@ -42,7 +49,10 @@ class _SearchWidgetState extends State<SearchWidget> {
       showDragHandle: true,
       isScrollControlled: false,
       builder: (BuildContext context) {
-        return const FilterBottomSheet();
+        return FilterBottomSheet(
+          diets: widget.diets,
+          dishTypes: widget.dishTypes,
+        );
       },
     );
   }
@@ -57,7 +67,7 @@ class _SearchWidgetState extends State<SearchWidget> {
     _focusNode.unfocus();
   }
 
-  FocusNode _focusNode = FocusNode();
+  final FocusNode _focusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
@@ -151,7 +161,13 @@ class _SearchWidgetState extends State<SearchWidget> {
 }
 
 class FilterBottomSheet extends StatefulWidget {
-  const FilterBottomSheet({super.key});
+  final List<String> diets;
+  final List<String> dishTypes;
+  const FilterBottomSheet({
+    super.key,
+    required this.diets,
+    required this.dishTypes,
+  });
 
   @override
   State<FilterBottomSheet> createState() => _FilterBottomSheetState();
@@ -160,20 +176,6 @@ class FilterBottomSheet extends StatefulWidget {
 class _FilterBottomSheetState extends State<FilterBottomSheet> {
   List<String> selectedDishTypes = [];
   List<String> selectedDiets = [];
-
-  final List<Map<String, dynamic>> dishTypes = [
-    {"name": "Lunch", "icon": Icons.lunch_dining},
-    {"name": "Main Course", "icon": Icons.food_bank},
-    {"name": "Main Dish", "icon": Icons.restaurant_menu},
-    {"name": "Dinner", "icon": Icons.dinner_dining},
-  ];
-
-  final List<Map<String, dynamic>> diets = [
-    {"name": "Dairy Free", "icon": Icons.no_food},
-    {"name": "Gluten Free", "icon": Icons.free_breakfast},
-    {"name": "Vegetarian", "icon": Icons.egg},
-    {"name": "Vegan", "icon": Icons.nature_people},
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -200,7 +202,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 _buildFilterSection(
                   context,
                   title: 'Dish Types',
-                  items: dishTypes,
+                  items: widget.dishTypes,
                   selectedItems: selectedDishTypes,
                   onChanged: (value) {
                     setState(() {
@@ -216,7 +218,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 _buildFilterSection(
                   context,
                   title: 'Diets',
-                  items: diets,
+                  items: widget.diets,
                   selectedItems: selectedDiets,
                   onChanged: (value) {
                     setState(() {
@@ -274,7 +276,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   Widget _buildFilterSection(
     BuildContext context, {
     required String title,
-    required List<Map<String, dynamic>> items,
+    required List<String> items,
     required List<String> selectedItems,
     required void Function(String) onChanged,
   }) {
@@ -285,23 +287,31 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           title,
           style: Theme.of(context)
               .textTheme
-              .bodyLarge
+              .titleLarge
               ?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        Column(
+        Wrap(
           children: items.map((item) {
-            final isSelected = selectedItems.contains(item['name']);
-            return ListTile(
-              leading: Icon(item['icon'],
-                  color:
-                      isSelected ? ColorPalette.primary : Colors.grey.shade600),
-              title: Text(item['name']),
-              trailing: isSelected
-                  ? Icon(Icons.check_circle, color: ColorPalette.primary)
-                  : null,
-              onTap: () => onChanged(item['name']),
-              tileColor: null,
+            final isSelected = selectedItems.contains(item);
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+              child: InkWell(
+                onTap: () => onChanged(item),
+                child: Chip(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100)),
+                    color: isSelected
+                        ? WidgetStateProperty.all(ColorPalette.primary)
+                        : null,
+                    elevation: isSelected ? 3 : 0,
+                    label: Text(
+                      item,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color:
+                              isSelected ? Colors.white : ColorPalette.primary),
+                    )),
+              ),
             );
           }).toList(),
         ),

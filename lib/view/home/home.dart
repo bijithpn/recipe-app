@@ -5,6 +5,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:recipe_app/core/constants/colors.dart';
 import 'package:recipe_app/core/constants/image.dart';
 import 'package:recipe_app/core/constants/strings.dart';
+import 'package:recipe_app/test.dart';
 import 'package:recipe_app/view/saved_recipe/saved_recipe.dart';
 
 import 'package:recipe_app/view_models/home_provider.dart';
@@ -126,7 +127,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    print(size.width);
     return SafeArea(
       top: true,
       child: Consumer<HomeProvider>(
@@ -191,7 +191,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SearchWidget(),
+                          SearchWidget(
+                            diets: homeProvider.dietTypes,
+                            dishTypes: homeProvider.dishTypes,
+                          ),
                           const SizedBox(height: 16),
                           Text(
                             homeProvider.isSearch
