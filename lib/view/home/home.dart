@@ -194,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            homeProvider.isSearch
+                            homeProvider.homeState == HomeState.search
                                 ? "Search Results"
                                 : 'Recommendations',
                             style: Theme.of(context)
@@ -207,105 +207,146 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  homeProvider.isLoading
-                      ? const SliverFillRemaining(
-                          child: Center(child: CircularProgressIndicator()),
-                        )
-                      : homeProvider.isSearch
-                          ? SliverPadding(
-                              padding: const EdgeInsets.all(10),
-                              sliver: homeProvider.searchRecipeList.isEmpty
-                                  ? SliverToBoxAdapter(
-                                      child: Column(
-                                        children: [
-                                          Image.asset(
-                                            AssetsImages.emptyState,
-                                            height: 250,
-                                          ),
-                                          const SizedBox(height: 10),
-                                          Text(
-                                            AppStrings.noRecipe,
-                                            textAlign: TextAlign.center,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge!
-                                                .copyWith(
-                                                    letterSpacing: .6,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  : SliverGrid(
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        crossAxisSpacing: 15.0,
-                                        mainAxisSpacing: 15.0,
-                                        childAspectRatio:
-                                            size.width > 400 ? 0.66 : 0.6,
-                                      ),
-                                      delegate: SliverChildBuilderDelegate(
-                                        (context, index) {
-                                          var recipe = homeProvider
-                                              .searchRecipeList[index];
-                                          return GridTile(
-                                            child: RecipeCard(recipe: recipe),
-                                          );
-                                        },
-                                        childCount: homeProvider
-                                            .searchRecipeList.length,
-                                      ),
-                                    ),
+                  if (homeProvider.homeState == HomeState.isLoading)
+                    const SliverFillRemaining(
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  else if (homeProvider.homeState == HomeState.search)
+                    SliverPadding(
+                      padding: const EdgeInsets.all(10),
+                      sliver: homeProvider.searchRecipeList.isEmpty
+                          ? SliverToBoxAdapter(
+                              child: Column(
+                                children: [
+                                  Image.asset(
+                                    AssetsImages.emptyState,
+                                    height: 250,
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    AppStrings.noRecipe,
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .copyWith(
+                                            letterSpacing: .6,
+                                            fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ),
                             )
-                          : SliverPadding(
-                              padding: const EdgeInsets.all(10),
-                              sliver: homeProvider.recipeList.isEmpty
-                                  ? SliverToBoxAdapter(
-                                      child: Column(
-                                        children: [
-                                          Image.asset(
-                                            AssetsImages.emptyState,
-                                            height: 250,
-                                          ),
-                                          const SizedBox(height: 10),
-                                          Text(
-                                            AppStrings.noRecipe,
-                                            textAlign: TextAlign.center,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge!
-                                                .copyWith(
-                                                    letterSpacing: .6,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  : SliverGrid(
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        crossAxisSpacing: 15.0,
-                                        mainAxisSpacing: 15.0,
-                                        childAspectRatio:
-                                            size.width > 400 ? 0.77 : 0.7,
-                                      ),
-                                      delegate: SliverChildBuilderDelegate(
-                                        (context, index) {
-                                          var recipe =
-                                              homeProvider.recipeList[index];
-                                          return GridTile(
-                                            child: RecipeCard(recipe: recipe),
-                                          );
-                                        },
-                                        childCount:
-                                            homeProvider.recipeList.length,
-                                      ),
-                                    ),
+                          : SliverGrid(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 15.0,
+                                mainAxisSpacing: 15.0,
+                                childAspectRatio: size.width > 400 ? 0.66 : 0.6,
+                              ),
+                              delegate: SliverChildBuilderDelegate(
+                                (context, index) {
+                                  var recipe =
+                                      homeProvider.searchRecipeList[index];
+                                  return GridTile(
+                                    child: RecipeCard(recipe: recipe),
+                                  );
+                                },
+                                childCount:
+                                    homeProvider.searchRecipeList.length,
+                              ),
                             ),
+                    )
+                  else if (homeProvider.homeState == HomeState.home)
+                    SliverPadding(
+                      padding: const EdgeInsets.all(10),
+                      sliver: homeProvider.recipeList.isEmpty
+                          ? SliverToBoxAdapter(
+                              child: Column(
+                                children: [
+                                  Image.asset(
+                                    AssetsImages.emptyState,
+                                    height: 250,
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    AppStrings.noRecipe,
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .copyWith(
+                                            letterSpacing: .6,
+                                            fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ),
+                            )
+                          : SliverGrid(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 15.0,
+                                mainAxisSpacing: 15.0,
+                                childAspectRatio: size.width > 400 ? 0.77 : 0.7,
+                              ),
+                              delegate: SliverChildBuilderDelegate(
+                                (context, index) {
+                                  var recipe = homeProvider.recipeList[index];
+                                  return GridTile(
+                                    child: RecipeCard(recipe: recipe),
+                                  );
+                                },
+                                childCount: homeProvider.recipeList.length,
+                              ),
+                            ),
+                    )
+                  else if (homeProvider.homeState == HomeState.filter)
+                    SliverPadding(
+                      padding: const EdgeInsets.all(10),
+                      sliver: homeProvider.filteredRecipeList.isEmpty
+                          ? SliverToBoxAdapter(
+                              child: Column(
+                                children: [
+                                  Image.asset(
+                                    AssetsImages.emptyState,
+                                    height: 250,
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    AppStrings.noRecipe,
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .copyWith(
+                                            letterSpacing: .6,
+                                            fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ),
+                            )
+                          : SliverGrid(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 15.0,
+                                mainAxisSpacing: 15.0,
+                                childAspectRatio: size.width > 400 ? 0.77 : 0.7,
+                              ),
+                              delegate: SliverChildBuilderDelegate(
+                                (context, index) {
+                                  var recipe =
+                                      homeProvider.filteredRecipeList[index];
+                                  return GridTile(
+                                    child: RecipeCard(recipe: recipe),
+                                  );
+                                },
+                                childCount:
+                                    homeProvider.filteredRecipeList.length,
+                              ),
+                            ),
+                    ),
                 ],
               ),
             ),

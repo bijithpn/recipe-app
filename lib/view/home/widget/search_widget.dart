@@ -82,7 +82,7 @@ class _SearchWidgetState extends State<SearchWidget> {
         barHintText: "Search you recipe....",
         barLeading: Icon(Icons.search, color: ColorPalette.primary),
         barTrailing: [
-          if (homeProvider.isSearch)
+          if (homeProvider.homeState == HomeState.search)
             IconButton(
               onPressed: () {
                 _searchController.clear();
@@ -174,11 +174,9 @@ class FilterBottomSheet extends StatefulWidget {
 }
 
 class _FilterBottomSheetState extends State<FilterBottomSheet> {
-  List<String> selectedDishTypes = [];
-  List<String> selectedDiets = [];
-
   @override
   Widget build(BuildContext context) {
+    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
       child: Column(
@@ -203,13 +201,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   context,
                   title: 'Dish Types',
                   items: widget.dishTypes,
-                  selectedItems: selectedDishTypes,
+                  selectedItems: homeProvider.selectedDishTypes,
                   onChanged: (value) {
                     setState(() {
-                      if (selectedDishTypes.contains(value)) {
-                        selectedDishTypes.remove(value);
+                      if (homeProvider.selectedDishTypes.contains(value)) {
+                        homeProvider.selectedDishTypes.remove(value);
                       } else {
-                        selectedDishTypes.add(value);
+                        homeProvider.selectedDishTypes.add(value);
                       }
                     });
                   },
@@ -219,13 +217,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   context,
                   title: 'Diets',
                   items: widget.diets,
-                  selectedItems: selectedDiets,
+                  selectedItems: homeProvider.selectedDiets,
                   onChanged: (value) {
                     setState(() {
-                      if (selectedDiets.contains(value)) {
-                        selectedDiets.remove(value);
+                      if (homeProvider.selectedDiets.contains(value)) {
+                        homeProvider.selectedDiets.remove(value);
                       } else {
-                        selectedDiets.add(value);
+                        homeProvider.selectedDiets.add(value);
                       }
                     });
                   },
@@ -242,6 +240,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   backgroundColor: ColorPalette.primary,
                 ),
                 onPressed: () {
+                  homeProvider.filterRecipes(homeProvider.selectedDishTypes,
+                      homeProvider.selectedDiets);
                   Navigator.pop(context);
                 },
                 child: Text(
@@ -255,10 +255,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   backgroundColor: ColorPalette.primary,
                 ),
                 onPressed: () {
-                  setState(() {
-                    selectedDishTypes.clear();
-                    selectedDiets.clear();
-                  });
+                  homeProvider.clearFilterData();
+                  Navigator.pop(context);
                 },
                 child: Text(
                   'Reset',

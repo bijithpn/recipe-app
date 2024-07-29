@@ -6,20 +6,23 @@ import '../core/core.dart';
 import '../data/data.dart';
 import '../db/db.dart';
 
+enum HomeState { search, home, filter, isLoading, isError }
+
 class HomeProvider extends ChangeNotifier {
-  List<Recipe> filteredRecipeList = [];
-  List<Recipe> searchRecipeList = [];
-  bool isLoading = false;
-  bool isSearch = false;
   List<String> dietTypes = [];
   List<String> dishTypes = [];
+  List<Recipe> filteredRecipeList = [];
+  HomeState homeState = HomeState.isLoading;
   final notificationService = NotificationService();
   final recipeDb = getIt<RecipeDatabase>();
   List<Recipe> recipeList = [];
   final recipeRepository = RecipeRepository();
+  List<Recipe> searchRecipeList = [];
+  List<String> selectedDiets = [];
+  List<String> selectedDishTypes = [];
 
   Future<void> getRecipes() async {
-    isLoading = true;
+    homeState = HomeState.isLoading;
     notifyListeners();
     try {
       final temp = await recipeRepository.getRecipes();
@@ -37,14 +40,13 @@ class HomeProvider extends ChangeNotifier {
             context: navigatorKey.currentContext!, message: error.toString());
       }
     } finally {
-      isLoading = false;
+      homeState = HomeState.home;
       notifyListeners();
     }
   }
 
   Future<void> searchRecipe(String ingredients) async {
-    isLoading = true;
-    isSearch = true;
+    homeState = HomeState.isLoading;
     notifyListeners();
     try {
       final temp = await recipeRepository.searchByIngredients(ingredients);
@@ -60,14 +62,35 @@ class HomeProvider extends ChangeNotifier {
             context: navigatorKey.currentContext!, message: error.toString());
       }
     } finally {
-      isLoading = false;
+      homeState = HomeState.search;
       notifyListeners();
     }
   }
 
   void clearSearchData() {
-    isSearch = false;
+    homeState = HomeState.home;
     searchRecipeList.clear();
+    notifyListeners();
+  }
+
+  void clearFilterData() {
+    selectedDishTypes.clear();
+    selectedDiets.clear();
+    homeState = HomeState.home;
+    filteredRecipeList.clear();
+    notifyListeners();
+  }
+
+  void filterRecipes(
+      List<String> selectedDishTypes, List<String> selectedDiets) {
+    homeState = HomeState.filter;
+    filteredRecipeList = recipeList.where((recipe) {
+      final matchesDishType = selectedDishTypes.isEmpty ||
+          recipe.dishTypes!.any(selectedDishTypes.contains);
+      final matchesDiet =
+          selectedDiets.isEmpty || recipe.diets!.any(selectedDiets.contains);
+      return matchesDishType && matchesDiet;
+    }).toList();
     notifyListeners();
   }
 
@@ -83,16 +106,5 @@ class HomeProvider extends ChangeNotifier {
         .expand((recipe) => recipe.diets ?? <String>[])
         .toSet()
         .toList();
-  }
-
-  void filterRecipes(
-      List<String> selectedDishTypes, List<String> selectedDiets) {
-    filteredRecipeList = recipeList.where((recipe) {
-      final matchesDishType = selectedDishTypes.isEmpty ||
-          recipe.dishTypes!.any(selectedDishTypes.contains);
-      final matchesDiet =
-          selectedDiets.isEmpty || recipe.diets!.any(selectedDiets.contains);
-      return matchesDishType && matchesDiet;
-    }).toList();
   }
 }
