@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/image.dart';
-import '../../core/constants/strings.dart';
-import '../../db/db.dart';
-import '../../db/model/recipe.dart';
 import '../../main.dart';
+import '../../core/core.dart';
+import '../../db/db.dart';
 import 'widgets/saved_recipe_card.dart';
 
 class SavedRecipe extends StatefulWidget {

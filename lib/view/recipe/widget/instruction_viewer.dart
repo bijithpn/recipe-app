@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/colors.dart';
-import '../../../core/constants/image.dart';
-import '../../../data/models/details.dart';
 
+import '../../../core/core.dart';
+import '../../../data/data.dart';
 import '../../../widgets/widgets.dart';
 
 class InstructionViewer extends StatelessWidget {

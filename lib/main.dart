@@ -7,14 +7,10 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'core/constants/colors.dart';
-import 'data/services/api_service.dart';
+import 'core/core.dart';
+import 'data/data.dart';
 import 'db/db.dart';
-import 'db/model/recipe.dart';
-import 'view_models/details_provider.dart';
-import 'view_models/home_provider.dart';
-
-import 'core/routes/routes.dart';
+import 'view_models/view_models.dart';
 
 final getIt = GetIt.instance;
 final navigatorKey = GlobalKey<NavigatorState>();

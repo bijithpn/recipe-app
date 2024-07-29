@@ -3,16 +3,15 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/foundation.dart';
-import '../core/constants/strings.dart';
-import '../data/models/details.dart';
-import '../data/repositories/recipe_repositrory.dart';
-import '../data/services/notification_service.dart';
-import '../db/db.dart';
-import '../main.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
-import '../utils/utils.dart';
+import '../main.dart';
 import 'package:share_plus/share_plus.dart';
+
+import '../core/core.dart';
+import '../data/data.dart';
+import '../db/db.dart';
+import '../utils/utils.dart';
 
 class DetailsProvider extends ChangeNotifier {
   RecipeDetail? recipeDetail;
@@ -51,7 +50,7 @@ class DetailsProvider extends ChangeNotifier {
         final imageFile = File(imagePath);
         imageFile.writeAsBytesSync(imageResponse.bodyBytes);
         String recipeDetails = 'Recipe: ${recipeDetail!.title}\n\n'
-            'Instructions:\n${removeHtmlTags(recipeDetail!.instructions)}\n\n'
+            'Instructions:\n${Utils.removeHtmlTags(recipeDetail!.instructions)}\n\n'
             'Steps:\n';
         for (var instruction in recipeDetail!.analyzedInstructions) {
           for (var step in instruction.steps) {

@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:provider/provider.dart';
-import '../../core/constants/colors.dart';
-import '../../core/constants/image.dart';
-import '../../db/model/recipe.dart';
-import '../../view_models/details_provider.dart';
 
-import '../../data/services/notification_service.dart';
+import '../../core/core.dart';
+import '../../data/data.dart';
+import '../../db/db.dart';
+import '../../view_models/view_models.dart';
 import '../../widgets/widgets.dart';
 import 'widget/widget.dart';
 

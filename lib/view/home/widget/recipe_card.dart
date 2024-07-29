@@ -1,13 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../core/constants/colors.dart';
-import '../../../core/constants/image.dart';
-import '../../../data/models/recipe.dart';
-import '../../../data/services/notification_service.dart';
-import '../../../db/model/recipe.dart';
-import '../../../view_models/home_provider.dart';
 
+import '../../../core/core.dart';
+import '../../../data/data.dart';
+import '../../../db/db.dart';
+import '../../../view_models/view_models.dart';
 import 'widget.dart';
 
 class RecipeCard extends StatefulWidget {

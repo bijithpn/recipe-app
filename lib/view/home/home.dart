@@ -2,13 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import '../../core/constants/colors.dart';
-import '../../core/constants/image.dart';
-import '../../core/constants/strings.dart';
-import '../saved_recipe/saved_recipe.dart';
 
+import '../../core/core.dart';
 import '../../view_models/home_provider.dart';
 
+import '../saved_recipe/saved_recipe.dart';
 import 'widget/widget.dart';
 
 class HomeNavigation extends StatefulWidget {
@@ -216,7 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       : homeProvider.isSearch
                           ? SliverPadding(
                               padding: const EdgeInsets.all(10),
-                              sliver: homeProvider.filteredRecipeList.isEmpty
+                              sliver: homeProvider.searchRecipeList.isEmpty
                                   ? SliverToBoxAdapter(
                                       child: Column(
                                         children: [
@@ -251,13 +249,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                       delegate: SliverChildBuilderDelegate(
                                         (context, index) {
                                           var recipe = homeProvider
-                                              .filteredRecipeList[index];
+                                              .searchRecipeList[index];
                                           return GridTile(
                                             child: RecipeCard(recipe: recipe),
                                           );
                                         },
                                         childCount: homeProvider
-                                            .filteredRecipeList.length,
+                                            .searchRecipeList.length,
                                       ),
                                     ),
                             )

@@ -1,15 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import '../core/constants/strings.dart';
-import '../data/models/recipe.dart';
-import '../data/services/notification_service.dart';
-import '../db/db.dart';
 import '../main.dart';
 
-import '../data/repositories/recipe_repositrory.dart';
+import '../core/core.dart';
+import '../data/data.dart';
+import '../db/db.dart';
 
 class HomeProvider extends ChangeNotifier {
   List<Recipe> filteredRecipeList = [];
+  List<Recipe> searchRecipeList = [];
   bool isLoading = false;
   bool isSearch = false;
   List<String> dietTypes = [];
@@ -49,7 +48,7 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
     try {
       final temp = await recipeRepository.searchByIngredients(ingredients);
-      temp.map((e) => filteredRecipeList.add(Recipe.fromJson(e))).toList();
+      temp.map((e) => searchRecipeList.add(Recipe.fromJson(e))).toList();
       notifyListeners();
     } catch (error) {
       if (error is DioException) {
@@ -68,7 +67,7 @@ class HomeProvider extends ChangeNotifier {
 
   void clearSearchData() {
     isSearch = false;
-    filteredRecipeList.clear();
+    searchRecipeList.clear();
     notifyListeners();
   }
 
@@ -84,5 +83,16 @@ class HomeProvider extends ChangeNotifier {
         .expand((recipe) => recipe.diets ?? <String>[])
         .toSet()
         .toList();
+  }
+
+  void filterRecipes(
+      List<String> selectedDishTypes, List<String> selectedDiets) {
+    filteredRecipeList = recipeList.where((recipe) {
+      final matchesDishType = selectedDishTypes.isEmpty ||
+          recipe.dishTypes!.any(selectedDishTypes.contains);
+      final matchesDiet =
+          selectedDiets.isEmpty || recipe.diets!.any(selectedDiets.contains);
+      return matchesDishType && matchesDiet;
+    }).toList();
   }
 }
