@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:recipe_app/core/constants/image.dart';
-import 'package:recipe_app/core/constants/strings.dart';
-import 'package:recipe_app/db/db.dart';
-import 'package:recipe_app/db/model/recipe.dart';
-import 'package:recipe_app/main.dart';
-import 'package:recipe_app/view/saved_recipe/widgets/saved_recipe_card.dart';
+import '../../core/constants/image.dart';
+import '../../core/constants/strings.dart';
+import '../../db/db.dart';
+import '../../db/model/recipe.dart';
+import '../../main.dart';
+import 'widgets/saved_recipe_card.dart';
 
 class SavedRecipe extends StatefulWidget {
   const SavedRecipe({super.key});

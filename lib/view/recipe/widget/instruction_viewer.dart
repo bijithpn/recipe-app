@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:recipe_app/core/constants/colors.dart';
-import 'package:recipe_app/core/constants/image.dart';
-import 'package:recipe_app/data/models/details.dart';
+import '../../../core/constants/colors.dart';
+import '../../../core/constants/image.dart';
+import '../../../data/models/details.dart';
 
 import '../../../widgets/widgets.dart';
 

@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:recipe_app/core/constants/api_config.dart';
-import 'package:recipe_app/core/constants/colors.dart';
-import 'package:recipe_app/core/constants/strings.dart';
-import 'package:recipe_app/data/services/notification_service.dart';
-import 'package:recipe_app/main.dart';
+import '../../core/constants/api_config.dart';
+import '../../core/constants/colors.dart';
+import '../../core/constants/strings.dart';
+import 'notification_service.dart';
+import '../../main.dart';
 
 class ApiClient {
   static final ApiClient _singleton = ApiClient._internal();

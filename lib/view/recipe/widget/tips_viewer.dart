@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:recipe_app/data/models/details.dart';
+import '../../../data/models/details.dart';
 
 class CookingTipsScreen extends StatelessWidget {
   final Tips tips;

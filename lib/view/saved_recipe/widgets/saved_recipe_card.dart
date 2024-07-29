@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:recipe_app/core/constants/colors.dart';
-import 'package:recipe_app/core/constants/image.dart';
-import 'package:recipe_app/data/services/notification_service.dart';
-import 'package:recipe_app/db/model/recipe.dart';
-import 'package:recipe_app/view_models/home_provider.dart';
+import '../../../core/constants/colors.dart';
+import '../../../core/constants/image.dart';
+import '../../../data/services/notification_service.dart';
+import '../../../db/model/recipe.dart';
+import '../../../view_models/home_provider.dart';
 
 import '../../view.dart';
 

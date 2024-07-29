@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:recipe_app/core/constants/strings.dart';
-import 'package:recipe_app/data/models/recipe.dart';
-import 'package:recipe_app/data/services/notification_service.dart';
-import 'package:recipe_app/db/db.dart';
-import 'package:recipe_app/main.dart';
+import '../core/constants/strings.dart';
+import '../data/models/recipe.dart';
+import '../data/services/notification_service.dart';
+import '../db/db.dart';
+import '../main.dart';
 
 import '../data/repositories/recipe_repositrory.dart';
 

@@ -3,15 +3,15 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/foundation.dart';
-import 'package:recipe_app/core/constants/strings.dart';
-import 'package:recipe_app/data/models/details.dart';
-import 'package:recipe_app/data/repositories/recipe_repositrory.dart';
-import 'package:recipe_app/data/services/notification_service.dart';
-import 'package:recipe_app/db/db.dart';
-import 'package:recipe_app/main.dart';
+import '../core/constants/strings.dart';
+import '../data/models/details.dart';
+import '../data/repositories/recipe_repositrory.dart';
+import '../data/services/notification_service.dart';
+import '../db/db.dart';
+import '../main.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
-import 'package:recipe_app/utils/utils.dart';
+import '../utils/utils.dart';
 import 'package:share_plus/share_plus.dart';
 
 class DetailsProvider extends ChangeNotifier {

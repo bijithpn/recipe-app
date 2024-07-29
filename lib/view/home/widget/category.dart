@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:recipe_app/core/constants/colors.dart';
+import '../../../core/constants/colors.dart';
 
 class CategoryCard extends StatelessWidget {
   final String name;

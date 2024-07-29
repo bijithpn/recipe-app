@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:recipe_app/core/constants/colors.dart';
-import 'package:recipe_app/view_models/home_provider.dart';
+import '../../../core/constants/colors.dart';
+import '../../../view_models/home_provider.dart';
 
 class SearchWidget extends StatefulWidget {
   final List<String> diets;

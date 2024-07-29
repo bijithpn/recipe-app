@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:recipe_app/core/constants/colors.dart';
+import '../../core/constants/colors.dart';
 
 class NotificationService {
   factory NotificationService() {

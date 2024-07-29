@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:provider/provider.dart';
-import 'package:recipe_app/core/constants/colors.dart';
-import 'package:recipe_app/core/constants/image.dart';
-import 'package:recipe_app/db/model/recipe.dart';
-import 'package:recipe_app/view_models/details_provider.dart';
+import '../../core/constants/colors.dart';
+import '../../core/constants/image.dart';
+import '../../db/model/recipe.dart';
+import '../../view_models/details_provider.dart';
 
 import '../../data/services/notification_service.dart';
 import '../../widgets/widgets.dart';

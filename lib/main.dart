@@ -7,12 +7,12 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'package:recipe_app/core/constants/colors.dart';
-import 'package:recipe_app/data/services/api_service.dart';
-import 'package:recipe_app/db/db.dart';
-import 'package:recipe_app/db/model/recipe.dart';
-import 'package:recipe_app/view_models/details_provider.dart';
-import 'package:recipe_app/view_models/home_provider.dart';
+import 'core/constants/colors.dart';
+import 'data/services/api_service.dart';
+import 'db/db.dart';
+import 'db/model/recipe.dart';
+import 'view_models/details_provider.dart';
+import 'view_models/home_provider.dart';
 
 import 'core/routes/routes.dart';
 
