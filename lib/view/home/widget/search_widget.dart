@@ -86,6 +86,7 @@ class _SearchWidgetState extends State<SearchWidget> {
           if (homeProvider.homeState == HomeState.search)
             IconButton(
               onPressed: () {
+                _dismissKeyboard();
                 _searchController.clear();
                 homeProvider.clearSearchData();
               },
@@ -93,6 +94,7 @@ class _SearchWidgetState extends State<SearchWidget> {
             ),
           IconButton(
             onPressed: () {
+              _dismissKeyboard();
               showFilterBottomSheet(context);
             },
             icon: Icon(Icons.tune, color: ColorPalette.primary),
