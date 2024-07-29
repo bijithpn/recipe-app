@@ -74,6 +74,7 @@ class _SearchWidgetState extends State<SearchWidget> {
     return Focus(
       autofocus: false,
       focusNode: _focusNode,
+      canRequestFocus: false,
       child: SearchAnchor.bar(
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.done,

@@ -62,22 +62,26 @@ class _SavedRecipeState extends State<SavedRecipe> {
                     ),
                   ),
                 ))
-              : SliverGrid(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 15.0,
-                    mainAxisSpacing: 15.0,
-                    childAspectRatio: size.width > 400 ? 0.77 : 0.7,
+              : SliverPadding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  sliver: SliverGrid(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 15.0,
+                      mainAxisSpacing: 15.0,
+                      childAspectRatio: size.width > 400 ? 0.75 : 0.7,
+                    ),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      var recipe = savedRecipe[index];
+                      return GridTile(
+                        child: SavedRecipeCard(
+                          recipe: recipe,
+                          callBack: () => getSavedList(),
+                        ),
+                      );
+                    }, childCount: savedRecipe.length),
                   ),
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    var recipe = savedRecipe[index];
-                    return GridTile(
-                      child: SavedRecipeCard(
-                        recipe: recipe,
-                        callBack: () => getSavedList(),
-                      ),
-                    );
-                  }, childCount: savedRecipe.length),
                 ),
         ]),
       ),
