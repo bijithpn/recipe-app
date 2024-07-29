@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:provider/provider.dart';
+import 'package:recipe_app/utils/utils.dart';
 
 import '../../core/core.dart';
 import '../../data/data.dart';
@@ -34,20 +36,7 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
 
   final notificationService = NotificationService();
   bool isSaved = false;
-
-  String editSummary(String summary) {
-    const String targetPhrase = "liked this recipe";
-    int targetIndex = summary.indexOf(targetPhrase);
-    String processedHtmlData;
-    if (targetIndex != -1) {
-      processedHtmlData = summary.substring(0, targetIndex);
-    } else {
-      processedHtmlData = summary;
-    }
-    return processedHtmlData;
-  }
-
-  double _scrollOffset = 0;
+  ValueNotifier<double> scrollOffset = ValueNotifier(0.0);
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -58,9 +47,7 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
       return NotificationListener<ScrollNotification>(
         onNotification: (scrollNotification) {
           if (scrollNotification is ScrollUpdateNotification) {
-            setState(() {
-              _scrollOffset = scrollNotification.metrics.pixels;
-            });
+            scrollOffset.value = scrollNotification.metrics.pixels;
           }
           return true;
         },
@@ -195,14 +182,19 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                           ],
                           flexibleSpace: FlexibleSpaceBar(
                             collapseMode: CollapseMode.pin,
-                            title: _scrollOffset > 165
-                                ? Text(
-                                    detailProvider.recipeDetail?.title ??
-                                        "test",
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                  )
-                                : null,
+                            title: ValueListenableBuilder(
+                              valueListenable: scrollOffset,
+                              builder: (_, value, child) {
+                                if (value > 165) {
+                                  return child!;
+                                }
+                                return const SizedBox();
+                              },
+                              child: Text(
+                                detailProvider.recipeDetail?.title ?? "test",
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ),
                             background: Stack(
                               fit: StackFit.expand,
                               children: [
@@ -282,7 +274,7 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                                             )),
                                     const SizedBox(height: 4),
                                     HtmlWidget(
-                                      editSummary(
+                                      Utils.clearSummaryText(
                                           detailProvider.recipeDetail!.summary),
                                       textStyle:
                                           Theme.of(context).textTheme.bodyLarge,

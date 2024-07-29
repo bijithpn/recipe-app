@@ -45,9 +45,9 @@ class _SearchWidgetState extends State<SearchWidget> {
   final List<String> _selectedIngredients = [];
   void showFilterBottomSheet(BuildContext context) {
     showModalBottomSheet(
-      context: context,
       showDragHandle: true,
-      isScrollControlled: false,
+      context: context,
+      isScrollControlled: true,
       builder: (BuildContext context) {
         return FilterBottomSheet(
           diets: widget.diets,
@@ -182,94 +182,97 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Center(
-            child: Text(
-              'Sort & Filter',
-              textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(fontWeight: FontWeight.bold),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxHeight: 600, minHeight: 500),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: Text(
+                'Sort & Filter',
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge!
+                    .copyWith(fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Expanded(
-            child: ListView(
+            const SizedBox(height: 16),
+            Expanded(
+              child: ListView(
+                children: [
+                  _buildFilterSection(
+                    context,
+                    title: 'Dish Types',
+                    items: widget.dishTypes,
+                    selectedItems: homeProvider.selectedDishTypes,
+                    onChanged: (value) {
+                      setState(() {
+                        if (homeProvider.selectedDishTypes.contains(value)) {
+                          homeProvider.selectedDishTypes.remove(value);
+                        } else {
+                          homeProvider.selectedDishTypes.add(value);
+                        }
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  _buildFilterSection(
+                    context,
+                    title: 'Diets',
+                    items: widget.diets,
+                    selectedItems: homeProvider.selectedDiets,
+                    onChanged: (value) {
+                      setState(() {
+                        if (homeProvider.selectedDiets.contains(value)) {
+                          homeProvider.selectedDiets.remove(value);
+                        } else {
+                          homeProvider.selectedDiets.add(value);
+                        }
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildFilterSection(
-                  context,
-                  title: 'Dish Types',
-                  items: widget.dishTypes,
-                  selectedItems: homeProvider.selectedDishTypes,
-                  onChanged: (value) {
-                    setState(() {
-                      if (homeProvider.selectedDishTypes.contains(value)) {
-                        homeProvider.selectedDishTypes.remove(value);
-                      } else {
-                        homeProvider.selectedDishTypes.add(value);
-                      }
-                    });
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: ColorPalette.primary,
+                  ),
+                  onPressed: () {
+                    homeProvider.clearFilterData();
+                    Navigator.pop(context);
                   },
+                  child: Text(
+                    'Reset',
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
                 ),
-                const SizedBox(height: 16),
-                _buildFilterSection(
-                  context,
-                  title: 'Diets',
-                  items: widget.diets,
-                  selectedItems: homeProvider.selectedDiets,
-                  onChanged: (value) {
-                    setState(() {
-                      if (homeProvider.selectedDiets.contains(value)) {
-                        homeProvider.selectedDiets.remove(value);
-                      } else {
-                        homeProvider.selectedDiets.add(value);
-                      }
-                    });
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: ColorPalette.primary,
+                  ),
+                  onPressed: () {
+                    homeProvider.filterRecipes(homeProvider.selectedDishTypes,
+                        homeProvider.selectedDiets);
+                    Navigator.pop(context);
                   },
+                  child: Text(
+                    'Apply Filters',
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorPalette.primary,
-                ),
-                onPressed: () {
-                  homeProvider.filterRecipes(homeProvider.selectedDishTypes,
-                      homeProvider.selectedDiets);
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  'Apply Filters',
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorPalette.primary,
-                ),
-                onPressed: () {
-                  homeProvider.clearFilterData();
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  'Reset',
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -298,6 +301,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
               child: InkWell(
+                splashColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                focusColor: Colors.transparent,
                 onTap: () => onChanged(item),
                 child: Chip(
                     shape: RoundedRectangleBorder(

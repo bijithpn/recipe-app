@@ -46,16 +46,23 @@ class DetailsProvider extends ChangeNotifier {
       if (recipeDetail != null) {
         final imageResponse = await http.get(Uri.parse(recipeDetail!.image));
         final documentDirectory = (await getTemporaryDirectory()).path;
-        final imagePath = '$documentDirectory/recipe_image.png';
+        final imagePath =
+            '$documentDirectory/${recipeDetail?.title ?? "recipe"}_image.png';
         final imageFile = File(imagePath);
-        imageFile.writeAsBytesSync(imageResponse.bodyBytes);
+        if (!imageFile.existsSync()) {
+          imageFile.writeAsBytesSync(imageResponse.bodyBytes);
+        }
         String recipeDetails = 'Recipe: ${recipeDetail!.title}\n\n'
-            'Instructions:\n${Utils.removeHtmlTags(recipeDetail!.instructions)}\n\n'
+            'Summary:\n${Utils.removeHtmlTags(Utils.clearSummaryText(recipeDetail!.summary))}\n\n'
             'Steps:\n';
         for (var instruction in recipeDetail!.analyzedInstructions) {
           for (var step in instruction.steps) {
             recipeDetails += '${step.number}. ${step.step}\n';
           }
+        }
+        recipeDetails += '\nIngredient\n';
+        for (var ingredient in recipeDetail!.extendedIngredients) {
+          recipeDetails += '${ingredient.name}, ';
         }
         Share.shareXFiles([XFile(imagePath)], text: recipeDetails);
       }
