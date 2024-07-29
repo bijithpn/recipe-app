@@ -287,10 +287,12 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                                             .copyWith(
                                               fontWeight: FontWeight.bold,
                                             )),
+                                    const SizedBox(height: 10),
                                     ListView.builder(
                                       physics:
                                           const NeverScrollableScrollPhysics(),
                                       shrinkWrap: true,
+                                      padding: EdgeInsets.zero,
                                       itemCount: detailProvider.recipeDetail!
                                           .extendedIngredients.length,
                                       itemBuilder: (_, i) {
