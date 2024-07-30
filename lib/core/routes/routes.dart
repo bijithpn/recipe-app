@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recipe_app/view/settings/settings.dart';
 
 import '../../view/view.dart';
 
@@ -8,6 +9,8 @@ class RouteGenerator {
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(builder: (_) => const HomeNavigation());
+      case '/settings':
+        return MaterialPageRoute(builder: (_) => const SettingsPage());
       case '/details':
         if (args is String) {
           return MaterialPageRoute(

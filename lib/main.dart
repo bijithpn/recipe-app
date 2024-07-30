@@ -26,6 +26,10 @@ Future<void> main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  FlutterError.onError = (FlutterErrorDetails details) {
+    debugPrint('Flutter Error : ${details.exception}');
+    debugPrint('Flutter StackTrace :${details.stack}');
+  };
   runApp(const MyApp());
 }
 

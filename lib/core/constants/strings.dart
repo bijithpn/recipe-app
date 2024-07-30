@@ -10,3 +10,8 @@ class AppStrings {
   static const saveEmpty =
       'Remember to save your favorite recipes for easy access later! Just tap the save icon. 🍽️';
 }
+
+class StorageStrings {
+  static String recipeDB = 'recipes';
+  static String settingDB = 'settings';
+}

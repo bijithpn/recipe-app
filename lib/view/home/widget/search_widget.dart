@@ -80,7 +80,7 @@ class _SearchWidgetState extends State<SearchWidget> {
         textInputAction: TextInputAction.done,
         barBackgroundColor: WidgetStateProperty.all(ColorPalette.white),
         searchController: _searchController,
-        barHintText: "Search you recipe....",
+        barHintText: "Search you ingredients....",
         barLeading: Icon(Icons.search, color: ColorPalette.primary),
         barTrailing: [
           if (homeProvider.homeState == HomeState.search)

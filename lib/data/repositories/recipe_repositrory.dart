@@ -12,7 +12,7 @@ class RecipeRepository {
       final res = await apiClient.get(ApiEndpoint.getRecipes, queryParameters: {
         "limitLicense": true,
         "number": 15,
-        "include-tags": "meat,vegetarian"
+        "include-tags": "meat"
       });
       return res.data['recipes'];
     } catch (e) {
