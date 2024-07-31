@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
                 navigatorKey: navigatorKey,
                 title: 'Recipe App',
                 theme: myTheme,
-                initialRoute: '/settings',
+                initialRoute: '/',
                 onGenerateRoute: RouteGenerator.generateRoute,
               );
             }));
