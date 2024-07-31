@@ -1,8 +1,8 @@
+import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -19,9 +19,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
   initializeClient();
-  final appDocumentDir = await getApplicationDocumentsDirectory();
-  Hive.init(appDocumentDir.path);
-  Hive.registerAdapter(RecipeDBAdapter());
+  await initHive();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -30,47 +28,48 @@ Future<void> main() async {
     debugPrint('Flutter Error : ${details.exception}');
     debugPrint('Flutter StackTrace :${details.stack}');
   };
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-initializeClient() async {
+Future<void> initHive() async {
+  final appDocumentDir = await getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDir.path);
+  Hive.registerAdapter(RecipeDBAdapter());
+  await Hive.openBox(StorageStrings.settingDB);
+}
+
+void initializeClient() async {
   final apiClient = ApiClient();
   getIt.registerSingleton<RecipeDatabase>(RecipeDatabase.instance);
   getIt.registerSingleton<ApiClient>(apiClient);
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+
+  ThemeManager themeManager = ThemeManager();
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => HomeProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => DetailsProvider(),
-        ),
-      ],
-      child: MaterialApp(
-        navigatorKey: navigatorKey,
-        title: 'Recipe App',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: ColorPalette.primary),
-          useMaterial3: true,
-          scaffoldBackgroundColor: ColorPalette.scaffoldBg,
-          appBarTheme: AppBarTheme(
-              backgroundColor: ColorPalette.scaffoldBg,
-              foregroundColor: ColorPalette.scaffoldBg,
-              surfaceTintColor: ColorPalette.scaffoldBg,
-              elevation: 0,
-              scrolledUnderElevation: 0),
-          textTheme: GoogleFonts.poppinsTextTheme(),
-        ),
-        initialRoute: '/',
-        onGenerateRoute: RouteGenerator.generateRoute,
-      ),
-    );
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) => HomeProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => DetailsProvider(),
+          ),
+        ],
+        child: ThemeProvider(
+            initTheme: themeManager.currentTheme,
+            builder: (_, myTheme) {
+              return MaterialApp(
+                navigatorKey: navigatorKey,
+                title: 'Recipe App',
+                theme: myTheme,
+                initialRoute: '/settings',
+                onGenerateRoute: RouteGenerator.generateRoute,
+              );
+            }));
   }
 }

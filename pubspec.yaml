@@ -55,6 +55,7 @@ dependencies:
   http: ^1.2.2
   flutter_settings_ui: ^3.0.1
   shorebird_code_push: ^1.1.4
+  animated_theme_switcher: ^2.0.10
 
 dev_dependencies:
   flutter_test:

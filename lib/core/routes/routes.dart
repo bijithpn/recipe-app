@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:recipe_app/view/settings/settings.dart';
 
 import '../../view/view.dart';
 
@@ -20,6 +19,19 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) =>
               const ErrorScreen(errorMessage: 'Invalid arguments for details'),
+        );
+      case '/cms':
+        if (args is Map<String, String>) {
+          return MaterialPageRoute(
+            builder: (_) => CMSContent(
+              title: args['title'] ?? "",
+              content: args['content'] ?? "",
+            ),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) =>
+              const ErrorScreen(errorMessage: 'Invalid arguments for cms'),
         );
       default:
         return MaterialPageRoute(

@@ -14,7 +14,7 @@ class RecipeRepository {
         "number": 15,
         "include-tags": "meat"
       });
-      return res.data['recipes'];
+      return res.data['recipes'] ?? <dynamic>[];
     } catch (e) {
       rethrow;
     }
@@ -38,7 +38,7 @@ class RecipeRepository {
         "limitLicense": true,
         "ranking": 1,
       });
-      return res.data;
+      return res.data ?? <dynamic>[];
     } catch (e) {
       rethrow;
     }
