@@ -47,7 +47,7 @@ void initializeClient() async {
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 
-  ThemeManager themeManager = ThemeManager();
+  final ThemeManager themeManager = ThemeManager();
 
   @override
   Widget build(BuildContext context) {

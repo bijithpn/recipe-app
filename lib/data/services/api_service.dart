@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
+import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -54,6 +55,19 @@ class ApiClient {
     );
 
     _dio.interceptors.add(DioCacheInterceptor(options: cacheOptions));
+    _dio.interceptors.add(
+      RetryInterceptor(
+        dio: _dio,
+        retries: 4,
+        retryDelays: const [
+          Duration(seconds: 1),
+          Duration(seconds: 2),
+          Duration(seconds: 3),
+          Duration(seconds: 4),
+        ],
+      ),
+    );
+
     _dio.interceptors.add(LogInterceptor(
       request: true,
       requestHeader: true,
@@ -135,17 +149,7 @@ class ApiClient {
         backgroundColor: ColorPalette.primary,
         textColor: Colors.white,
       );
-    }
-    // else if (error.type == DioExceptionType.badResponse) {
-    //   notificationService.showSnackBar(
-    //     context: context,
-    //     message:
-    //         'Server Error (${error.response?.statusCode}): ${error.message}',
-    //     backgroundColor: Colors.red,
-    //     textColor: Colors.white,
-    //   );
-    // }
-    else if (error.type == DioExceptionType.cancel) {
+    } else if (error.type == DioExceptionType.cancel) {
       notificationService.showSnackBar(
         context: context,
         message: AppStrings.requestCancel,

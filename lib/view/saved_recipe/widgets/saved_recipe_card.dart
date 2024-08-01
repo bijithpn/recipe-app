@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -6,6 +5,7 @@ import '../../../core/core.dart';
 import '../../../data/data.dart';
 import '../../../db/db.dart';
 import '../../../view_models/view_models.dart';
+import '../../../widgets/widgets.dart';
 import '../../view.dart';
 
 class SavedRecipeCard extends StatefulWidget {
@@ -45,179 +45,172 @@ class _SavedRecipeCardState extends State<SavedRecipeCard> {
       child: Card(
         elevation: 3,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        child: Container(
-          width: 230,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: double.infinity,
-                child: Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(12),
-                          topRight: Radius.circular(12)),
-                      child: CachedNetworkImage(
-                        width: double.infinity,
-                        imageUrl: widget.recipe.image,
-                        fit: BoxFit.cover,
-                        imageBuilder: (context, imageProvider) =>
-                            Image(image: imageProvider),
-                        placeholder: (context, url) => const SizedBox(
-                          height: 115,
-                          child: Center(child: CircularProgressIndicator()),
-                        ),
-                        errorWidget: (context, url, error) => Container(
-                          height: 115,
-                          color: Colors.grey.shade300,
-                          child: const Icon(Icons.error_outline),
-                        ),
-                      ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: double.infinity,
+              child: Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12)),
+                    child: ImageWidget(
+                      width: double.infinity,
+                      imageUrl: widget.recipe.image,
+                      height: 145,
+                      fit: BoxFit.cover,
                     ),
-                    Positioned(
-                      right: 10,
-                      top: 10,
-                      child: InkWell(
-                        onTap: () async {
-                          try {
+                  ),
+                  Positioned(
+                    right: 10,
+                    top: 10,
+                    child: InkWell(
+                      onTap: () async {
+                        try {
+                          if (isSaved) {
                             await provider.recipeDb
                                 .deleteRecipe(widget.recipe.id);
                             if (context.mounted) {
                               notificationService.showSnackBar(
                                   context: context, message: "Recipe removed");
                             }
-                            widget.callBack!();
-                          } catch (error) {
+                          } else {
+                            var json = widget.recipe.toJson();
+                            await provider.recipeDb
+                                .addOrUpdateRecipe(RecipeDB.fromJson(json));
                             if (context.mounted) {
                               notificationService.showSnackBar(
-                                  context: context, message: error.toString());
+                                  context: context, message: "Recipe added");
                             }
                           }
-                          setState(() {});
-                        },
-                        child: GlassDropEffect(
-                          sigma: 10,
-                          shape: BoxShape.circle,
-                          child: Icon(
-                            Icons.bookmark,
-                            size: 22,
-                            color: ColorPalette.primary,
-                          ),
+                          isSaved = await provider.recipeDb
+                              .recipeExists(widget.recipe.id);
+                        } catch (error) {
+                          if (context.mounted) {
+                            notificationService.showSnackBar(
+                                context: context, message: error.toString());
+                          }
+                        }
+                        setState(() {});
+                      },
+                      child: GlassDropEffect(
+                        sigma: 10,
+                        shape: BoxShape.circle,
+                        child: Icon(
+                          isSaved ? Icons.bookmark : Icons.bookmark_outline,
+                          size: 22,
+                          color: isSaved ? ColorPalette.primary : Colors.white,
                         ),
                       ),
                     ),
-                    if (widget.recipe.aggregateLikes != null)
-                      Positioned(
-                          left: 10,
-                          top: 10,
-                          child: GlassDropEffect(
-                            sigma: 10,
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.recommend,
-                                  color: ColorPalette.primary,
-                                  size: 22,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  "${widget.recipe.aggregateLikes}",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge!
-                                      .copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                ),
-                              ],
-                            ),
-                          )),
-                  ],
-                ),
+                  ),
+                  if (widget.recipe.vegetarian != null)
+                    Positioned(
+                        left: 5,
+                        top: -2,
+                        child: Chip(
+                            side: BorderSide.none,
+                            labelPadding: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100)),
+                            backgroundColor: ColorPalette.primary,
+                            label: Text(
+                              widget.recipe.vegetarian! ? "Veg" : "Non veg",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelSmall!
+                                  .copyWith(
+                                      fontSize: 11,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                            ))),
+                ],
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: 50,
-                      alignment: Alignment.topCenter,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(widget.recipe.title,
+                      maxLines: 3,
+                      textAlign: TextAlign.start,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          fontWeight: FontWeight.bold, letterSpacing: .5)),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      if (widget.recipe.readyInMinutes != null)
+                        Text(
+                          "${widget.recipe.readyInMinutes} min",
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelMedium!
+                              .copyWith(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold),
+                        ),
+                      if (widget.recipe.readyInMinutes != null &&
+                          widget.recipe.servings != null)
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 5),
+                          width: 1.5,
+                          height: 15,
+                          color: Colors.grey,
+                        ),
+                      if (widget.recipe.servings != null)
+                        Text(
+                          "${widget.recipe.servings} serving",
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelMedium!
+                              .copyWith(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold),
+                        ),
+                    ],
+                  ),
+                  if (widget.recipe.usedIngredientCount != null)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Text(widget.recipe.title,
-                                maxLines: 2,
-                                textAlign: TextAlign.start,
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge!
-                                    .copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: .5)),
-                          ),
-                          if (widget.recipe.vegetarian != null)
-                            Image.asset(
-                              AssetsImages.veg,
-                              width: 25,
-                              height: 25,
-                              color: widget.recipe.vegetarian!
-                                  ? ColorPalette.primary
-                                  : ColorPalette.red,
-                            )
+                          Icon(Icons.check_box_outlined,
+                              color: ColorPalette.primary),
+                          const SizedBox(width: 4),
+                          Text(
+                            "Owned: ${widget.recipe.usedIngredientCount}",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          )
                         ],
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Text("Source: ${widget.recipe.sourceName}",
-                        maxLines: 1,
-                        textAlign: TextAlign.start,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium!
-                            .copyWith(color: Colors.grey)),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        if (widget.recipe.readyInMinutes != null)
-                          Row(
-                            children: [
-                              const Icon(Icons.timer_outlined),
-                              const SizedBox(width: 4),
-                              Text(
-                                "${widget.recipe.readyInMinutes}m",
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              )
-                            ],
+                  if (widget.recipe.missedIngredientCount != null)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.disabled_by_default_outlined,
+                            color: Colors.red,
                           ),
-                        if (widget.recipe.servings != null)
-                          Row(
-                            children: [
-                              const Icon(Icons.local_dining),
-                              const SizedBox(width: 4),
-                              Text(
-                                "${widget.recipe.servings}",
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              )
-                            ],
-                          ),
-                      ],
+                          const SizedBox(width: 4),
+                          Text(
+                            "Missing: ${widget.recipe.missedIngredientCount}",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          )
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 5)
-                  ],
-                ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

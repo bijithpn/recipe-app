@@ -10,3 +10,8 @@ class AssetsImages {
   static const noInternet = 'assets/images/no_connection.png';
   static const emptySave = 'assets/images/empty_saves.jpg';
 }
+
+class LottieAssets {
+  static const spoonLoader = 'assets/lottie/image_loader.json';
+  static const panLoader = 'assets/lottie/boiling_pan.json';
+}

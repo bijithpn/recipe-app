@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
-import 'package:recipe_app/core/core.dart';
+import '../core.dart';
 
 class ThemeManager {
   static const String _themeKey = 'isDarkTheme';
@@ -42,7 +42,7 @@ class ThemeManager {
     ),
     useMaterial3: true,
     brightness: Brightness.dark,
-    iconTheme: IconThemeData(color: Colors.white),
+    iconTheme: const IconThemeData(color: Colors.white),
     scaffoldBackgroundColor: ColorPalette.black,
     appBarTheme: AppBarTheme(
         backgroundColor: ColorPalette.black,

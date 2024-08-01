@@ -2,7 +2,7 @@ import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_settings_ui/flutter_settings_ui.dart';
 import 'package:hive/hive.dart';
-import 'package:recipe_app/core/core.dart';
+import '../../core/core.dart';
 import 'package:shorebird_code_push/shorebird_code_push.dart';
 
 class SettingsPage extends StatefulWidget {

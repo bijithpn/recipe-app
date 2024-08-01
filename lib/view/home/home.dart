@@ -1,13 +1,12 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:random_avatar/random_avatar.dart';
+import '../view.dart';
 
 import '../../core/core.dart';
 import '../../view_models/home_provider.dart';
-
-import '../saved_recipe/saved_recipe.dart';
-import 'widget/widget.dart';
+import '../../widgets/widgets.dart';
 
 class HomeNavigation extends StatefulWidget {
   const HomeNavigation({super.key});
@@ -18,18 +17,11 @@ class HomeNavigation extends StatefulWidget {
 
 class _HomeNavigationState extends State<HomeNavigation> {
   int _selectedIndex = 0;
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const SavedRecipe(),
-    const Screens(
-      title: "Notifications",
-    ),
-    const Screens(
-      title: "Profile",
-    ),
-    const Screens(
-      title: "Settings",
-    ),
+  final List<Widget> _screens = const [
+    HomeScreen(),
+    SavedRecipe(),
+    SearchRecipe(),
+    SettingsPage(),
   ];
 
   @override
@@ -55,7 +47,7 @@ class _HomeNavigationState extends State<HomeNavigation> {
               gap: 8,
               activeColor: ColorPalette.primary,
               iconSize: 24,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
               duration: const Duration(milliseconds: 400),
               tabBackgroundColor: Colors.grey[100]!,
               color: Colors.black,
@@ -69,12 +61,12 @@ class _HomeNavigationState extends State<HomeNavigation> {
                   text: 'Saved',
                 ),
                 GButton(
-                  icon: Icons.notifications,
-                  text: 'Notifications',
+                  icon: Icons.search,
+                  text: 'search',
                 ),
                 GButton(
-                  icon: Icons.person,
-                  text: 'Profile',
+                  icon: Icons.settings,
+                  text: 'Setting',
                 ),
               ],
               selectedIndex: _selectedIndex,
@@ -105,25 +97,21 @@ class _HomeScreenState extends State<HomeScreen> {
       final provider = Provider.of<HomeProvider>(context, listen: false);
       provider.getRecipes();
     });
+    getProfile();
     super.initState();
   }
 
-  double calculateAspectRatio(double width, double height,
-      {double min = 0.7, double max = .71}) {
-    double result = (width / 2) / (width / 2);
-    double minValue = min;
-    double maxValue = max;
-    if (result < minValue) {
-      result = minValue;
-    } else if (result > maxValue) {
-      result = maxValue;
-    }
-    return result;
+  String profileSvg = '';
+  getProfile() {
+    profileSvg = RandomAvatarString(
+      DateTime.now().toIso8601String(),
+      trBackground: false,
+    );
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     return SafeArea(
       top: true,
       child: Consumer<HomeProvider>(
@@ -172,11 +160,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             const SizedBox(width: 10),
-                            const CircleAvatar(
-                              radius: 25,
-                              backgroundImage: CachedNetworkImageProvider(
-                                  'https://www.devicemag.com/wp-content/uploads/2022/12/Apple-Bitmoji-4.jpg'),
-                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: RandomAvatar(
+                                "bijith",
+                                height: 50,
+                                width: 52,
+                              ),
+                            )
                           ],
                         ),
                       ),
@@ -209,175 +200,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   if (homeProvider.homeState == HomeState.isLoading)
                     const SliverFillRemaining(
-                      child: Center(child: CircularProgressIndicator()),
+                      child: Center(child: LottieLoader()),
                     )
                   else if (homeProvider.homeState == HomeState.search)
-                    SliverPadding(
-                      padding: const EdgeInsets.all(10),
-                      sliver: homeProvider.searchRecipeList.isEmpty
-                          ? SliverToBoxAdapter(
-                              child: Column(
-                                children: [
-                                  Image.asset(
-                                    AssetsImages.emptyState,
-                                    height: 250,
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    AppStrings.noRecipe,
-                                    textAlign: TextAlign.center,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge!
-                                        .copyWith(
-                                            letterSpacing: .6,
-                                            fontWeight: FontWeight.bold),
-                                  )
-                                ],
-                              ),
-                            )
-                          : SliverGrid(
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 15.0,
-                                mainAxisSpacing: 15.0,
-                                childAspectRatio: size.width > 400 ? 0.66 : 0.6,
-                              ),
-                              delegate: SliverChildBuilderDelegate(
-                                (context, index) {
-                                  var recipe =
-                                      homeProvider.searchRecipeList[index];
-                                  return GridTile(
-                                    child: RecipeCard(recipe: recipe),
-                                  );
-                                },
-                                childCount:
-                                    homeProvider.searchRecipeList.length,
-                              ),
-                            ),
-                    )
+                    RecipeViewBuilder(recipeList: homeProvider.searchRecipeList)
                   else if (homeProvider.homeState == HomeState.home)
-                    SliverPadding(
-                      padding: const EdgeInsets.all(10),
-                      sliver: homeProvider.recipeList.isEmpty
-                          ? SliverToBoxAdapter(
-                              child: Column(
-                                children: [
-                                  Image.asset(
-                                    AssetsImages.emptyState,
-                                    height: 250,
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    AppStrings.noRecipe,
-                                    textAlign: TextAlign.center,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge!
-                                        .copyWith(
-                                            letterSpacing: .6,
-                                            fontWeight: FontWeight.bold),
-                                  )
-                                ],
-                              ),
-                            )
-                          : SliverGrid(
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 15.0,
-                                mainAxisSpacing: 15.0,
-                                childAspectRatio: size.width > 400 ? 0.77 : 0.7,
-                              ),
-                              delegate: SliverChildBuilderDelegate(
-                                (context, index) {
-                                  var recipe = homeProvider.recipeList[index];
-                                  return GridTile(
-                                    child: RecipeCard(recipe: recipe),
-                                  );
-                                },
-                                childCount: homeProvider.recipeList.length,
-                              ),
-                            ),
-                    )
+                    RecipeViewBuilder(recipeList: homeProvider.recipeList)
                   else if (homeProvider.homeState == HomeState.filter)
-                    SliverPadding(
-                      padding: const EdgeInsets.all(10),
-                      sliver: homeProvider.filteredRecipeList.isEmpty
-                          ? SliverToBoxAdapter(
-                              child: Column(
-                                children: [
-                                  Image.asset(
-                                    AssetsImages.emptyState,
-                                    height: 250,
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    AppStrings.noRecipe,
-                                    textAlign: TextAlign.center,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge!
-                                        .copyWith(
-                                            letterSpacing: .6,
-                                            fontWeight: FontWeight.bold),
-                                  )
-                                ],
-                              ),
-                            )
-                          : SliverGrid(
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 15.0,
-                                mainAxisSpacing: 15.0,
-                                childAspectRatio: size.width > 400 ? 0.77 : 0.7,
-                              ),
-                              delegate: SliverChildBuilderDelegate(
-                                (context, index) {
-                                  var recipe =
-                                      homeProvider.filteredRecipeList[index];
-                                  return GridTile(
-                                    child: RecipeCard(recipe: recipe),
-                                  );
-                                },
-                                childCount:
-                                    homeProvider.filteredRecipeList.length,
-                              ),
-                            ),
-                    ),
+                    RecipeViewBuilder(
+                        recipeList: homeProvider.filteredRecipeList),
                 ],
               ),
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class Screens extends StatelessWidget {
-  final String title;
-  const Screens({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          title,
-          style: Theme.of(context)
-              .textTheme
-              .titleLarge!
-              .copyWith(fontWeight: FontWeight.bold),
-        ),
-      ),
-      body: Center(
-        child: Text(
-          title,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
       ),
     );
   }

@@ -1,5 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+
+import '../core/core.dart';
 
 class ImageWidget extends StatelessWidget {
   final String imageUrl;
@@ -33,19 +36,17 @@ class ImageWidget extends StatelessWidget {
       imageBuilder: (context, imageProvider) => Container(
         width: width,
         height: height,
-        padding: const EdgeInsets.all(4),
-        decoration: decoration,
-        child: Image(
-          image: imageProvider,
-          width: double.infinity,
-        ),
+        padding: padding,
+        decoration: BoxDecoration(
+            image: DecorationImage(image: imageProvider, fit: fit)),
       ),
       placeholder: (context, url) =>
           placeHolderWidget ??
           SizedBox(
             width: width,
             height: height,
-            child: const Center(child: CircularProgressIndicator()),
+            child: Center(
+                child: Lottie.asset(LottieAssets.spoonLoader, animate: true)),
           ),
       errorWidget: (context, url, error) =>
           errorWidget ??

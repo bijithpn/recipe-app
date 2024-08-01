@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:provider/provider.dart';
-import 'package:recipe_app/utils/utils.dart';
+import '../../utils/utils.dart';
 
 import '../../core/core.dart';
 import '../../data/data.dart';
@@ -54,7 +53,7 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
         child: Scaffold(
           body: detailProvider.isLoading
               ? const Center(
-                  child: CircularProgressIndicator(),
+                  child: LottieLoader(),
                 )
               : detailProvider.recipeDetail == null
                   ? Padding(

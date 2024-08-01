@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import '../../main.dart';
 import '../../core/core.dart';
 import '../../db/db.dart';
@@ -27,7 +28,6 @@ class _SavedRecipeState extends State<SavedRecipe> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text("Saved",
@@ -65,22 +65,24 @@ class _SavedRecipeState extends State<SavedRecipe> {
               : SliverPadding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  sliver: SliverGrid(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 15.0,
-                      mainAxisSpacing: 15.0,
-                      childAspectRatio: size.width > 400 ? 0.75 : 0.7,
+                  sliver: SliverMasonryGrid(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        var recipe = savedRecipe[index];
+                        return GridTile(
+                          child: SavedRecipeCard(
+                            recipe: recipe,
+                            callBack: () => getSavedList(),
+                          ),
+                        );
+                      },
+                      childCount: savedRecipe.length,
                     ),
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      var recipe = savedRecipe[index];
-                      return GridTile(
-                        child: SavedRecipeCard(
-                          recipe: recipe,
-                          callBack: () => getSavedList(),
-                        ),
-                      );
-                    }, childCount: savedRecipe.length),
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    gridDelegate:
+                        const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2),
                   ),
                 ),
         ]),

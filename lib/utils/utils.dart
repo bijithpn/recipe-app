@@ -13,6 +13,9 @@ class Utils {
     List<String> targetPhrases = [
       "Users who liked this recipe also liked",
       "Similar recipes",
+      "Try",
+      "If you like this recipe",
+      "This score is",
       "very similar to this recipe"
     ];
     for (String phrase in targetPhrases) {
