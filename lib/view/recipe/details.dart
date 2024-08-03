@@ -287,50 +287,9 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                                               fontWeight: FontWeight.bold,
                                             )),
                                     const SizedBox(height: 10),
-                                    ListView.builder(
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      padding: EdgeInsets.zero,
-                                      itemCount: detailProvider.recipeDetail!
-                                          .extendedIngredients.length,
-                                      itemBuilder: (_, i) {
-                                        var ingredient = detailProvider
-                                            .recipeDetail!
-                                            .extendedIngredients[i];
-                                        return ListTile(
-                                          leading: ImageWidget(
-                                            width: 60,
-                                            height: 60,
-                                            padding: const EdgeInsets.all(3),
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: Colors.white),
-                                            imageUrl:
-                                                'https://img.spoonacular.com/ingredients_100x100/${ingredient.image}',
-                                            fit: BoxFit.cover,
-                                          ),
-                                          title: Text(
-                                            ingredient.name,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge!
-                                                .copyWith(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                          ),
-                                          subtitle: Text(
-                                            ingredient.original,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyMedium!
-                                                .copyWith(
-                                                    color:
-                                                        Colors.grey.shade800),
-                                          ),
-                                        );
-                                      },
+                                    IncredientsViewer(
+                                      ingredients: detailProvider
+                                          .recipeDetail!.extendedIngredients,
                                     ),
                                     const SizedBox(height: 16),
                                     Text('Instructions',
@@ -393,3 +352,182 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
     });
   }
 }
+
+/*
+ appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: ColorPalette.primary,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            title: Text(
+              detailProvider.recipeDetail?.title ?? "test",
+              maxLines: 2,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            actions: [
+              IconButton(
+                style: IconButton.styleFrom(
+                  shape: const CircleBorder(),
+                  backgroundColor: Colors.white,
+                ),
+                icon: Icon(
+                  isSaved ? Icons.bookmark : Icons.bookmark_outline,
+                  color: ColorPalette.primary,
+                ),
+                onPressed: () async {
+                  try {
+                    if (isSaved) {
+                      await detailProvider.recipeDb
+                          .deleteRecipe(int.parse(widget.recipeId));
+                      if (context.mounted) {
+                        notificationService.showSnackBar(
+                            context: context, message: "Recipe removed");
+                      }
+                    } else {
+                      var json = detailProvider.recipeDetail?.toJson();
+                      await detailProvider.recipeDb
+                          .addOrUpdateRecipe(RecipeDB.fromJson(json ?? {}));
+                      if (context.mounted) {
+                        notificationService.showSnackBar(
+                            context: context, message: "Recipe added");
+                      }
+                    }
+                    isSaved = await detailProvider.recipeDb
+                        .recipeExists(int.parse(widget.recipeId));
+                  } catch (error) {
+                    if (context.mounted) {
+                      notificationService.showSnackBar(
+                          context: context, message: error.toString());
+                    }
+                  }
+                  setState(() {});
+                },
+              ),
+            ],
+          ),
+          body: detailProvider.isLoading
+              ? const Center(
+                  child: LottieLoader(),
+                )
+              : detailProvider.recipeDetail == null
+                  ? DetailsErrorWidget(recipeId: widget.recipeId)
+                  : ListView(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 15),
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          clipBehavior: Clip.hardEdge,
+                          child: ImageWidget(
+                            height: 250,
+                            width: 200,
+                            imageUrl: detailProvider.recipeDetail?.image ?? "",
+                            fit: BoxFit.cover,
+                            imagePlaceholder: (_, image) {
+                              return Container(
+                                height: 250,
+                                width: 200,
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                        color: Colors.grey.shade600, width: 1),
+                                    borderRadius: BorderRadius.circular(15)),
+                                child: Image(
+                                  image: image,
+                                  width: double.infinity,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(detailProvider.recipeDetail?.title ?? "test",
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                )),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Text(
+                              "source: ${detailProvider.recipeDetail?.sourceName}",
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                            const Spacer(),
+                            Icon(
+                              Icons.recommend,
+                              color: ColorPalette.primary,
+                              size: 30,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              "${detailProvider.recipeDetail?.healthScore ?? 0}",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .copyWith(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text('Description',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                )),
+                        const SizedBox(height: 4),
+                        HtmlWidget(
+                          Utils.clearSummaryText(
+                              detailProvider.recipeDetail!.summary),
+                          textStyle: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        const SizedBox(height: 16),
+                        Text('Ingredients',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                )),
+                        const SizedBox(height: 10),
+                        IncredientsViewer(
+                          ingredients:
+                              detailProvider.recipeDetail!.extendedIngredients,
+                        ),
+                        const SizedBox(height: 16),
+                        Text('Instructions',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                )),
+                        const SizedBox(height: 10),
+                        ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            itemCount: detailProvider
+                                .recipeDetail!.analyzedInstructions.length,
+                            itemBuilder: (_, i) {
+                              return InstructionViewer(
+                                instruction: detailProvider
+                                    .recipeDetail!.analyzedInstructions[i],
+                              );
+                            }),
+                        const SizedBox(height: 16),
+                        CookingTipsScreen(
+                          tips: detailProvider.recipeDetail!.tips,
+                        )
+                      ],
+                    ),*/

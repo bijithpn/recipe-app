@@ -11,20 +11,24 @@ class ImageWidget extends StatelessWidget {
   final double? width;
   final Widget? errorWidget;
   final Widget? placeHolderWidget;
+  final Widget Function(BuildContext, ImageProvider<Object>)? imagePlaceholder;
   final Decoration? decoration;
   final EdgeInsetsGeometry? padding;
+  final Color? color;
 
   const ImageWidget({
-    super.key,
+    Key? key,
     required this.imageUrl,
     this.fit,
     this.height,
     this.width,
     this.errorWidget,
     this.placeHolderWidget,
+    this.imagePlaceholder,
     this.decoration,
     this.padding,
-  });
+    this.color,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +37,16 @@ class ImageWidget extends StatelessWidget {
       height: height,
       fit: fit,
       imageUrl: imageUrl,
-      imageBuilder: (context, imageProvider) => Container(
-        width: width,
-        height: height,
-        padding: padding,
-        decoration: BoxDecoration(
-            image: DecorationImage(image: imageProvider, fit: fit)),
-      ),
+      imageBuilder: imagePlaceholder ??
+          (context, imageProvider) => Container(
+                width: width,
+                height: height,
+                padding: padding,
+                decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(image: imageProvider, fit: fit)),
+              ),
       placeholder: (context, url) =>
           placeHolderWidget ??
           SizedBox(

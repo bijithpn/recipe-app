@@ -55,19 +55,38 @@ class InstructionViewer extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               child: ListTile(
                                 leading: ImageWidget(
-                                  padding: const EdgeInsets.all(3),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white),
+                                  padding: const EdgeInsets.all(15),
+                                  color: Colors.white,
                                   imageUrl:
                                       'https://spoonacular.com/cdn/ingredients_100x100/${ingredient.image}',
                                   width: 60,
                                   height: 60,
+                                  imagePlaceholder: (_, image) {
+                                    return Container(
+                                      width: 60,
+                                      height: 60,
+                                      padding: const EdgeInsets.all(6),
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          border: Border.all(
+                                              color: Colors.grey.shade600,
+                                              width: .5),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: Image(
+                                        image: image,
+                                        width: double.infinity,
+                                      ),
+                                    );
+                                  },
                                   errorWidget: Container(
                                       width: 60,
                                       height: 60,
                                       padding: const EdgeInsets.all(10),
                                       decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Colors.grey.shade600,
+                                              width: .5),
                                           borderRadius:
                                               BorderRadius.circular(10),
                                           color: Colors.white),
@@ -106,11 +125,32 @@ class InstructionViewer extends StatelessWidget {
                                   imageUrl: equipment.image,
                                   width: 60,
                                   height: 60,
+                                  imagePlaceholder: (_, image) {
+                                    return Container(
+                                      width: 60,
+                                      height: 60,
+                                      padding: const EdgeInsets.all(6),
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          border: Border.all(
+                                              color: Colors.grey.shade600,
+                                              width: .5),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: Image(
+                                        image: image,
+                                        width: double.infinity,
+                                      ),
+                                    );
+                                  },
                                   errorWidget: Container(
                                     width: 60,
                                     height: 60,
                                     padding: const EdgeInsets.all(3),
                                     decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Colors.grey.shade600,
+                                            width: .5),
                                         borderRadius: BorderRadius.circular(10),
                                         color: Colors.white),
                                     child: Image.asset(

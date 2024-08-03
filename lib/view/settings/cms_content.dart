@@ -22,7 +22,6 @@ class _CMSContentState extends State<CMSContent> {
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios,
-            color: Colors.white,
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -36,9 +35,11 @@ class _CMSContentState extends State<CMSContent> {
               .copyWith(fontWeight: FontWeight.bold),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
-        child: HtmlWidget(widget.content),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+          child: HtmlWidget(widget.content),
+        ),
       ),
     );
   }
