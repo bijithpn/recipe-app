@@ -139,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    'Hello, Anne',
+                                    'Hello, Bijith',
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyLarge!
