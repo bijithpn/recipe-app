@@ -23,15 +23,23 @@ jobs:
 
     - name: Build APK
       run: flutter build apk --release
+      working-directory: ./ # Adjust if your Flutter project is in a subdirectory
+
+    - name: Generate Tag
+      id: generate_tag
+      run: |
+        # Generate a tag based on the number of commits
+        TAG="v$(git rev-list --count HEAD)"
+        echo "TAG=${TAG}" >> $GITHUB_ENV
 
     - name: Create GitHub Release
       id: create_release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
       with:
-        tag_name: v${{ github.run_number }}
-        release_name: Release v${{ github.run_number }}
+        tag_name: ${{ env.TAG }}
+        release_name: Release ${{ env.TAG }}
         draft: false
         prerelease: false
         body: |
@@ -41,9 +49,9 @@ jobs:
     - name: Upload Release APK
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: build/app/outputs/flutter-apk/app-release.apk
-        asset_name: app-release-${{ github.run_number }}.apk
+        asset_path: build/app/outputs/flutter/release/app-release.apk
+        asset_name: app-release-${{ env.TAG }}.apk
         asset_content_type: application/vnd.android.package-archive
