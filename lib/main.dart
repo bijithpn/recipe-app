@@ -28,6 +28,7 @@ Future<void> main() async {
     debugPrint('Flutter Error : ${details.exception}');
     debugPrint('Flutter StackTrace :${details.stack}');
   };
+  print('test rund');
   runApp(MyApp());
 }
 
