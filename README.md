@@ -20,19 +20,19 @@ This documentation provides an overview of the Recipe App and detailed instructi
 
 ### Home Screen
 
-![Home Screen](images/home_screen.png)
+<img src="https://raw.githubusercontent.com/bijithpn/recipe-app/master/screenshots/home.png" alt="image" width="150" height="auto">
 
 The Home Screen displays a list of popular recipes fetched from the Spoonacular API. Users can scroll through the recipes and click on any recipe to view its details.
 
 ### Recipe Search
 
-![Recipe Search](images/recipe_search.png)
+<img src="https://raw.githubusercontent.com/bijithpn/recipe-app/master/screenshots/search.png" alt="image" width="150" height="auto">
 
 The Recipe Search screen allows users to search for recipes using keywords. The search results are displayed in a list format.
 
 ### Recipe Details
 
-![Recipe Details](images/recipe_details.png)
+<img src="https://raw.githubusercontent.com/bijithpn/recipe-app/master/screenshots/details.png" alt="image" width="150" height="auto">
 
 The Recipe Details screen provides detailed information about a selected recipe, including ingredients, instructions, and nutritional information.
 
@@ -51,7 +51,7 @@ The Recipe Details screen provides detailed information about a selected recipe,
 
 ### Prerequisites
 
-- Ensure you have the Shorebird CLI installed. If not, follow the [installation guide](https://shorebird.dev/docs/cli/installation).
+- Ensure you have the Shorebird CLI installed. If not, follow the [installation guide](https://docs.shorebird.dev/).
 
 ### Steps
 
