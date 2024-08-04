@@ -43,4 +43,14 @@ class RecipeRepository {
       rethrow;
     }
   }
+
+  Future<List<dynamic>> searchAutoComplete(String query) async {
+    try {
+      final res = await apiClient.get(ApiEndpoint.autoComplete,
+          queryParameters: {"query": query, "number": 20});
+      return res.data ?? <dynamic>[];
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
