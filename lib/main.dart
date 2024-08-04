@@ -59,6 +59,9 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(
             create: (context) => DetailsProvider(),
           ),
+          ChangeNotifierProvider(
+            create: (context) => SearchProvider(),
+          ),
         ],
         child: ThemeProvider(
             initTheme: themeManager.currentTheme,

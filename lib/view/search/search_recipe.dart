@@ -1,9 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:recipe_app/core/core.dart';
+import 'package:recipe_app/widgets/image_widget.dart';
 
-const Duration fakeAPIDuration = Duration(seconds: 1);
-const Duration debounceDuration = Duration(milliseconds: 500);
+import '../../view_models/view_models.dart';
+
+const Duration debounceDuration = Duration(milliseconds: 350);
 
 class SearchRecipe extends StatefulWidget {
   const SearchRecipe({super.key});
@@ -30,8 +34,16 @@ class _SearchRecipeState extends State<SearchRecipe> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          title: Text(
+            "Search",
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           bottom: const PreferredSize(
-              preferredSize: Size.fromHeight(50), child: _AsyncSearchAnchor()),
+              preferredSize: Size.fromHeight(50),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                child: AsyncSearchAnchor(),
+              )),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
@@ -78,32 +90,26 @@ class _SearchRecipeState extends State<SearchRecipe> {
   }
 }
 
-class _AsyncSearchAnchor extends StatefulWidget {
-  const _AsyncSearchAnchor();
+class AsyncSearchAnchor extends StatefulWidget {
+  const AsyncSearchAnchor({super.key});
 
   @override
-  State<_AsyncSearchAnchor> createState() => _AsyncSearchAnchorState();
+  State<AsyncSearchAnchor> createState() => _AsyncSearchAnchorState();
 }
 
-class _AsyncSearchAnchorState extends State<_AsyncSearchAnchor> {
-  // The query currently being searched for. If null, there is no pending
-  // request.
+class _AsyncSearchAnchorState extends State<AsyncSearchAnchor> {
   String? _currentQuery;
 
-  // The most recent suggestions received from the API.
   late Iterable<Widget> _lastOptions = <Widget>[];
 
-  late final _Debounceable<Iterable<String>?, String> _debouncedSearch;
-
-  // Calls the "remote" API to search with the given query. Returns null when
-  // the call has been made obsolete.
-  Future<Iterable<String>?> _search(String query) async {
+  late final _Debounceable<Iterable<Map<String, dynamic>>?, String>
+      _debouncedSearch;
+  Future<Iterable<Map<String, dynamic>>?> _search(String query) async {
     _currentQuery = query;
+    final Iterable<Map<String, dynamic>> options =
+        await Provider.of<SearchProvider>(context, listen: false)
+            .getSearchQuery(_currentQuery!);
 
-    // In a real application, there should be some error handling here.
-    final Iterable<String> options = await _FakeAPI.search(_currentQuery!);
-
-    // If another search happened after this one, throw away these options.
     if (_currentQuery != query) {
       return null;
     }
@@ -115,26 +121,37 @@ class _AsyncSearchAnchorState extends State<_AsyncSearchAnchor> {
   @override
   void initState() {
     super.initState();
-    _debouncedSearch = _debounce<Iterable<String>?, String>(_search);
+    _debouncedSearch =
+        _debounce<Iterable<Map<String, dynamic>>?, String>(_search);
   }
 
   @override
   Widget build(BuildContext context) {
     return SearchAnchor.bar(
+      barBackgroundColor: WidgetStateProperty.all(Colors.white),
+      barOverlayColor: WidgetStateProperty.all(Colors.white),
       suggestionsBuilder:
           (BuildContext context, SearchController controller) async {
-        final List<String>? options =
+        final List<Map<String, dynamic>>? options =
             (await _debouncedSearch(controller.text))?.toList();
         if (options == null) {
           return _lastOptions;
         }
         _lastOptions = List<ListTile>.generate(options.length, (int index) {
-          final String item = options[index];
+          final String item = options[index]['title'];
+          final String type = options[index]['imageType'];
+          final int id = options[index]['id'];
           return ListTile(
-            title: Text(item),
-            onTap: () {
-              debugPrint('You just selected $item');
-            },
+            leading: ImageWidget(
+              width: 70,
+              height: 70,
+              imageUrl: "${ApiConfig.imageUrl}recipes/$id-312x231.$type",
+            ),
+            title: Text(
+              item,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            trailing: const Icon(Icons.arrow_forward_ios_rounded),
           );
         });
 
@@ -144,32 +161,8 @@ class _AsyncSearchAnchorState extends State<_AsyncSearchAnchor> {
   }
 }
 
-// Mimics a remote API.
-class _FakeAPI {
-  static const List<String> _kOptions = <String>[
-    'aardvark',
-    'bobcat',
-    'chameleon',
-  ];
-
-  // Searches the options, but injects a fake "network" delay.
-  static Future<Iterable<String>> search(String query) async {
-    await Future<void>.delayed(fakeAPIDuration); // Fake 1 second delay.
-    if (query == '') {
-      return const Iterable<String>.empty();
-    }
-    return _kOptions.where((String option) {
-      return option.contains(query.toLowerCase());
-    });
-  }
-}
-
 typedef _Debounceable<S, T> = Future<S?> Function(T parameter);
 
-/// Returns a new function that is a debounced version of the given function.
-///
-/// This means that the original function will be called only after no calls
-/// have been made for the given Duration.
 _Debounceable<S, T> _debounce<S, T>(_Debounceable<S?, T> function) {
   _DebounceTimer? debounceTimer;
 
@@ -190,7 +183,6 @@ _Debounceable<S, T> _debounce<S, T>(_Debounceable<S?, T> function) {
   };
 }
 
-// A wrapper around Timer used for debouncing.
 class _DebounceTimer {
   _DebounceTimer() {
     _timer = Timer(debounceDuration, _onComplete);
@@ -213,7 +205,6 @@ class _DebounceTimer {
   }
 }
 
-// An exception indicating that the timer was canceled.
 class _CancelException implements Exception {
   const _CancelException();
 }
