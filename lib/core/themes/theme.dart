@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import '../core.dart';
 
-class ThemeManager {
+class ThemeManager extends ChangeNotifier {
   static const String _themeKey = 'isDarkTheme';
 
   Box box = Hive.box(StorageStrings.settingDB);
@@ -12,6 +12,7 @@ class ThemeManager {
 
   void toggleTheme(bool isDark) {
     box.put(_themeKey, isDark);
+    notifyListeners();
   }
 
   ThemeData get currentTheme {

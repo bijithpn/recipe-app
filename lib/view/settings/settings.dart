@@ -2,6 +2,7 @@ import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_settings_ui/flutter_settings_ui.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import '../../core/core.dart';
 import 'package:shorebird_code_push/shorebird_code_push.dart';
 
@@ -56,8 +57,6 @@ class _SettinsgPageState extends State<SettingsPage> {
 </body>
 ''';
 
-  ThemeManager themeManager = ThemeManager();
-
   @override
   void initState() {
     super.initState();
@@ -90,6 +89,8 @@ class _SettinsgPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeManager themeManager =
+        Provider.of<ThemeManager>(context, listen: false);
     final headingStyle = Theme.of(context)
         .textTheme
         .bodyLarge!

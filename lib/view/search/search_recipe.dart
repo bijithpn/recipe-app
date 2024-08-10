@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
 import 'package:recipe_app/core/core.dart';
@@ -19,7 +18,6 @@ class SearchRecipe extends StatefulWidget {
 }
 
 class _SearchRecipeState extends State<SearchRecipe> {
-  ValueNotifier<bool> isDark = ValueNotifier(false);
   List<Map<String, String>> searchItems = [
     {'image': 'assets/images/breakfast.png', "title": "Breakfast"},
     {'image': 'assets/images/hamburger.png', "title": "Lunch"},
@@ -34,83 +32,66 @@ class _SearchRecipeState extends State<SearchRecipe> {
     {'image': 'assets/images/shortcake.png', "title": "Desserts"},
   ];
   @override
-  void initState() {
-    super.initState();
-    getTheme();
-  }
-
-  getTheme() {
-    Hive.box(StorageStrings.settingDB)
-        .watch(key: "isDarkTheme")
-        .listen((event) {
-      isDark.value = event.value;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-        valueListenable: isDark,
-        builder: (context, darkTheme, _) {
-          return Scaffold(
-              appBar: AppBar(
-                title: Text(
-                  "Search",
-                  style: Theme.of(context).textTheme.titleLarge,
+    final isDarkTheme =
+        Provider.of<ThemeManager>(context, listen: false).isDarkTheme;
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "Search",
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(50),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: AsyncSearchAnchor(isDark: isDarkTheme),
+              )),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+          child: GridView.count(
+            crossAxisCount: 4,
+            physics: const NeverScrollableScrollPhysics(),
+            mainAxisSpacing: 10,
+            childAspectRatio: .8,
+            children: List.generate(searchItems.length, (i) {
+              var tile = searchItems[i];
+              return TextButton(
+                style: TextButton.styleFrom(
+                    overlayColor: WidgetStateColor.resolveWith(
+                        (states) => Colors.transparent),
+                    elevation: 4,
+                    foregroundColor: Colors.transparent),
+                onPressed: () {},
+                iconAlignment: IconAlignment.start,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Card(
+                        elevation: 3,
+                        shadowColor: isDarkTheme
+                            ? Colors.white
+                            : ColorPalette.primary.withOpacity(.5),
+                        color: isDarkTheme
+                            ? ColorPalette.blackLight
+                            : Colors.white,
+                        shape: const CircleBorder(),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Image.asset(tile["image"]!),
+                        )),
+                    const SizedBox(height: 10),
+                    Text(
+                      tile['title']!,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
                 ),
-                bottom: PreferredSize(
-                    preferredSize: const Size.fromHeight(50),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: AsyncSearchAnchor(isDark: darkTheme),
-                    )),
-              ),
-              body: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                child: GridView.count(
-                  crossAxisCount: 4,
-                  physics: const NeverScrollableScrollPhysics(),
-                  mainAxisSpacing: 10,
-                  childAspectRatio: .8,
-                  children: List.generate(searchItems.length, (i) {
-                    var tile = searchItems[i];
-                    return TextButton(
-                      style: TextButton.styleFrom(
-                          overlayColor: WidgetStateColor.resolveWith(
-                              (states) => Colors.transparent),
-                          elevation: 4,
-                          foregroundColor: Colors.transparent),
-                      onPressed: () {},
-                      iconAlignment: IconAlignment.start,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Card(
-                              elevation: 3,
-                              shadowColor: isDark.value
-                                  ? Colors.white
-                                  : ColorPalette.primary.withOpacity(.5),
-                              color: isDark.value
-                                  ? ColorPalette.blackLight
-                                  : Colors.white,
-                              shape: const CircleBorder(),
-                              child: Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: Image.asset(tile["image"]!),
-                              )),
-                          const SizedBox(height: 10),
-                          Text(
-                            tile['title']!,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
-                ),
-              ));
-        });
+              );
+            }),
+          ),
+        ));
   }
 }
 
