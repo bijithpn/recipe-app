@@ -28,7 +28,6 @@ Future<void> main() async {
     debugPrint('Flutter Error : ${details.exception}');
     debugPrint('Flutter StackTrace :${details.stack}');
   };
-  print('test rund');
   runApp(MyApp());
 }
 
@@ -71,6 +70,7 @@ class MyApp extends StatelessWidget {
                 navigatorKey: navigatorKey,
                 title: 'Recipe App',
                 theme: myTheme,
+                debugShowCheckedModeBanner: false,
                 initialRoute: '/',
                 onGenerateRoute: RouteGenerator.generateRoute,
               );

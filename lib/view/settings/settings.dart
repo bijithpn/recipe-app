@@ -63,7 +63,9 @@ class _SettinsgPageState extends State<SettingsPage> {
     super.initState();
     initHive();
     shorebirdCodePush.currentPatchNumber().then((value) => setState(() {
-          appVersion = value.toString();
+          if (value != null) {
+            appVersion = value.toString();
+          }
         }));
   }
 
@@ -257,7 +259,7 @@ class _SettinsgPageState extends State<SettingsPage> {
           }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Text(
-        "V$appVersion",
+        "V${appVersion}",
         style: Theme.of(context)
             .textTheme
             .bodyLarge!

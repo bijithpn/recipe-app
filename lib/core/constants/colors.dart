@@ -7,4 +7,5 @@ class ColorPalette {
   static Color white = const Color(0xffFFFFFF);
   static Color greylight = const Color(0xffF0F0F0);
   static Color black = const Color(0xff000000);
+  static Color blackLight = const Color(0xff171d19);
 }
