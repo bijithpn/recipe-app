@@ -1,87 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:random_avatar/random_avatar.dart';
 import '../view.dart';
 
-import '../../core/core.dart';
 import '../../view_models/home_provider.dart';
 import '../../widgets/widgets.dart';
-
-class HomeNavigation extends StatefulWidget {
-  const HomeNavigation({super.key});
-
-  @override
-  State<HomeNavigation> createState() => _HomeNavigationState();
-}
-
-class _HomeNavigationState extends State<HomeNavigation> {
-  int _selectedIndex = 0;
-  final List<Widget> _screens = const [
-    HomeScreen(),
-    SavedRecipe(),
-    SearchRecipe(),
-    SettingsPage(),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(index: _selectedIndex, children: _screens),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 20,
-              color: Colors.black.withOpacity(.1),
-            )
-          ],
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
-            child: GNav(
-              rippleColor: Colors.grey[300]!,
-              hoverColor: Colors.grey[100]!,
-              gap: 8,
-              activeColor: ColorPalette.primary,
-              iconSize: 24,
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-              duration: const Duration(milliseconds: 400),
-              tabBackgroundColor: Colors.grey[100]!,
-              color: Colors.black,
-              tabs: const [
-                GButton(
-                  icon: Icons.home,
-                  text: 'Home',
-                ),
-                GButton(
-                  icon: Icons.bookmark,
-                  text: 'Saved',
-                ),
-                GButton(
-                  icon: Icons.search,
-                  text: 'search',
-                ),
-                GButton(
-                  icon: Icons.settings,
-                  text: 'Setting',
-                ),
-              ],
-              selectedIndex: _selectedIndex,
-              onTabChange: (index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

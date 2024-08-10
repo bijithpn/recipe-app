@@ -2,6 +2,7 @@ import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_settings_ui/flutter_settings_ui.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import '../../core/core.dart';
 import 'package:shorebird_code_push/shorebird_code_push.dart';
 
@@ -56,14 +57,14 @@ class _SettinsgPageState extends State<SettingsPage> {
 </body>
 ''';
 
-  ThemeManager themeManager = ThemeManager();
-
   @override
   void initState() {
     super.initState();
     initHive();
     shorebirdCodePush.currentPatchNumber().then((value) => setState(() {
-          appVersion = value.toString();
+          if (value != null) {
+            appVersion = value.toString();
+          }
         }));
   }
 
@@ -88,6 +89,8 @@ class _SettinsgPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeManager themeManager =
+        Provider.of<ThemeManager>(context, listen: false);
     final headingStyle = Theme.of(context)
         .textTheme
         .bodyLarge!
@@ -257,7 +260,7 @@ class _SettinsgPageState extends State<SettingsPage> {
           }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Text(
-        "V$appVersion",
+        "V${appVersion}",
         style: Theme.of(context)
             .textTheme
             .bodyLarge!

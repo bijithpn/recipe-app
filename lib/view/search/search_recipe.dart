@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:recipe_app/core/core.dart';
 import 'package:recipe_app/widgets/image_widget.dart';
 
@@ -32,17 +33,19 @@ class _SearchRecipeState extends State<SearchRecipe> {
   ];
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme =
+        Provider.of<ThemeManager>(context, listen: false).isDarkTheme;
     return Scaffold(
         appBar: AppBar(
           title: Text(
             "Search",
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          bottom: const PreferredSize(
-              preferredSize: Size.fromHeight(50),
+          bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(50),
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                child: AsyncSearchAnchor(),
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: AsyncSearchAnchor(isDark: isDarkTheme),
               )),
         ),
         body: Padding(
@@ -65,17 +68,19 @@ class _SearchRecipeState extends State<SearchRecipe> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Container(
-                        width: 60,
-                        height: 60,
-                        padding: const EdgeInsets.all(15),
-                        decoration: const BoxDecoration(boxShadow: [
-                          BoxShadow(
-                              color: Colors.grey,
-                              blurRadius: 25.0,
-                              offset: Offset(0, 5))
-                        ], color: Colors.white, shape: BoxShape.circle),
-                        child: Image.asset(tile["image"]!)),
+                    Card(
+                        elevation: 3,
+                        shadowColor: isDarkTheme
+                            ? Colors.white
+                            : ColorPalette.primary.withOpacity(.5),
+                        color: isDarkTheme
+                            ? ColorPalette.blackLight
+                            : Colors.white,
+                        shape: const CircleBorder(),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Image.asset(tile["image"]!),
+                        )),
                     const SizedBox(height: 10),
                     Text(
                       tile['title']!,
@@ -91,7 +96,11 @@ class _SearchRecipeState extends State<SearchRecipe> {
 }
 
 class AsyncSearchAnchor extends StatefulWidget {
-  const AsyncSearchAnchor({super.key});
+  final bool isDark;
+  const AsyncSearchAnchor({
+    super.key,
+    required this.isDark,
+  });
 
   @override
   State<AsyncSearchAnchor> createState() => _AsyncSearchAnchorState();
@@ -128,8 +137,16 @@ class _AsyncSearchAnchorState extends State<AsyncSearchAnchor> {
   @override
   Widget build(BuildContext context) {
     return SearchAnchor.bar(
-      barBackgroundColor: WidgetStateProperty.all(Colors.white),
-      barOverlayColor: WidgetStateProperty.all(Colors.white),
+      barLeading: Icon(
+        Icons.search,
+        color: ColorPalette.primary,
+      ),
+      barHintText: "Search recipes....",
+      viewHintText: "Search recipes....",
+      barBackgroundColor: WidgetStateProperty.all(
+          widget.isDark ? ColorPalette.blackLight : Colors.white),
+      barOverlayColor: WidgetStateProperty.all(
+          widget.isDark ? ColorPalette.blackLight : Colors.white),
       suggestionsBuilder:
           (BuildContext context, SearchController controller) async {
         final List<Map<String, dynamic>>? options =

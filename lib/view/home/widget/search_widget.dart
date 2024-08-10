@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/constants/colors.dart';
+import '../../../core/core.dart';
 import '../../../view_models/home_provider.dart';
 
 class SearchWidget extends StatefulWidget {
@@ -41,6 +41,7 @@ class _SearchWidgetState extends State<SearchWidget> {
     'Rice', 'Pasta', 'Bread', 'Cheese', 'Yogurt', 'Cream', 'Chocolate',
     'Coffee', 'Tea', 'Nuts', 'Seeds', 'Tofu', 'Beans', 'Lentils', 'Quinoa'
   ];
+
   final SearchController _searchController = SearchController();
   final List<String> _selectedIngredients = [];
   void showFilterBottomSheet(BuildContext context) {
@@ -71,6 +72,8 @@ class _SearchWidgetState extends State<SearchWidget> {
   @override
   Widget build(BuildContext context) {
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    final isDarkTheme =
+        Provider.of<ThemeManager>(context, listen: false).isDarkTheme;
     return Focus(
       autofocus: false,
       focusNode: _focusNode,
@@ -78,7 +81,8 @@ class _SearchWidgetState extends State<SearchWidget> {
       child: SearchAnchor.bar(
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.done,
-        barBackgroundColor: WidgetStateProperty.all(ColorPalette.white),
+        barBackgroundColor: WidgetStateProperty.all(
+            isDarkTheme ? ColorPalette.blackLight : ColorPalette.white),
         searchController: _searchController,
         barHintText: "Search you ingredients....",
         barLeading: Icon(Icons.search, color: ColorPalette.primary),
