@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:recipe_app/utils/utils.dart';
 
 import 'core/core.dart';
 import 'data/data.dart';
@@ -20,6 +22,7 @@ Future<void> main() async {
   await dotenv.load(fileName: ".env");
   initializeClient();
   await initHive();
+  await GetStorage.init();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -74,7 +77,12 @@ class MyApp extends StatelessWidget {
                 title: 'Recipe App',
                 theme: myTheme,
                 debugShowCheckedModeBanner: false,
-                initialRoute: '/',
+                initialRoute: (Utils.getFomLocalStorage(
+                          key: 'seenOnboarding',
+                        ) ??
+                        true)
+                    ? Routes.onboarding
+                    : Routes.home,
                 onGenerateRoute: RouteGenerator.generateRoute,
               );
             }));

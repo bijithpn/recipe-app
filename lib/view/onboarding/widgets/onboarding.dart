@@ -3,15 +3,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:recipe_app/core/core.dart';
 
-import '../pages/onboarding_page.dart';
+import '../onboarding_page.dart';
 import 'widgets.dart';
 
 class Onboarding extends StatefulWidget {
-  final double screenHeight;
-
   const Onboarding({
     super.key,
-    required this.screenHeight,
   });
 
   @override

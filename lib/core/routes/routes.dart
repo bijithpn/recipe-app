@@ -6,11 +6,13 @@ class RouteGenerator {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     final args = settings.arguments;
     switch (settings.name) {
-      case '/':
+      case Routes.home:
         return MaterialPageRoute(builder: (_) => const HomeNavigation());
-      case '/settings':
+      case Routes.onboarding:
+        return MaterialPageRoute(builder: (_) => const Onboarding());
+      case Routes.setting:
         return MaterialPageRoute(builder: (_) => const SettingsPage());
-      case '/details':
+      case Routes.details:
         if (args is String) {
           return MaterialPageRoute(
             builder: (_) => RecipeDetailsPage(recipeId: args),
@@ -20,7 +22,7 @@ class RouteGenerator {
           builder: (_) =>
               const ErrorScreen(errorMessage: 'Invalid arguments for details'),
         );
-      case '/cms':
+      case Routes.cms:
         if (args is Map<String, String>) {
           return MaterialPageRoute(
             builder: (_) => CMSContent(
@@ -40,4 +42,12 @@ class RouteGenerator {
         );
     }
   }
+}
+
+class Routes {
+  static const String cms = '/cms';
+  static const String details = '/details';
+  static const String setting = '/settings';
+  static const String onboarding = '/onBoarding';
+  static const String home = '/';
 }
