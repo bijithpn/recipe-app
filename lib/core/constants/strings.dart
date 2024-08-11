@@ -1,4 +1,5 @@
 class AppStrings {
+  static const appName = "Recipe App";
   static const noInternet =
       'No internet connection. Please check your connection.';
   static const connectionTimeout =
