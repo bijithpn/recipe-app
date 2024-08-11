@@ -42,7 +42,7 @@ class _RecipeCardState extends State<RecipeCard> {
       onTap: () {
         Navigator.pushNamed(
           context,
-          '/details',
+          Routes.details,
           arguments: widget.recipe.id.toString(),
         );
       },

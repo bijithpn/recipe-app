@@ -201,7 +201,7 @@ class _SettinsgPageState extends State<SettingsPage> {
                       onPressed: (context) {
                         Navigator.pushNamed(
                           context,
-                          '/cms',
+                          Routes.cms,
                           arguments: {'title': "About Us", 'content': aboutUs},
                         );
                       },
@@ -216,7 +216,7 @@ class _SettinsgPageState extends State<SettingsPage> {
                       onPressed: (context) {
                         Navigator.pushNamed(
                           context,
-                          '/cms',
+                          Routes.cms,
                           arguments: {
                             'title': "Privacy policy",
                             'content': privacy
@@ -234,7 +234,7 @@ class _SettinsgPageState extends State<SettingsPage> {
                       onPressed: (context) {
                         Navigator.pushNamed(
                           context,
-                          '/cms',
+                          Routes.cms,
                           arguments: {
                             'title': 'Terms of Service',
                             'content': terms

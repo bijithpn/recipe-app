@@ -38,7 +38,7 @@ class _SavedRecipeCardState extends State<SavedRecipeCard> {
       onTap: () {
         Navigator.pushNamed(
           context,
-          '/details',
+          Routes.details,
           arguments: widget.recipe.id.toString(),
         );
       },

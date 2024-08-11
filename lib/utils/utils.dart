@@ -1,4 +1,7 @@
+import 'package:get_storage/get_storage.dart';
 import 'package:html/parser.dart' as html_parser;
+
+final storageBox = GetStorage();
 
 class Utils {
   static String removeHtmlTags(String htmlString) {
@@ -32,5 +35,16 @@ class Utils {
       processedHtmlData = summary;
     }
     return processedHtmlData;
+  }
+
+  static void saveToLocalStorage({required String key, required dynamic data}) {
+    storageBox.write(
+      key,
+      data,
+    );
+  }
+
+  static dynamic getFomLocalStorage({required String key}) {
+    return storageBox.read(key);
   }
 }

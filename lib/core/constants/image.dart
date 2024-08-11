@@ -9,6 +9,9 @@ class AssetsImages {
   static const emptyState = 'assets/images/empty.png';
   static const noInternet = 'assets/images/no_connection.png';
   static const emptySave = 'assets/images/empty_saves.jpg';
+  static const onboarding1 = 'assets/images/onboarding1.png';
+  static const onboarding2 = 'assets/images/onboarding2.png';
+  static const onboarding3 = 'assets/images/onboarding3.png';
 }
 
 class LottieAssets {
