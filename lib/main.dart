@@ -67,9 +67,6 @@ class MyApp extends StatelessWidget {
           create: (_) => ThemeManager(),
         ),
         ChangeNotifierProvider(
-          create: (_) => DetailsProvider(),
-        ),
-        ChangeNotifierProvider(
           create: (_) => SearchProvider(),
         ),
         ChangeNotifierProvider(

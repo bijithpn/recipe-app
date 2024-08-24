@@ -42,8 +42,8 @@ class InstructionViewer extends StatelessWidget {
                         )
                       ]),
                 ),
-                const SizedBox(height: 10),
                 if (step.ingredients.isNotEmpty) ...[
+                  const SizedBox(height: 10),
                   Text('Ingredients:',
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                           fontWeight: FontWeight.bold,
@@ -179,10 +179,7 @@ class InstructionViewer extends StatelessWidget {
                       const SizedBox(width: 8),
                       Text(
                           'Cooking Time: ${step.length?.number} ${step.length?.unit}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge!
-                              .copyWith(color: Colors.black54)),
+                          style: Theme.of(context).textTheme.bodyLarge),
                     ],
                   ),
               ],

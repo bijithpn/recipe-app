@@ -19,7 +19,6 @@ export 'onboarding/widgets/text_column.dart';
 export 'onboarding/widgets/text_section.dart';
 export 'onboarding/widgets/widgets.dart';
 export 'recipe/details.dart';
-export 'recipe/widget/details_error.dart';
 export 'recipe/widget/ingredients_viewer.dart';
 export 'recipe/widget/instruction_viewer.dart';
 export 'recipe/widget/tips_viewer.dart';

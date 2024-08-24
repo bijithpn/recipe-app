@@ -29,33 +29,22 @@ class _RecipeCardState extends State<RecipeCard> {
 
   @override
   void initState() {
-    Provider.of<HomeProvider>(context, listen: false)
-        .recipeDb
-        .recipeExists(widget.recipe.id)
-        .then((value) => setState(() {
-              isSaved = value;
-            }));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<HomeProvider>(context, listen: false)
+          .recipeDb
+          .recipeExists(widget.recipe.id)
+          .then((value) => setState(() {
+                isSaved = value;
+              }));
+    });
     super.initState();
-  }
-
-  final ContainerTransitionType _transitionType =
-      ContainerTransitionType.fadeThrough;
-
-  void _showMarkedAsDoneSnackbar(bool? isMarkedAsDone) {
-    if (isMarkedAsDone ?? false) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Marked as done!'),
-      ));
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<HomeProvider>(context, listen: false);
-    return _OpenContainerWrapper(
+    return OpenContainerWrapper(
         recipe: widget.recipe,
-        transitionType: _transitionType,
-        onClosed: _showMarkedAsDoneSnackbar,
         closedBuilder: (BuildContext _, VoidCallback openContainer) {
           return Card(
             elevation: 3,
@@ -237,36 +226,32 @@ class _RecipeCardState extends State<RecipeCard> {
   }
 }
 
-class _OpenContainerWrapper extends StatelessWidget {
-  const _OpenContainerWrapper({
-    Key? key,
+class OpenContainerWrapper extends StatelessWidget {
+  const OpenContainerWrapper({
+    super.key,
     required this.recipe,
     required this.closedBuilder,
-    required this.transitionType,
-    required this.onClosed,
-  }) : super(key: key);
+  });
 
   final Recipe recipe;
   final CloseContainerBuilder closedBuilder;
-  final ContainerTransitionType transitionType;
-  final ClosedCallback<bool?> onClosed;
-
   @override
   Widget build(BuildContext context) {
-    return OpenContainer<bool>(
-      openElevation: 0,
-      closedElevation: 0,
-      openColor: Colors.transparent,
-      closedColor: Colors.transparent,
-      transitionType: transitionType,
-      openBuilder: (BuildContext context, VoidCallback _) {
-        return RecipeDetailsPage(
-          recipe: recipe,
-        );
-      },
-      onClosed: onClosed,
-      tappable: true,
-      closedBuilder: closedBuilder,
+    return RepaintBoundary(
+      child: OpenContainer(
+        openElevation: 0,
+        closedElevation: 0,
+        openColor: Colors.transparent,
+        closedColor: Colors.transparent,
+        transitionDuration: const Duration(milliseconds: 250),
+        openBuilder: (BuildContext context, VoidCallback _) {
+          return RecipeDetailsPage(
+            recipe: recipe,
+          );
+        },
+        tappable: true,
+        closedBuilder: closedBuilder,
+      ),
     );
   }
 }

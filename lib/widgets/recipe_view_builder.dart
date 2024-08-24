@@ -51,7 +51,7 @@ class _RecipeViewBuilderState extends State<RecipeViewBuilder> {
                     position: index,
                     columnCount: 2,
                     child: SlideAnimation(
-                      verticalOffset: 50.0,
+                      verticalOffset: 25.0,
                       curve: Curves.easeOutCubic,
                       child: FadeInAnimation(
                         delay: const Duration(milliseconds: 100),
