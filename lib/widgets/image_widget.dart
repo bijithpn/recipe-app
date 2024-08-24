@@ -35,6 +35,7 @@ class ImageWidget extends StatelessWidget {
     return CachedNetworkImage(
       width: width,
       height: height,
+      useOldImageOnUrlChange: true,
       fit: fit,
       imageUrl: imageUrl,
       imageBuilder: imagePlaceholder ??

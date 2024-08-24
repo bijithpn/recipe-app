@@ -64,7 +64,17 @@ class _RecipeCardState extends State<RecipeCard> {
                         child: ImageWidget(
                           width: double.infinity,
                           imageUrl: widget.recipe.image,
-                          height: 145,
+                          imagePlaceholder: (context, imageProvider) =>
+                              Container(
+                            width: double.infinity,
+                            height: 145,
+                            decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                    topRight: Radius.circular(10),
+                                    topLeft: Radius.circular(10)),
+                                image: DecorationImage(
+                                    image: imageProvider, fit: BoxFit.cover)),
+                          ),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -243,7 +253,6 @@ class OpenContainerWrapper extends StatelessWidget {
         closedElevation: 0,
         openColor: Colors.transparent,
         closedColor: Colors.transparent,
-        transitionDuration: const Duration(milliseconds: 250),
         openBuilder: (BuildContext context, VoidCallback _) {
           return RecipeDetailsPage(
             recipe: recipe,

@@ -12,8 +12,8 @@ class RecipeRepository {
     try {
       final res = await apiClient.get(ApiEndpoint.getRecipes, queryParameters: {
         "limitLicense": true,
-        "number": 15,
-        "include-tags": "lunch"
+        "number": 45,
+        "include-tags": "breakfast,lunch,dinner"
       });
       return res.data['recipes'] ?? <dynamic>[];
     } catch (e) {
