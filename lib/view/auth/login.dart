@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:provider/provider.dart';
 
 import '../../core/core.dart';
+import '../../view_models/view_models.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -18,11 +20,20 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
+            Text(
+              "Find your next favorite recipe.\nSign in to start cooking!",
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                  letterSpacing: .5,
+                  height: 1.5),
+            ),
             FormBuilder(
               key: _formKey,
               child: Column(
@@ -84,7 +95,10 @@ class _LoginState extends State<Login> {
                   ),
                   const SizedBox(height: 10),
                   ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      Provider.of<AuthProvider>(context, listen: false)
+                          .signInWithGoogle();
+                    },
                     icon: Image.asset(
                       AssetsImages.google,
                       width: 40,

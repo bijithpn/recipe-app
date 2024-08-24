@@ -1,10 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:recipe_app/core/core.dart';
+import 'package:recipe_app/view_models/view_models.dart';
 
-import '../onboarding_page.dart';
-import 'widgets.dart';
+import 'widgets/onboarding_page.dart';
+import 'widgets/widgets.dart';
 
 class Onboarding extends StatefulWidget {
   const Onboarding({
@@ -182,7 +184,8 @@ class _OnboardingState extends State<Onboarding> with TickerProviderStateMixin {
         }
         break;
       case 3:
-        print('print page ');
+        Navigator.pushReplacementNamed(context, Routes.boarding);
+        await Provider.of<AuthProvider>(context, listen: false).markAsOpened();
     }
   }
 
@@ -200,7 +203,13 @@ class _OnboardingState extends State<Onboarding> with TickerProviderStateMixin {
                   Align(
                     alignment: Alignment.topRight,
                     child: TextButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          Navigator.pushReplacementNamed(
+                              context, Routes.boarding);
+                          await Provider.of<AuthProvider>(context,
+                                  listen: false)
+                              .markAsOpened();
+                        },
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [

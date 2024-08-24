@@ -1,4 +1,5 @@
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -7,11 +8,11 @@ import 'package:get_storage/get_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:recipe_app/utils/utils.dart';
 
 import 'core/core.dart';
 import 'data/data.dart';
 import 'db/db.dart';
+import 'firebase_options.dart';
 import 'view_models/view_models.dart';
 
 final getIt = GetIt.instance;
@@ -19,6 +20,9 @@ final navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await dotenv.load(fileName: ".env");
   initializeClient();
   await initHive();
@@ -55,36 +59,50 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (context) => HomeProvider(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => ThemeManager(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => DetailsProvider(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => SearchProvider(),
-          ),
-        ],
-        child: ThemeProvider(
-            initTheme: themeManager.currentTheme,
-            builder: (_, myTheme) {
-              return MaterialApp(
-                navigatorKey: navigatorKey,
-                title: 'Recipe App',
-                theme: myTheme,
-                debugShowCheckedModeBanner: false,
-                initialRoute: (Utils.getFomLocalStorage(
-                          key: 'seenOnboarding',
-                        ) ??
-                        true)
-                    ? Routes.onboarding
-                    : Routes.home,
-                onGenerateRoute: RouteGenerator.generateRoute,
-              );
-            }));
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => HomeProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ThemeManager(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => DetailsProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => SearchProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(),
+        ),
+      ],
+      child: ThemeProvider(
+        initTheme: themeManager.currentTheme,
+        builder: (_, myTheme) {
+          return MaterialApp(
+            navigatorKey: navigatorKey,
+            title: AppStrings.appName,
+            theme: myTheme,
+            debugShowCheckedModeBanner: false,
+            initialRoute: '/',
+            onGenerateRoute: RouteGenerator.generateRoute,
+          );
+        },
+      ),
+    );
   }
 }
+
+// class InitialRouteWidget extends StatelessWidget {
+//   const InitialRouteWidget({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final authProvider = Provider.of<AuthProvider>(context, listen: false);
+//     String initialRoute = authProvider.getIntialPath(context);
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//       Navigator.of(context).pushReplacementNamed(initialRoute);
+//     });
+//     return const SizedBox.shrink();
+//   }
+// }

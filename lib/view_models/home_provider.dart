@@ -21,7 +21,7 @@ class HomeProvider extends ChangeNotifier {
   List<String> selectedDiets = [];
   List<String> selectedDishTypes = [];
 
-  Future<void> getRecipes() async {
+  Future<List<Recipe>?> getRecipes() async {
     homeState = HomeState.isLoading;
     notifyListeners();
     try {
@@ -30,6 +30,7 @@ class HomeProvider extends ChangeNotifier {
       dishTypes = _getDishTypes(recipeList);
       dietTypes = _getDiets(recipeList);
       notifyListeners();
+      return recipeList;
     } catch (error) {
       if (error is DioException) {
         notificationService.showSnackBar(
@@ -43,6 +44,7 @@ class HomeProvider extends ChangeNotifier {
       homeState = HomeState.home;
       notifyListeners();
     }
+    return null;
   }
 
   Future<void> searchRecipe(String ingredients) async {
@@ -86,7 +88,7 @@ class HomeProvider extends ChangeNotifier {
     homeState = HomeState.filter;
     filteredRecipeList = recipeList.where((recipe) {
       final matchesDishType = selectedDishTypes.isEmpty ||
-          recipe.dishTypes!.any(selectedDishTypes.contains);
+          recipe.dishTypes.any(selectedDishTypes.contains);
       final matchesDiet =
           selectedDiets.isEmpty || recipe.diets!.any(selectedDiets.contains);
       return matchesDishType && matchesDiet;
@@ -95,10 +97,7 @@ class HomeProvider extends ChangeNotifier {
   }
 
   List<String> _getDishTypes(List<Recipe> recipes) {
-    return recipes
-        .expand((recipe) => recipe.dishTypes ?? <String>[])
-        .toSet()
-        .toList();
+    return recipes.expand((recipe) => recipe.dishTypes).toSet().toList();
   }
 
   List<String> _getDiets(List<Recipe> recipes) {

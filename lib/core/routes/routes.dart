@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../view/view.dart';
 
 class RouteGenerator {
@@ -10,18 +9,24 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const HomeNavigation());
       case Routes.onboarding:
         return MaterialPageRoute(builder: (_) => const Onboarding());
+      case Routes.login:
+        return MaterialPageRoute(builder: (_) => const Login());
+      case Routes.register:
+        return MaterialPageRoute(builder: (_) => const Register());
+      case Routes.boarding:
+        return MaterialPageRoute(builder: (_) => const AuthScreen());
       case Routes.setting:
         return MaterialPageRoute(builder: (_) => const SettingsPage());
-      case Routes.details:
-        if (args is String) {
-          return MaterialPageRoute(
-            builder: (_) => RecipeDetailsPage(recipeId: args),
-          );
-        }
-        return MaterialPageRoute(
-          builder: (_) =>
-              const ErrorScreen(errorMessage: 'Invalid arguments for details'),
-        );
+      // case Routes.details:
+      //   if (args is String) {
+      //     return MaterialPageRoute(
+      //       builder: (_) => RecipeDetailsPage(),
+      //     );
+      //   }
+      //   return MaterialPageRoute(
+      //     builder: (_) =>
+      //         const ErrorScreen(errorMessage: 'Invalid arguments for details'),
+      //   );
       case Routes.cms:
         if (args is Map<String, String>) {
           return MaterialPageRoute(
@@ -47,7 +52,10 @@ class RouteGenerator {
 class Routes {
   static const String cms = '/cms';
   static const String details = '/details';
-  static const String setting = '/settings';
-  static const String onboarding = '/onBoarding';
   static const String home = '/';
+  static const String login = '/login';
+  static const String onboarding = '/onBoarding';
+  static const String register = '/register';
+  static const String boarding = '/boarding';
+  static const String setting = '/settings';
 }

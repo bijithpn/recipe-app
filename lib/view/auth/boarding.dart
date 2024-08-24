@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../core/core.dart';
+import '../../view_models/view_models.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -70,35 +72,42 @@ class _AuthScreenState extends State<AuthScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  ElevatedButton.icon(
-                      icon: Container(
-                        margin: const EdgeInsets.all(4),
-                        width: 40,
-                        height: 40,
-                        decoration: const BoxDecoration(
-                            shape: BoxShape.circle, color: Colors.white),
-                        child: Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 18,
-                          color: ColorPalette.primary,
-                        ),
-                      ),
-                      iconAlignment: IconAlignment.end,
+                  ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.zero,
                           backgroundColor: Colors.black,
                           minimumSize: const Size(double.infinity, 50),
                           maximumSize: const Size(double.infinity, 50)),
-                      onPressed: () {},
-                      label: Expanded(
-                        child: Text(
-                          "            Get Started ",
-                          textAlign: TextAlign.center,
-                          style:
-                              Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(context, Routes.login);
+                      },
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "Get Started",
+                              textAlign: TextAlign.start,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
-                        ),
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.all(4),
+                            width: 40,
+                            height: 40,
+                            decoration: const BoxDecoration(
+                                shape: BoxShape.circle, color: Colors.white),
+                            child: Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 18,
+                              color: ColorPalette.primary,
+                            ),
+                          ),
+                        ],
                       )),
                   OutlinedButton(
                       style: ElevatedButton.styleFrom(
@@ -107,13 +116,37 @@ class _AuthScreenState extends State<AuthScreen> {
                               BorderSide(color: ColorPalette.primary, width: 2),
                           minimumSize: const Size(double.infinity, 50),
                           maximumSize: const Size(double.infinity, 50)),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(
+                            context, Routes.register);
+                      },
                       child: Text(
                         "Sign UP",
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                             fontWeight: FontWeight.bold,
                             color: ColorPalette.primary),
-                      ))
+                      )),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          backgroundColor: ColorPalette.primary,
+                          minimumSize: const Size(double.infinity, 50),
+                          maximumSize: const Size(double.infinity, 50)),
+                      onPressed: () async {
+                        var status = await Provider.of<AuthProvider>(context,
+                                listen: false)
+                            .signInAnonymously();
+                        if (context.mounted && status) {
+                          Navigator.pushReplacementNamed(context, Routes.home);
+                        }
+                      },
+                      child: Text(
+                        "Guest Login",
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      )),
                 ],
               ),
             ),

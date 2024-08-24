@@ -49,8 +49,8 @@ class DetailsErrorWidget extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: ColorPalette.primary),
                     onPressed: () {
-                      Provider.of<DetailsProvider>(context, listen: false)
-                          .getDetails(recipeId);
+                      // Provider.of<DetailsProvider>(context, listen: false)
+                      //     .getDetails(recipeId);
                     },
                     child: Text(
                       "Try again",

@@ -1,3 +1,5 @@
+import 'package:recipe_app/data/data.dart';
+
 import '../../core/constants/api_config.dart';
 import '../../main.dart';
 import '../models/details.dart';
@@ -20,15 +22,15 @@ class RecipeRepository {
     }
   }
 
-  Future<RecipeDetail?> getRecipeDetails(String id) async {
-    try {
-      final res = await apiClient
-          .get(ApiEndpoint.details, queryParameters: {"ids": id});
-      return RecipeDetail.fromJson(res.data[0]);
-    } catch (e) {
-      rethrow;
-    }
-  }
+  // Future<Recipe?> getRecipeDetails(String id) async {
+  //   try {
+  //     final res = await apiClient
+  //         .get(ApiEndpoint.details, queryParameters: {"ids": id});
+  //     return Recipe.fromJson(res.data[0]);
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
 
   Future<List<dynamic>> searchByIngredients(String ingredients) async {
     try {
