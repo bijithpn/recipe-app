@@ -27,6 +27,8 @@ class _RegisterState extends State<Register> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Text(
+                  "New here? Create an account to save your favorite recipes."),
               FormBuilder(
                 key: _formKey,
                 child: Column(

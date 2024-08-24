@@ -1,6 +1,7 @@
+import 'package:recipe_app/data/data.dart';
+
 import '../../core/constants/api_config.dart';
 import '../../main.dart';
-import '../models/details.dart';
 import '../services/api_service.dart';
 
 class RecipeRepository {
@@ -15,16 +16,6 @@ class RecipeRepository {
         "include-tags": "lunch"
       });
       return res.data['recipes'] ?? <dynamic>[];
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<RecipeDetail?> getRecipeDetails(String id) async {
-    try {
-      final res = await apiClient
-          .get(ApiEndpoint.details, queryParameters: {"ids": id});
-      return RecipeDetail.fromJson(res.data[0]);
     } catch (e) {
       rethrow;
     }

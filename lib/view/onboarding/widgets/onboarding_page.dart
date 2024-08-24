@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'widgets/cards_stack.dart';
+import 'cards_stack.dart';
 
 class OnboardingPage extends StatelessWidget {
   final int number;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import '../view/home/widget/recipe_card.dart';
 
@@ -19,28 +20,44 @@ class _RecipeViewBuilderState extends State<RecipeViewBuilder> {
       padding: const EdgeInsets.all(10),
       sliver: widget.recipeList.isEmpty
           ? SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  Image.asset(
-                    AssetsImages.emptyState,
-                    height: 250,
+              child: Center(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        AssetsImages.emptyState,
+                        height: 250,
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        AppStrings.noRecipe,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            letterSpacing: .6, fontWeight: FontWeight.bold),
+                      )
+                    ],
                   ),
-                  const SizedBox(height: 10),
-                  Text(
-                    AppStrings.noRecipe,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        letterSpacing: .6, fontWeight: FontWeight.bold),
-                  )
-                ],
+                ),
               ),
             )
           : SliverMasonryGrid(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
                   var recipe = widget.recipeList[index];
-                  return GridTile(
-                    child: RecipeCard(recipe: recipe),
+                  return AnimationConfiguration.staggeredGrid(
+                    position: index,
+                    columnCount: 2,
+                    child: SlideAnimation(
+                      verticalOffset: 25.0,
+                      curve: Curves.easeOutCubic,
+                      child: FadeInAnimation(
+                        delay: const Duration(milliseconds: 100),
+                        child: RecipeCard(recipe: recipe),
+                      ),
+                    ),
                   );
                 },
                 childCount: widget.recipeList.length,
