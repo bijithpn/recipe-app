@@ -17,16 +17,18 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const AuthScreen());
       case Routes.setting:
         return MaterialPageRoute(builder: (_) => const SettingsPage());
-      // case Routes.details:
-      //   if (args is String) {
-      //     return MaterialPageRoute(
-      //       builder: (_) => RecipeDetailsPage(),
-      //     );
-      //   }
-      //   return MaterialPageRoute(
-      //     builder: (_) =>
-      //         const ErrorScreen(errorMessage: 'Invalid arguments for details'),
-      //   );
+      case Routes.details:
+        if (args is String) {
+          return MaterialPageRoute(
+            builder: (_) => RecipeDetailsPage(
+              recipeId: args,
+            ),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) =>
+              const ErrorScreen(errorMessage: 'Invalid arguments for details'),
+        );
       case Routes.cms:
         if (args is Map<String, String>) {
           return MaterialPageRoute(

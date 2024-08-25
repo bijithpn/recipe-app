@@ -17,26 +17,28 @@ import '../../widgets/widgets.dart';
 import 'widget/widget.dart';
 
 class RecipeDetailsPage extends StatefulWidget {
-  final Recipe recipe;
+  const RecipeDetailsPage({super.key, this.recipe, this.recipeId});
 
-  const RecipeDetailsPage({super.key, required this.recipe});
+  final Recipe? recipe;
+  final String? recipeId;
 
   @override
   State<RecipeDetailsPage> createState() => _RecipeDetailsPageState();
 }
 
 class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
+  bool isSaved = false;
+  final notificationService = NotificationService();
+  final recipeDb = getIt<RecipeDatabase>();
+  ValueNotifier<double> scrollOffset = ValueNotifier(0.0);
+  late Future<Recipe?> _futureDetails;
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<HomeProvider>(context, listen: false)
-          .recipeDb
-          .recipeExists(widget.recipe.id)
-          .then((value) => setState(() {
-                isSaved = value;
-              }));
-    });
     super.initState();
+    if (widget.recipe != null || widget.recipeId != null) {
+      _futureDetails = RecipeRepository().getRecipeDetails(
+          widget.recipeId?.toString() ?? widget.recipe?.id.toString() ?? "");
+    }
   }
 
   Future<void> shareRecipe(Recipe recipeDetail) async {
@@ -69,23 +71,23 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
     }
   }
 
-  Future<void> onSavePress() async {
+  Future<void> onSavePress(Recipe recipe) async {
     try {
       if (isSaved) {
-        await recipeDb.deleteRecipe(int.parse(widget.recipe.id.toString()));
+        await recipeDb.deleteRecipe(int.parse(recipe.id.toString()));
         if (mounted) {
           notificationService.showSnackBar(
               context: context, message: "Recipe removed");
         }
       } else {
-        var json = widget.recipe.toJson();
+        var json = recipe.toJson();
         await recipeDb.addOrUpdateRecipe(RecipeDB.fromJson(json));
         if (mounted) {
           notificationService.showSnackBar(
               context: context, message: "Recipe added");
         }
       }
-      isSaved = await recipeDb.recipeExists(widget.recipe.id);
+      isSaved = await recipeDb.recipeExists(recipe.id);
     } catch (error) {
       if (mounted) {
         notificationService.showSnackBar(
@@ -95,16 +97,15 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
     setState(() {});
   }
 
-  final recipeDb = getIt<RecipeDatabase>();
-  final notificationService = NotificationService();
-  bool isSaved = false;
-  ValueNotifier<double> scrollOffset = ValueNotifier(0.0);
-  @override
-  Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-    ));
+  Widget buildDetailsView(Recipe recipe) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<HomeProvider>(context, listen: false)
+          .recipeDb
+          .recipeExists(recipe.id)
+          .then((value) => setState(() {
+                isSaved = value;
+              }));
+    });
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
         if (scrollNotification is ScrollUpdateNotification) {
@@ -137,7 +138,7 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                     },
                   ),
                   title: Text(
-                    widget.recipe.title,
+                    recipe.title,
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                         fontWeight: FontWeight.bold,
                         color: value > 170 ? Colors.black : Colors.white),
@@ -153,7 +154,7 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                         isSaved ? Icons.bookmark : Icons.bookmark_outline,
                         color: ColorPalette.primary,
                       ),
-                      onPressed: () => onSavePress,
+                      onPressed: () => onSavePress(recipe),
                     ),
                   ],
                 );
@@ -165,7 +166,8 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
             Stack(
               children: [
                 ImageWidget(
-                  imageUrl: widget.recipe.image,
+                  height: 300,
+                  imageUrl: recipe.image,
                   imagePlaceholder: (context, imageProvider) => Container(
                     width: double.infinity,
                     height: 300,
@@ -206,13 +208,13 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                       height: 4,
                     ),
                     HtmlWidget(
-                      Utils.clearSummaryText(widget.recipe.summary),
+                      Utils.clearSummaryText(recipe.summary),
                       textStyle: Theme.of(context).textTheme.bodyLarge,
                     ),
                     const SizedBox(
                       height: 16,
                     ),
-                    if (widget.recipe.extendedIngredients.isNotEmpty)
+                    if (recipe.extendedIngredients.isNotEmpty)
                       Text(
                         'Ingredients',
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
@@ -223,12 +225,12 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                       height: 10,
                     ),
                     IncredientsViewer(
-                      ingredients: widget.recipe.extendedIngredients,
+                      ingredients: recipe.extendedIngredients,
                     ),
                     const SizedBox(
                       height: 16,
                     ),
-                    if (widget.recipe.analyzedInstructions.isNotEmpty)
+                    if (recipe.analyzedInstructions.isNotEmpty)
                       Text(
                         'Instructions',
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
@@ -242,10 +244,10 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       padding: EdgeInsets.zero,
-                      itemCount: widget.recipe.analyzedInstructions.length,
+                      itemCount: recipe.analyzedInstructions.length,
                       itemBuilder: (_, i) {
                         return InstructionViewer(
-                          instruction: widget.recipe.analyzedInstructions[i],
+                          instruction: recipe.analyzedInstructions[i],
                         );
                       },
                     ),
@@ -259,7 +261,7 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: ElevatedButton.icon(
             onPressed: () async {
-              await shareRecipe(widget.recipe);
+              await shareRecipe(recipe);
             },
             style: ElevatedButton.styleFrom(
                 padding:
@@ -278,5 +280,52 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
             )),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+    ));
+
+    if (widget.recipe != null) {
+      return buildDetailsView(widget.recipe!);
+    } else if (widget.recipeId != null) {
+      return Container(
+        color: Colors.white,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: FutureBuilder<Recipe?>(
+          future: _futureDetails,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: LottieLoader());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (snapshot.hasData) {
+              return buildDetailsView(snapshot.data!);
+            } else {
+              return Center(
+                  child: Text(
+                'No details available.',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ));
+            }
+          },
+        ),
+      );
+    } else {
+      return Container(
+        color: Colors.white,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Center(
+            child: Text(
+          'No product ID provided.',
+          style: Theme.of(context).textTheme.bodyLarge,
+        )),
+      );
+    }
   }
 }
