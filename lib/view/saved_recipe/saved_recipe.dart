@@ -15,11 +15,6 @@ class SavedRecipe extends StatefulWidget {
 class _SavedRecipeState extends State<SavedRecipe> {
   List<RecipeDB> savedRecipe = [];
   final recipeDb = getIt<RecipeDatabase>();
-  @override
-  void initState() {
-    getSavedList();
-    super.initState();
-  }
 
   getSavedList() async {
     savedRecipe = await recipeDb.getAllRecipes();
@@ -28,6 +23,9 @@ class _SavedRecipeState extends State<SavedRecipe> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getSavedList();
+    });
     return Scaffold(
       appBar: AppBar(
         title: Text("Saved",

@@ -1,4 +1,5 @@
-import 'package:animations/animations.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,7 +9,7 @@ import '../../../core/core.dart';
 import '../../../data/data.dart';
 import '../../../db/db.dart';
 import '../../../view_models/view_models.dart';
-import '../../../widgets/image_widget.dart';
+import '../../../widgets/widgets.dart';
 import 'widget.dart';
 
 class RecipeCard extends StatefulWidget {
@@ -63,6 +64,7 @@ class _RecipeCardState extends State<RecipeCard> {
                             topRight: Radius.circular(12)),
                         child: ImageWidget(
                           width: double.infinity,
+                          height: 145,
                           imageUrl: widget.recipe.image,
                           imagePlaceholder: (context, imageProvider) =>
                               Container(
@@ -93,9 +95,9 @@ class _RecipeCardState extends State<RecipeCard> {
                                       message: "Recipe removed");
                                 }
                               } else {
-                                var json = widget.recipe.toJson();
-                                await provider.recipeDb
-                                    .addOrUpdateRecipe(RecipeDB.fromJson(json));
+                                var json = widget.recipe.toPrettyJson();
+                                await provider.recipeDb.addOrUpdateRecipe(
+                                    RecipeDB.fromJson(jsonDecode(json)));
                                 if (context.mounted) {
                                   notificationService.showSnackBar(
                                       context: context,
@@ -233,34 +235,5 @@ class _RecipeCardState extends State<RecipeCard> {
             ),
           );
         });
-  }
-}
-
-class OpenContainerWrapper extends StatelessWidget {
-  const OpenContainerWrapper({
-    super.key,
-    required this.recipe,
-    required this.closedBuilder,
-  });
-
-  final Recipe recipe;
-  final CloseContainerBuilder closedBuilder;
-  @override
-  Widget build(BuildContext context) {
-    return RepaintBoundary(
-      child: OpenContainer(
-        openElevation: 0,
-        closedElevation: 0,
-        openColor: Colors.transparent,
-        closedColor: Colors.transparent,
-        openBuilder: (BuildContext context, VoidCallback _) {
-          return RecipeDetailsPage(
-            recipe: recipe,
-          );
-        },
-        tappable: true,
-        closedBuilder: closedBuilder,
-      ),
-    );
   }
 }

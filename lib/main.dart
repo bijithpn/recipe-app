@@ -42,6 +42,11 @@ Future<void> initHive() async {
   final appDocumentDir = await getApplicationDocumentsDirectory();
   Hive.init(appDocumentDir.path);
   Hive.registerAdapter(RecipeDBAdapter());
+  Hive.registerAdapter(ExtendedIngredientAdapter());
+  Hive.registerAdapter(AnalyzedInstructionAdapter());
+  Hive.registerAdapter(InstructionStepAdapter());
+  Hive.registerAdapter(IngredientAdapter());
+  Hive.registerAdapter(EquipmentAdapter());
   await Hive.openBox(StorageStrings.settingDB);
 }
 
