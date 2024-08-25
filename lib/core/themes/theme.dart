@@ -27,6 +27,7 @@ class ThemeManager extends ChangeNotifier {
     useMaterial3: true,
     brightness: Brightness.light,
     scaffoldBackgroundColor: ColorPalette.scaffoldBg,
+    iconTheme: IconThemeData(color: Colors.black),
     appBarTheme: AppBarTheme(
         backgroundColor: ColorPalette.scaffoldBg,
         foregroundColor: ColorPalette.scaffoldBg,

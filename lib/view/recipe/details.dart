@@ -167,6 +167,7 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
               children: [
                 ImageWidget(
                   height: 300,
+                  width: double.infinity,
                   imageUrl: recipe.image,
                   imagePlaceholder: (context, imageProvider) => Container(
                     width: double.infinity,

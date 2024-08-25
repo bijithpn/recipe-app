@@ -14,6 +14,7 @@ class AssetsImages {
   static const onboarding2 = 'assets/images/onboarding2.png';
   static const onboarding3 = 'assets/images/onboarding3.png';
   static const veg = 'assets/images/veg_icon.png';
+  static const errorImage = 'assets/images/error_image.jpg';
 }
 
 class LottieAssets {

@@ -8,7 +8,7 @@ import 'package:recipe_app/widgets/image_widget.dart';
 
 import '../../view_models/view_models.dart';
 
-const Duration debounceDuration = Duration(milliseconds: 350);
+const Duration debounceDuration = Duration(milliseconds: 250);
 
 class SearchRecipe extends StatefulWidget {
   const SearchRecipe({super.key});
@@ -63,7 +63,10 @@ class _SearchRecipeState extends State<SearchRecipe> {
                         (states) => Colors.transparent),
                     elevation: 4,
                     foregroundColor: Colors.transparent),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, Routes.searchTile,
+                      arguments: tile['title']);
+                },
                 iconAlignment: IconAlignment.start,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

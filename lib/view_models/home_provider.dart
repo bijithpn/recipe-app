@@ -21,16 +21,14 @@ class HomeProvider extends ChangeNotifier {
   List<String> selectedDiets = [];
   List<String> selectedDishTypes = [];
 
-  Future<List<Recipe>?> getRecipes() async {
+  Future<List<Recipe>> getRecipes() async {
     homeState = HomeState.isLoading;
     notifyListeners();
     try {
-      final temp = await recipeRepository.getRecipes();
-      temp.map((e) => recipeList.add(Recipe.fromJson(e))).toList();
+      recipeList = await recipeRepository.getRecipes();
       dishTypes = _getDishTypes(recipeList);
       dietTypes = _getDiets(recipeList);
       notifyListeners();
-      return recipeList;
     } catch (error) {
       if (error is DioException) {
         notificationService.showSnackBar(
@@ -44,7 +42,7 @@ class HomeProvider extends ChangeNotifier {
       homeState = HomeState.home;
       notifyListeners();
     }
-    return null;
+    return recipeList;
   }
 
   Future<void> searchRecipe(String ingredients) async {

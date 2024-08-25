@@ -17,6 +17,9 @@ class _HomeNavigationState extends State<HomeNavigation> {
   final List<Widget> _screens = const [
     HomeScreen(),
     SavedRecipe(),
+    Center(
+      child: Text("Meal Planner"),
+    ),
     SearchRecipe(),
     SettingsPage(),
   ];
