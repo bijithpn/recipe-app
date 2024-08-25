@@ -68,6 +68,10 @@ class _HomeNavigationState extends State<HomeNavigation> {
                       text: 'Saved',
                     ),
                     GButton(
+                      icon: Icons.restaurant,
+                      text: 'Meals Planner',
+                    ),
+                    GButton(
                       icon: Icons.search,
                       text: 'search',
                     ),

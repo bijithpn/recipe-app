@@ -69,6 +69,32 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
     }
   }
 
+  Future<void> onSavePress() async {
+    try {
+      if (isSaved) {
+        await recipeDb.deleteRecipe(int.parse(widget.recipe.id.toString()));
+        if (mounted) {
+          notificationService.showSnackBar(
+              context: context, message: "Recipe removed");
+        }
+      } else {
+        var json = widget.recipe.toJson();
+        await recipeDb.addOrUpdateRecipe(RecipeDB.fromJson(json));
+        if (mounted) {
+          notificationService.showSnackBar(
+              context: context, message: "Recipe added");
+        }
+      }
+      isSaved = await recipeDb.recipeExists(widget.recipe.id);
+    } catch (error) {
+      if (mounted) {
+        notificationService.showSnackBar(
+            context: context, message: error.toString());
+      }
+    }
+    setState(() {});
+  }
+
   final recipeDb = getIt<RecipeDatabase>();
   final notificationService = NotificationService();
   bool isSaved = false;
@@ -87,202 +113,147 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
         return true;
       },
       child: Scaffold(
-        body: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              expandedHeight: 250.0,
-              floating: false,
-              pinned: true,
-              leading: IconButton(
-                style: IconButton.styleFrom(
-                  shape: const CircleBorder(),
-                  backgroundColor: Colors.white,
-                ),
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: ColorPalette.primary,
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              actions: [
-                IconButton(
-                  style: IconButton.styleFrom(
-                    shape: const CircleBorder(),
-                    backgroundColor: Colors.white,
-                  ),
-                  icon: Icon(
-                    isSaved ? Icons.bookmark : Icons.bookmark_outline,
-                    color: ColorPalette.primary,
-                  ),
-                  onPressed: () async {
-                    try {
-                      if (isSaved) {
-                        await recipeDb.deleteRecipe(
-                            int.parse(widget.recipe.id.toString()));
-                        if (context.mounted) {
-                          notificationService.showSnackBar(
-                              context: context, message: "Recipe removed");
-                        }
-                      } else {
-                        var json = widget.recipe.toJson();
-                        await recipeDb
-                            .addOrUpdateRecipe(RecipeDB.fromJson(json));
-                        if (context.mounted) {
-                          notificationService.showSnackBar(
-                              context: context, message: "Recipe added");
-                        }
-                      }
-                      isSaved = await recipeDb.recipeExists(widget.recipe.id);
-                    } catch (error) {
-                      if (context.mounted) {
-                        notificationService.showSnackBar(
-                            context: context, message: error.toString());
-                      }
-                    }
-                    setState(() {});
-                  },
-                ),
-              ],
-              flexibleSpace: FlexibleSpaceBar(
-                collapseMode: CollapseMode.pin,
-                title: ValueListenableBuilder(
-                  valueListenable: scrollOffset,
-                  builder: (_, value, child) {
-                    if (value > 165) {
-                      return child!;
-                    }
-                    return const SizedBox();
-                  },
-                  child: Text(
-                    widget.recipe.title,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                ),
-                background: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    ImageWidget(
-                      imageUrl: widget.recipe.image,
-                      imagePlaceholder: (context, imageProvider) => Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: imageProvider, fit: BoxFit.cover)),
-                      ),
-                      fit: BoxFit.cover,
+        extendBody: true,
+        extendBodyBehindAppBar: true,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(60),
+          child: ValueListenableBuilder(
+              valueListenable: scrollOffset,
+              builder: (_, value, child) {
+                return AppBar(
+                  backgroundColor:
+                      value > 170 ? Colors.white : Colors.transparent,
+                  leading: IconButton(
+                    style: IconButton.styleFrom(
+                      shape: const CircleBorder(),
+                      backgroundColor: Colors.white,
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.black.withOpacity(0.3),
-                            Colors.transparent,
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: ColorPalette.primary,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  title: Text(
+                    widget.recipe.title,
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: value > 170 ? Colors.black : Colors.white),
+                  ),
+                  centerTitle: true,
+                  actions: [
+                    IconButton(
+                      style: IconButton.styleFrom(
+                        shape: const CircleBorder(),
+                        backgroundColor: Colors.white,
                       ),
+                      icon: Icon(
+                        isSaved ? Icons.bookmark : Icons.bookmark_outline,
+                        color: ColorPalette.primary,
+                      ),
+                      onPressed: () => onSavePress,
                     ),
                   ],
+                );
+              }),
+        ),
+        body: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            Stack(
+              children: [
+                ImageWidget(
+                  imageUrl: widget.recipe.image,
+                  imagePlaceholder: (context, imageProvider) => Container(
+                    width: double.infinity,
+                    height: 300,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: imageProvider, fit: BoxFit.cover)),
+                  ),
+                  fit: BoxFit.cover,
                 ),
-              ),
-            ),
-            SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(widget.recipe.title,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge!
-                                .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                )),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Text(
-                              "source: ${widget.recipe.sourceName}",
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                            const Spacer(),
-                            Icon(
-                              Icons.recommend,
-                              color: ColorPalette.primary,
-                              size: 30,
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              "${widget.recipe.healthScore}",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Text('Description',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge!
-                                .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                )),
-                        const SizedBox(height: 4),
-                        HtmlWidget(
-                          Utils.clearSummaryText(widget.recipe.summary),
-                          textStyle: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                        const SizedBox(height: 16),
-                        if (widget.recipe.extendedIngredients.isNotEmpty)
-                          Text('Ingredients',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge!
-                                  .copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                        const SizedBox(height: 10),
-                        IncredientsViewer(
-                          ingredients: widget.recipe.extendedIngredients,
-                        ),
-                        const SizedBox(height: 16),
-                        if (widget.recipe.analyzedInstructions.isNotEmpty)
-                          Text('Instructions',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge!
-                                  .copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                        const SizedBox(height: 10),
-                        ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            padding: EdgeInsets.zero,
-                            itemCount:
-                                widget.recipe.analyzedInstructions.length,
-                            itemBuilder: (_, i) {
-                              return InstructionViewer(
-                                instruction:
-                                    widget.recipe.analyzedInstructions[i],
-                              );
-                            }),
-                        const SizedBox(height: 55),
+                Container(
+                  width: double.infinity,
+                  height: 300,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.black.withOpacity(0.5),
+                        Colors.transparent,
                       ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+            Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Description',
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    HtmlWidget(
+                      Utils.clearSummaryText(widget.recipe.summary),
+                      textStyle: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    if (widget.recipe.extendedIngredients.isNotEmpty)
+                      Text(
+                        'Ingredients',
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    IncredientsViewer(
+                      ingredients: widget.recipe.extendedIngredients,
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    if (widget.recipe.analyzedInstructions.isNotEmpty)
+                      Text(
+                        'Instructions',
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      itemCount: widget.recipe.analyzedInstructions.length,
+                      itemBuilder: (_, i) {
+                        return InstructionViewer(
+                          instruction: widget.recipe.analyzedInstructions[i],
+                        );
+                      },
+                    ),
+                    const SizedBox(
+                      height: 55,
+                    ),
+                  ],
+                )),
           ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
