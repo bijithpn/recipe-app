@@ -17,16 +17,30 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const AuthScreen());
       case Routes.setting:
         return MaterialPageRoute(builder: (_) => const SettingsPage());
-      // case Routes.details:
-      //   if (args is String) {
-      //     return MaterialPageRoute(
-      //       builder: (_) => RecipeDetailsPage(),
-      //     );
-      //   }
-      //   return MaterialPageRoute(
-      //     builder: (_) =>
-      //         const ErrorScreen(errorMessage: 'Invalid arguments for details'),
-      //   );
+      case Routes.details:
+        if (args is String) {
+          return MaterialPageRoute(
+            builder: (_) => RecipeDetailsPage(
+              recipeId: args,
+            ),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) =>
+              const ErrorScreen(errorMessage: 'Invalid arguments for details'),
+        );
+      case Routes.searchTile:
+        if (args is String) {
+          return MaterialPageRoute(
+            builder: (_) => SearchTileScreen(
+              tag: args,
+            ),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) => const ErrorScreen(
+              errorMessage: 'Invalid arguments for searchTile'),
+        );
       case Routes.cms:
         if (args is Map<String, String>) {
           return MaterialPageRoute(
@@ -58,4 +72,5 @@ class Routes {
   static const String register = '/register';
   static const String boarding = '/boarding';
   static const String setting = '/settings';
+  static const String searchTile = '/searchTile';
 }

@@ -160,7 +160,7 @@ class InstructionViewer extends StatelessWidget {
                                   ),
                                 ),
                                 title: Text(
-                                  equipment.localizedName,
+                                  equipment.name,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyLarge!

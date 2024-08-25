@@ -134,7 +134,7 @@ class ApiClient {
 
   Future<bool> _hasInternetConnection() async {
     final connectivityResult = await Connectivity().checkConnectivity();
-    return connectivityResult != ConnectivityResult.none;
+    return connectivityResult.first != ConnectivityResult.none;
   }
 
   void _handleError(DioException error, BuildContext context) {
@@ -176,8 +176,10 @@ class ApiClient {
   }
 
   void _initializeNetworkListener() {
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      _isNetworkAvailable = result != ConnectivityResult.none;
+    Connectivity()
+        .onConnectivityChanged
+        .listen((List<ConnectivityResult> result) {
+      _isNetworkAvailable = result.first != ConnectivityResult.none;
       if (_isNetworkAvailable) {
         Future.delayed(Duration.zero, () {
           if (navigatorKey.currentContext != null) {

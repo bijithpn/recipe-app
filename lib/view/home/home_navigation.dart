@@ -17,6 +17,9 @@ class _HomeNavigationState extends State<HomeNavigation> {
   final List<Widget> _screens = const [
     HomeScreen(),
     SavedRecipe(),
+    Center(
+      child: Text("Meal Planner"),
+    ),
     SearchRecipe(),
     SettingsPage(),
   ];
@@ -66,6 +69,10 @@ class _HomeNavigationState extends State<HomeNavigation> {
                     GButton(
                       icon: Icons.bookmark,
                       text: 'Saved',
+                    ),
+                    GButton(
+                      icon: Icons.restaurant,
+                      text: 'Meals Planner',
                     ),
                     GButton(
                       icon: Icons.search,

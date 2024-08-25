@@ -2,20 +2,34 @@ import 'package:recipe_app/data/data.dart';
 
 import '../../core/constants/api_config.dart';
 import '../../main.dart';
-import '../services/api_service.dart';
 
 class RecipeRepository {
   RecipeRepository();
   final apiClient = getIt<ApiClient>();
 
-  Future<List<dynamic>> getRecipes() async {
+  Future<List<Recipe>> getRecipes(
+      {String tags = "breakfast,lunch,dinner"}) async {
     try {
+      List<Recipe> recipeList = [];
       final res = await apiClient.get(ApiEndpoint.getRecipes, queryParameters: {
         "limitLicense": true,
-        "number": 15,
-        "include-tags": "lunch"
+        "number": 45,
+        "include-tags": tags.toLowerCase()
       });
-      return res.data['recipes'] ?? <dynamic>[];
+      res.data['recipes']
+          .map((e) => recipeList.add(Recipe.fromJson(e)))
+          .toList();
+      return recipeList;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Recipe?> getRecipeDetails(String id) async {
+    try {
+      final res = await apiClient
+          .get(ApiEndpoint.details, queryParameters: {"ids": id});
+      return Recipe.fromJson(res.data[0]);
     } catch (e) {
       rethrow;
     }

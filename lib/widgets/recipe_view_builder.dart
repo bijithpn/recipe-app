@@ -50,6 +50,7 @@ class _RecipeViewBuilderState extends State<RecipeViewBuilder> {
                   return AnimationConfiguration.staggeredGrid(
                     position: index,
                     columnCount: 2,
+                    delay: const Duration(microseconds: 50),
                     child: SlideAnimation(
                       verticalOffset: 25.0,
                       curve: Curves.easeOutCubic,

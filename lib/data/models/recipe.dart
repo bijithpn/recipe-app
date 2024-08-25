@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'recipe.g.dart';
@@ -17,7 +19,7 @@ class Recipe {
   final int servings;
   final String sourceUrl;
   final String image;
-  final String imageType;
+  final String? imageType;
   final String summary;
   final List<String> cuisines;
   final List<String> dishTypes;
@@ -43,7 +45,7 @@ class Recipe {
     required this.servings,
     required this.sourceUrl,
     required this.image,
-    required this.imageType,
+    this.imageType,
     required this.summary,
     required this.cuisines,
     required this.dishTypes,
@@ -73,7 +75,7 @@ class Recipe {
         servings: json['servings'] as int? ?? 0,
         sourceUrl: json['sourceUrl'] as String? ?? '',
         image: json['image'] as String? ?? '',
-        imageType: json['imageType'] as String? ?? '',
+        imageType: json['imageType'] ?? 'jpg',
         summary: json['summary'] as String? ?? '',
         cuisines: (json['cuisines'] as List<dynamic>?)
                 ?.map((e) => e as String)
@@ -103,6 +105,10 @@ class Recipe {
       );
 
   Map<String, dynamic> toJson() => _$RecipeToJson(this);
+
+  String toPrettyJson() {
+    return const JsonEncoder.withIndent('  ').convert(toJson());
+  }
 }
 
 @JsonSerializable()

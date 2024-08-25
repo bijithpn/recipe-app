@@ -8,7 +8,7 @@ import 'package:recipe_app/widgets/image_widget.dart';
 
 import '../../view_models/view_models.dart';
 
-const Duration debounceDuration = Duration(milliseconds: 350);
+const Duration debounceDuration = Duration(milliseconds: 250);
 
 class SearchRecipe extends StatefulWidget {
   const SearchRecipe({super.key});
@@ -63,7 +63,10 @@ class _SearchRecipeState extends State<SearchRecipe> {
                         (states) => Colors.transparent),
                     elevation: 4,
                     foregroundColor: Colors.transparent),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, Routes.searchTile,
+                      arguments: tile['title']);
+                },
                 iconAlignment: IconAlignment.start,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -154,21 +157,40 @@ class _AsyncSearchAnchorState extends State<AsyncSearchAnchor> {
         if (options == null) {
           return _lastOptions;
         }
-        _lastOptions = List<ListTile>.generate(options.length, (int index) {
+        _lastOptions = List<Widget>.generate(options.length, (int index) {
           final String item = options[index]['title'];
           final String type = options[index]['imageType'];
           final int id = options[index]['id'];
-          return ListTile(
-            leading: ImageWidget(
-              width: 70,
-              height: 70,
-              imageUrl: "${ApiConfig.imageUrl}recipes/$id-312x231.$type",
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            child: ListTile(
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  Routes.details,
+                  arguments: id.toString(),
+                );
+              },
+              minVerticalPadding: 3,
+              leading: ImageWidget(
+                width: 70,
+                height: 70,
+                imageUrl: "${ApiConfig.imageUrl}recipes/$id-312x231.$type",
+              ),
+              title: Text(
+                item,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge!
+                    .copyWith(fontWeight: FontWeight.bold),
+              ),
+              trailing: const Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 20,
+              ),
             ),
-            title: Text(
-              item,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            trailing: const Icon(Icons.arrow_forward_ios_rounded),
           );
         });
 

@@ -22,7 +22,7 @@ Recipe _$RecipeFromJson(Map<String, dynamic> json) => Recipe(
       servings: (json['servings'] as num).toInt(),
       sourceUrl: json['sourceUrl'] as String,
       image: json['image'] as String,
-      imageType: json['imageType'] as String,
+      imageType: json['imageType'] as String?,
       summary: json['summary'] as String,
       cuisines:
           (json['cuisines'] as List<dynamic>).map((e) => e as String).toList(),
