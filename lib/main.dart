@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:recipe_app/data/api/auth_api.dart';
 
 import 'core/core.dart';
-import 'data/data.dart';
+import 'data/services/api_service.dart';
 import 'data/services/notification_service.dart';
 import 'db/db.dart';
 import 'firebase_options.dart';
