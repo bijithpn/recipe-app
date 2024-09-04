@@ -86,13 +86,13 @@ class _AuthScreenState extends State<AuthScreen> {
                           Expanded(
                             child: Text(
                               "Get Started",
-                              textAlign: TextAlign.start,
+                              textAlign: TextAlign.center,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge!
                                   .copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
                             ),
                           ),
                           Container(
@@ -145,6 +145,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                               fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                       )),
                 ],

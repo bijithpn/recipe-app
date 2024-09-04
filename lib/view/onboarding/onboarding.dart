@@ -184,7 +184,7 @@ class _OnboardingState extends State<Onboarding> with TickerProviderStateMixin {
         }
         break;
       case 3:
-        Navigator.pushReplacementNamed(context, Routes.boarding);
+        Navigator.pushReplacementNamed(context, Routes.authScreen);
         await Provider.of<AuthProvider>(context, listen: false).markAsOpened();
     }
   }
@@ -205,7 +205,7 @@ class _OnboardingState extends State<Onboarding> with TickerProviderStateMixin {
                     child: TextButton(
                         onPressed: () async {
                           Navigator.pushReplacementNamed(
-                              context, Routes.boarding);
+                              context, Routes.authScreen);
                           await Provider.of<AuthProvider>(context,
                                   listen: false)
                               .markAsOpened();

@@ -1,7 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:recipe_app/core/constants/colors.dart';
+import 'package:provider/provider.dart';
+import 'package:recipe_app/core/core.dart';
+import 'package:recipe_app/view_models/auth_provider.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -14,178 +17,320 @@ class _RegisterState extends State<Register> {
   final _formKey = GlobalKey<FormBuilderState>();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  void _navigateToTerms(BuildContext context) {
+    Navigator.pushNamed(
+      context,
+      Routes.cms,
+      arguments: {'title': 'Terms of Service', 'content': AppStrings.terms},
+    );
+  }
+
+  void _navigateToPrivacyPolicy(BuildContext context) {
+    Navigator.pushNamed(
+      context,
+      Routes.cms,
+      arguments: {'title': "Privacy policy", 'content': AppStrings.privacy},
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Register'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                  "New here? Create an account to save your favorite recipes."),
-              FormBuilder(
-                key: _formKey,
+      resizeToAvoidBottomInset: false,
+      extendBody: true,
+      body: SizedBox(
+        height: size.height,
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                height: 350,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 25, vertical: 90),
+                width: size.width,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black,
+                      Colors.black.withOpacity(0.8),
+                    ],
+                  ),
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: const AssetImage(AssetsImages.loginImage),
+                    colorFilter: ColorFilter.mode(
+                      Colors.black.withOpacity(0.5),
+                      BlendMode.darken,
+                    ),
+                  ),
+                ),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Name Field
-                    FormBuilderTextField(
-                      name: 'name',
-                      decoration: const InputDecoration(
-                        labelText: 'Name',
-                        prefixIcon: Icon(Icons.person),
-                        border: OutlineInputBorder(),
-                      ),
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(),
-                      ]),
+                    Text(
+                      "New here",
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontSize: 36,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
                     ),
-                    const SizedBox(height: 20),
-                    // Date of Birth Field
-                    FormBuilderDateTimePicker(
-                      name: 'dob',
-                      initialDate: DateTime(2000),
-                      inputType: InputType.date,
-                      decoration: const InputDecoration(
-                        labelText: 'Date of Birth',
-                        prefixIcon: Icon(Icons.calendar_today),
-                        border: OutlineInputBorder(),
-                      ),
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(),
-                      ]),
-                    ),
-                    const SizedBox(height: 20),
-                    // Email Field
-                    FormBuilderTextField(
-                      name: 'email',
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        prefixIcon: Icon(Icons.email),
-                        border: OutlineInputBorder(),
-                      ),
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(),
-                        FormBuilderValidators.email(),
-                      ]),
-                    ),
-                    const SizedBox(height: 20),
-                    // Password Field with Show/Hide Button
-                    FormBuilderTextField(
-                      name: 'password',
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        prefixIcon: const Icon(Icons.lock),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscurePassword
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _obscurePassword = !_obscurePassword;
-                            });
-                          },
-                        ),
-                        border: const OutlineInputBorder(),
-                      ),
-                      obscureText: _obscurePassword,
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(),
-                        FormBuilderValidators.minLength(6),
-                      ]),
-                    ),
-                    const SizedBox(height: 20),
-                    // Confirm Password Field with Show/Hide Button
-                    FormBuilderTextField(
-                      name: 'confirm_password',
-                      decoration: InputDecoration(
-                        labelText: 'Confirm Password',
-                        prefixIcon: const Icon(Icons.lock),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscureConfirmPassword
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _obscureConfirmPassword =
-                                  !_obscureConfirmPassword;
-                            });
-                          },
-                        ),
-                        border: const OutlineInputBorder(),
-                      ),
-                      obscureText: _obscureConfirmPassword,
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(),
-                        FormBuilderValidators.minLength(6),
-                        (val) {
-                          if (_formKey.currentState != null) {
-                            if (val !=
-                                _formKey.currentState!.value['password']) {
-                              return 'Passwords do not match';
-                            }
-                          }
-                          return null;
-                        },
-                      ]),
-                    ),
-                    const SizedBox(height: 20),
-                    // Register Button
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.saveAndValidate()) {
-                          final name = _formKey.currentState!.value['name'];
-                          final dob = _formKey.currentState!.value['dob'];
-                          final email = _formKey.currentState!.value['email'];
-                          final password =
-                              _formKey.currentState!.value['password'];
-                          print(
-                              'Name: $name, DOB: $dob, Email: $email, Password: $password');
-                          // Handle registration logic
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(),
-                      child: Text('Register',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge!
-                              .copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 10),
+                    Text(
+                      "Create an account to save your favorite recipes.",
+                      textAlign: TextAlign.start,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          fontWeight: FontWeight.bold, color: Colors.white),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
-              // Already have an account? Login link
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Already have an account? ",
-                    style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: SingleChildScrollView(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
                   ),
-                  TextButton(
-                    onPressed: () {
-                      // Navigate to Login Screen
-                    },
-                    child: Text('Login here',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium!
-                            .copyWith(color: ColorPalette.primary)),
+                  width: size.width,
+                  height: size.height * .65,
+                  decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          topRight: Radius.circular(30))),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        FormBuilder(
+                          key: _formKey,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              FormBuilderTextField(
+                                name: 'name',
+                                decoration: const InputDecoration(
+                                  labelText: 'Name',
+                                  prefixIcon: Icon(Icons.person),
+                                  border: OutlineInputBorder(),
+                                ),
+                                validator: FormBuilderValidators.compose([
+                                  FormBuilderValidators.required(),
+                                ]),
+                              ),
+                              const SizedBox(height: 10),
+                              FormBuilderTextField(
+                                name: 'email',
+                                decoration: const InputDecoration(
+                                  labelText: 'Email',
+                                  prefixIcon: Icon(Icons.email),
+                                  border: OutlineInputBorder(),
+                                ),
+                                validator: FormBuilderValidators.compose([
+                                  FormBuilderValidators.required(),
+                                  FormBuilderValidators.email(),
+                                ]),
+                              ),
+                              const SizedBox(height: 10),
+                              FormBuilderTextField(
+                                name: 'password',
+                                decoration: InputDecoration(
+                                  labelText: 'Password',
+                                  prefixIcon: const Icon(Icons.lock),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _obscurePassword
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscurePassword = !_obscurePassword;
+                                      });
+                                    },
+                                  ),
+                                  border: const OutlineInputBorder(),
+                                ),
+                                obscureText: _obscurePassword,
+                                validator: FormBuilderValidators.compose([
+                                  FormBuilderValidators.required(),
+                                  FormBuilderValidators.minLength(6),
+                                ]),
+                              ),
+                              const SizedBox(height: 10),
+                              FormBuilderTextField(
+                                name: 'confirm_password',
+                                decoration: InputDecoration(
+                                  labelText: 'Confirm Password',
+                                  prefixIcon: const Icon(Icons.lock),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _obscureConfirmPassword
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscureConfirmPassword =
+                                            !_obscureConfirmPassword;
+                                      });
+                                    },
+                                  ),
+                                  border: const OutlineInputBorder(),
+                                ),
+                                obscureText: _obscureConfirmPassword,
+                                validator: FormBuilderValidators.compose([
+                                  FormBuilderValidators.required(),
+                                  FormBuilderValidators.minLength(6),
+                                  (val) {
+                                    if (_formKey.currentState != null) {
+                                      if (val !=
+                                          _formKey.currentState!
+                                              .value['password']) {
+                                        return 'Passwords do not match';
+                                      }
+                                    }
+                                    return null;
+                                  },
+                                ]),
+                              ),
+                              const SizedBox(height: 10),
+                              FormBuilderRadioGroup<String>(
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                ),
+                                name: 'terms_and_conditions',
+                                options: [
+                                  FormBuilderFieldOption(
+                                    value: 'agree',
+                                    child: RichText(
+                                      text: TextSpan(
+                                        text: 'I agree to the ',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge,
+                                        children: [
+                                          TextSpan(
+                                            text: 'Terms and Conditions',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyLarge!
+                                                .copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: ColorPalette.primary,
+                                                ),
+                                            recognizer: TapGestureRecognizer()
+                                              ..onTap = () =>
+                                                  _navigateToTerms(context),
+                                          ),
+                                          TextSpan(
+                                            text: ' and ',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyLarge,
+                                          ),
+                                          TextSpan(
+                                            text: 'Privacy Policy',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyLarge!
+                                                .copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: ColorPalette.primary,
+                                                ),
+                                            recognizer: TapGestureRecognizer()
+                                              ..onTap = () =>
+                                                  _navigateToPrivacyPolicy(
+                                                      context),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                                validator: FormBuilderValidators.compose([
+                                  FormBuilderValidators.required(),
+                                  FormBuilderValidators.equal(
+                                    'agree',
+                                    errorText:
+                                        'You must agree to the terms and conditions',
+                                  ),
+                                ]),
+                              ),
+                              const SizedBox(height: 20),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: ColorPalette.primary,
+                                    minimumSize:
+                                        const Size(double.infinity, 45)),
+                                onPressed: () {
+                                  if (_formKey.currentState!
+                                      .saveAndValidate()) {
+                                    final name =
+                                        _formKey.currentState!.value['name'];
+                                    final email =
+                                        _formKey.currentState!.value['email'];
+                                    final password = _formKey
+                                        .currentState!.value['password'];
+                                    authProvider.signUpWithEmail(
+                                        email: email,
+                                        name: name,
+                                        password: password);
+                                  }
+                                },
+                                child: Text('Register',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .copyWith(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold)),
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Already have an account?",
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                  TextButton(
+                                    style: TextButton.styleFrom(
+                                        padding: EdgeInsets.zero),
+                                    onPressed: () => Navigator.pushNamed(
+                                        context, Routes.login),
+                                    child: Text('Login',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(
+                                                color: ColorPalette.primary)),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ],
+                ),
               ),
-            ],
-          ),
+            )
+          ],
         ),
       ),
     );

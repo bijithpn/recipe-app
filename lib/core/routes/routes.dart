@@ -13,7 +13,7 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const Login());
       case Routes.register:
         return MaterialPageRoute(builder: (_) => const Register());
-      case Routes.boarding:
+      case Routes.authScreen:
         return MaterialPageRoute(builder: (_) => const AuthScreen());
       case Routes.setting:
         return MaterialPageRoute(builder: (_) => const SettingsPage());
@@ -70,7 +70,7 @@ class Routes {
   static const String login = '/login';
   static const String onboarding = '/onBoarding';
   static const String register = '/register';
-  static const String boarding = '/boarding';
+  static const String authScreen = '/authScreen';
   static const String setting = '/settings';
   static const String searchTile = '/searchTile';
 }

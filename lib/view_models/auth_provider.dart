@@ -2,28 +2,30 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hive/hive.dart';
+import 'package:recipe_app/data/api/auth_api.dart';
+import 'package:recipe_app/utils/utils.dart';
 
 import '../core/core.dart';
 
 class AuthProvider with ChangeNotifier {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   User? _user;
-  bool _isFirstTime = true;
+  bool? _isFirstTime = Utils.getFomLocalStorage(key: StorageStrings.firstTime);
+  final _authApi = AuthApi();
 
   AuthProvider() {
     _checkFirstTime();
-    _auth.authStateChanges().listen(_onAuthStateChanged);
+    _authApi.auth.authStateChanges().listen(_onAuthStateChanged);
   }
 
   User? get user => _user;
-  bool get isFirstTime => _isFirstTime;
+  bool? get isFirstTime => _isFirstTime;
 
   String getIntialPath(BuildContext context) {
-    if (isFirstTime) {
+    if (isFirstTime == null) {
       return Routes.onboarding;
     }
     if (user == null || isSessionExpired) {
-      return Routes.boarding;
+      return Routes.authScreen;
     } else {
       return Routes.home;
     }
@@ -45,7 +47,15 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> signInWithEmail(String email, String password) async {
-    await _auth.signInWithEmailAndPassword(email: email, password: password);
+    await _authApi.login(email, password);
+    _startSession();
+  }
+
+  Future<void> signUpWithEmail(
+      {required String name,
+      required String email,
+      required String password}) async {
+    await _authApi.signup(name, email, password);
     _startSession();
   }
 
@@ -65,7 +75,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<bool> signInAnonymously() async {
     try {
-      await _auth.signInAnonymously();
+      await _authApi.signInAnonymously();
       return true;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
@@ -93,7 +103,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> signOut() async {
-    await _auth.signOut();
+    await _authApi.signout();
     notifyListeners();
   }
 }
