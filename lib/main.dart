@@ -8,9 +8,11 @@ import 'package:get_storage/get_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:recipe_app/data/api/auth_api.dart';
 
 import 'core/core.dart';
 import 'data/data.dart';
+import 'data/services/notification_service.dart';
 import 'db/db.dart';
 import 'firebase_options.dart';
 import 'view_models/view_models.dart';
@@ -24,7 +26,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await dotenv.load(fileName: ".env");
-  initializeClient();
+  await initializeClient();
   await initHive();
   await GetStorage.init();
   SystemChrome.setPreferredOrientations([
@@ -50,10 +52,14 @@ Future<void> initHive() async {
   await Hive.openBox(StorageStrings.settingDB);
 }
 
-void initializeClient() async {
+Future<void> initializeClient() async {
   final apiClient = ApiClient();
+  final authApi = AuthApi();
+  final notificatonService = NotificationService();
   getIt.registerSingleton<RecipeDatabase>(RecipeDatabase.instance);
   getIt.registerSingleton<ApiClient>(apiClient);
+  getIt.registerSingleton<AuthApi>(authApi);
+  getIt.registerSingleton<NotificationService>(notificatonService);
 }
 
 class MyApp extends StatelessWidget {
@@ -81,13 +87,15 @@ class MyApp extends StatelessWidget {
       child: ThemeProvider(
         initTheme: themeManager.currentTheme,
         builder: (_, myTheme) {
-          return MaterialApp(
-            navigatorKey: navigatorKey,
+          return MaterialApp.router(
             title: AppStrings.appName,
+            routeInformationParser:
+                RouteGenerator.router.routeInformationParser,
+            routerDelegate: RouteGenerator.router.routerDelegate,
+            routeInformationProvider:
+                RouteGenerator.router.routeInformationProvider,
             theme: myTheme,
             debugShowCheckedModeBanner: false,
-            initialRoute: '/',
-            onGenerateRoute: RouteGenerator.generateRoute,
           );
         },
       ),
@@ -97,7 +105,6 @@ class MyApp extends StatelessWidget {
 
 // class InitialRouteWidget extends StatelessWidget {
 //   const InitialRouteWidget({super.key});
-
 //   @override
 //   Widget build(BuildContext context) {
 //     final authProvider = Provider.of<AuthProvider>(context, listen: false);

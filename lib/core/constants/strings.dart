@@ -1,4 +1,5 @@
 class AppStrings {
+  AppStrings._();
   static const String appName = "Recipe App";
   static const String noInternet =
       'No internet connection. Please check your connection.';

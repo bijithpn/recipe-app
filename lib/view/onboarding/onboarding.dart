@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:recipe_app/core/core.dart';
-import 'package:recipe_app/view_models/view_models.dart';
+import 'package:recipe_app/utils/utils.dart';
 
 import 'widgets/onboarding_page.dart';
 import 'widgets/widgets.dart';
@@ -184,8 +184,9 @@ class _OnboardingState extends State<Onboarding> with TickerProviderStateMixin {
         }
         break;
       case 3:
-        Navigator.pushReplacementNamed(context, Routes.authScreen);
-        await Provider.of<AuthProvider>(context, listen: false).markAsOpened();
+        context.go(Routes.authScreen);
+        Utils.saveToLocalStorage(key: StorageStrings.firstTime, data: false);
+        break;
     }
   }
 
@@ -204,11 +205,9 @@ class _OnboardingState extends State<Onboarding> with TickerProviderStateMixin {
                     alignment: Alignment.topRight,
                     child: TextButton(
                         onPressed: () async {
-                          Navigator.pushReplacementNamed(
-                              context, Routes.authScreen);
-                          await Provider.of<AuthProvider>(context,
-                                  listen: false)
-                              .markAsOpened();
+                          context.go(Routes.authScreen);
+                          Utils.saveToLocalStorage(
+                              key: StorageStrings.firstTime, data: false);
                         },
                         child: Row(
                           mainAxisSize: MainAxisSize.min,

@@ -1,10 +1,15 @@
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_settings_ui/flutter_settings_ui.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+import 'package:recipe_app/core/routes/routes.dart';
+import 'package:recipe_app/data/api/auth_api.dart';
 import '../../core/core.dart';
 import 'package:shorebird_code_push/shorebird_code_push.dart';
+
+import '../../main.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -219,6 +224,20 @@ class _SettinsgPageState extends State<SettingsPage> {
                       ),
                       onPressed: (context) async {
                         await checkForUpdates();
+                      },
+                    ),
+                    SettingsTile.navigation(
+                      leading: Icon(Icons.logout_outlined,
+                          color: ColorPalette.primary),
+                      title: Text(
+                        'Logout',
+                        style: subHeadingStyle,
+                      ),
+                      onPressed: (context) async {
+                        await getIt<AuthApi>().signout();
+                        if (context.mounted) {
+                          context.go(Routes.login);
+                        }
                       },
                     ),
                   ],

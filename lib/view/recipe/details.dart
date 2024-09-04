@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:recipe_app/main.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../data/services/notification_service.dart';
 import '../../utils/utils.dart';
 import 'package:http/http.dart' as http;
 import '../../core/core.dart';
@@ -28,7 +29,7 @@ class RecipeDetailsPage extends StatefulWidget {
 
 class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
   bool isSaved = false;
-  final notificationService = NotificationService();
+  final notificationService = getIt<NotificationService>();
   final recipeDb = getIt<RecipeDatabase>();
   ValueNotifier<double> scrollOffset = ValueNotifier(0.0);
   late Future<Recipe?> _futureDetails;

@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:recipe_app/main.dart';
 
 import '../../../core/core.dart';
 import '../../../data/data.dart';
+import '../../../data/services/notification_service.dart';
 import '../../../db/db.dart';
 import '../../../view_models/view_models.dart';
 import '../../../widgets/widgets.dart';
@@ -32,7 +34,7 @@ class _SavedRecipeCardState extends State<SavedRecipeCard> {
     super.initState();
   }
 
-  final notificationService = NotificationService();
+  final notificationService = getIt<NotificationService>();
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<HomeProvider>(context, listen: false);

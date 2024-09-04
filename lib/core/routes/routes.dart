@@ -1,69 +1,98 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:recipe_app/data/api/auth_api.dart';
+import 'package:recipe_app/main.dart';
+
+import '../../utils/utils.dart';
 import '../../view/view.dart';
+import '../core.dart';
 
 class RouteGenerator {
-  static Route<dynamic>? generateRoute(RouteSettings settings) {
-    final args = settings.arguments;
-    switch (settings.name) {
-      case Routes.home:
-        return MaterialPageRoute(builder: (_) => const HomeNavigation());
-      case Routes.onboarding:
-        return MaterialPageRoute(builder: (_) => const Onboarding());
-      case Routes.login:
-        return MaterialPageRoute(builder: (_) => const Login());
-      case Routes.register:
-        return MaterialPageRoute(builder: (_) => const Register());
-      case Routes.authScreen:
-        return MaterialPageRoute(builder: (_) => const AuthScreen());
-      case Routes.setting:
-        return MaterialPageRoute(builder: (_) => const SettingsPage());
-      case Routes.details:
-        if (args is String) {
-          return MaterialPageRoute(
-            builder: (_) => RecipeDetailsPage(
-              recipeId: args,
-            ),
-          );
-        }
-        return MaterialPageRoute(
-          builder: (_) =>
-              const ErrorScreen(errorMessage: 'Invalid arguments for details'),
-        );
-      case Routes.searchTile:
-        if (args is String) {
-          return MaterialPageRoute(
-            builder: (_) => SearchTileScreen(
-              tag: args,
-            ),
-          );
-        }
-        return MaterialPageRoute(
-          builder: (_) => const ErrorScreen(
-              errorMessage: 'Invalid arguments for searchTile'),
-        );
-      case Routes.cms:
-        if (args is Map<String, String>) {
-          return MaterialPageRoute(
-            builder: (_) => CMSContent(
-              title: args['title'] ?? "",
-              content: args['content'] ?? "",
-            ),
-          );
-        }
-        return MaterialPageRoute(
-          builder: (_) =>
-              const ErrorScreen(errorMessage: 'Invalid arguments for cms'),
-        );
-      default:
-        return MaterialPageRoute(
-          builder: (_) =>
-              ErrorScreen(errorMessage: 'Route not found: ${settings.name}'),
-        );
+  static final authApi = getIt<AuthApi>();
+  static final bool? _isFirstTime =
+      Utils.getFomLocalStorage(key: StorageStrings.firstTime);
+  static final GoRouter router = GoRouter(
+    navigatorKey: navigatorKey,
+    // refreshListenable:authApi.
+    initialLocation: getIntialPath(),
+    routes: [
+      GoRoute(
+        path: Routes.home,
+        builder: (context, state) => const HomeNavigation(),
+      ),
+      GoRoute(
+        path: Routes.onboarding,
+        builder: (context, state) => const Onboarding(),
+      ),
+      GoRoute(
+        path: Routes.login,
+        builder: (context, state) => const Login(),
+      ),
+      GoRoute(
+        path: Routes.register,
+        builder: (context, state) => const Register(),
+      ),
+      GoRoute(
+        path: Routes.authScreen,
+        builder: (context, state) => const AuthScreen(),
+      ),
+      GoRoute(
+        path: Routes.setting,
+        builder: (context, state) => const SettingsPage(),
+      ),
+      GoRoute(
+        path: Routes.details,
+        builder: (context, state) {
+          final recipeId = state.pathParameters['recipeId'];
+          if (recipeId != null) {
+            return RecipeDetailsPage(recipeId: recipeId);
+          }
+          return const ErrorScreen(
+              errorMessage: 'Invalid arguments for details');
+        },
+      ),
+      GoRoute(
+        path: Routes.searchTile,
+        builder: (context, state) {
+          final tag = state.pathParameters['tag'];
+          if (tag != null) {
+            return SearchTileScreen(tag: tag);
+          }
+          return const ErrorScreen(
+              errorMessage: 'Invalid arguments for searchTile');
+        },
+      ),
+      GoRoute(
+        path: Routes.cms,
+        builder: (context, state) {
+          final title = state.pathParameters['title'] ?? "";
+          final content = state.pathParameters['content'] ?? "";
+          if (title.isNotEmpty && content.isNotEmpty) {
+            return CMSContent(title: title, content: content);
+          }
+          return const ErrorScreen(errorMessage: 'Invalid arguments for cms');
+        },
+      ),
+    ],
+    errorPageBuilder: (context, state) => MaterialPage<void>(
+      child: ErrorScreen(errorMessage: 'Route not found: ${state.fullPath}'),
+    ),
+  );
+
+  static String getIntialPath() {
+    if (_isFirstTime == null) {
+      return Routes.onboarding;
+    }
+    if (!authApi.isLoggedIn()) {
+      return Routes.login;
+    } else {
+      return Routes.home;
     }
   }
 }
 
 class Routes {
+  Routes._();
   static const String cms = '/cms';
   static const String details = '/details';
   static const String home = '/';

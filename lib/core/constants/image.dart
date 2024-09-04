@@ -1,4 +1,5 @@
 class AssetsImages {
+  AssetsImages._();
   static const bake = 'assets/images/bake.png';
   static const boardingimg = 'assets/images/boardingimg.jpeg';
   static const cookingBlack = 'assets/images/cooking_black.png';
@@ -19,6 +20,7 @@ class AssetsImages {
 }
 
 class LottieAssets {
+  LottieAssets._();
   static const panLoader = 'assets/lottie/boiling_pan.json';
   static const spoonLoader = 'assets/lottie/image_loader.json';
 }

@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 
 import '../core/core.dart';
 import '../data/data.dart';
+import '../data/services/notification_service.dart';
 import '../main.dart';
 
 class SearchProvider extends ChangeNotifier {
   final recipeRepository = RecipeRepository();
-  final notificationService = NotificationService();
+  final notificationService = getIt<NotificationService>();
   List<dynamic> searchResult = [];
 
   Future<Iterable<Map<String, dynamic>>> getSearchQuery(String query) async {

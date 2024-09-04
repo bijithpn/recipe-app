@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 class ColorPalette {
+  ColorPalette._();
   static Color primary = const Color(0xff0C9A61);
   static Color primarylight = const Color.fromARGB(255, 3, 215, 130);
   static Color scaffoldBg = const Color(0xffF7F7F7);

@@ -9,14 +9,12 @@ import '../../utils/utils.dart';
 class AuthApi {
   final auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
-  String _role = '';
   String _currentUserId = '';
   UserModel? currentUser;
   bool isLoggedIn() {
     return auth.currentUser != null;
   }
 
-  String get role => _role;
   String get currentUserId => _currentUserId;
 
   Future<UserModel?> getUser() async {
@@ -44,7 +42,7 @@ class AuthApi {
             await _firestore.collection('users').doc(user.uid).get();
         if (userDoc.exists) {
           final userData = userDoc.data() as Map<String, dynamic>;
-          _role = userData['role'];
+          Utils.saveToLocalStorage(key: "userData", data: userData);
           _currentUserId = userData['uid'] ?? "";
         }
       }
@@ -81,7 +79,6 @@ class AuthApi {
           'email': email,
           'name': name,
         });
-        _role = role;
         _currentUserId = userCredential.user?.uid ?? "";
       }
     } on FirebaseAuthException catch (e) {
@@ -110,10 +107,8 @@ class AuthApi {
       if (user != null) {
         await _firestore.collection('users').doc(user.uid).set({
           'email': userCredential.user?.email,
-          'role': role,
           'name': userCredential.user?.displayName,
         });
-        _role = role;
         _currentUserId = userCredential.user?.uid ?? "";
       }
     } on FirebaseAuthException catch (e) {

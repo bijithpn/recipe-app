@@ -20,12 +20,16 @@ class NotificationService {
     Color textColor = Colors.white,
     Duration duration = const Duration(seconds: 6),
     SnackBarBehavior behavior = SnackBarBehavior.fixed,
+    EdgeInsetsGeometry? margin,
+    EdgeInsetsGeometry? padding,
   }) {
     final snackBar = SnackBar(
       content: Text(message, style: TextStyle(color: textColor)),
       backgroundColor: backgroundColor,
       duration: duration,
       behavior: behavior,
+      padding: padding,
+      margin: margin,
     );
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
