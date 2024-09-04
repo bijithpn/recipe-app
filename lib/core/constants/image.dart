@@ -1,4 +1,5 @@
 class AssetsImages {
+  AssetsImages._();
   static const bake = 'assets/images/bake.png';
   static const boardingimg = 'assets/images/boardingimg.jpeg';
   static const cookingBlack = 'assets/images/cooking_black.png';
@@ -15,9 +16,11 @@ class AssetsImages {
   static const onboarding3 = 'assets/images/onboarding3.png';
   static const veg = 'assets/images/veg_icon.png';
   static const errorImage = 'assets/images/error_image.jpg';
+  static const loginImage = 'assets/images/login_image.jpg';
 }
 
 class LottieAssets {
+  LottieAssets._();
   static const panLoader = 'assets/lottie/boiling_pan.json';
   static const spoonLoader = 'assets/lottie/image_loader.json';
 }

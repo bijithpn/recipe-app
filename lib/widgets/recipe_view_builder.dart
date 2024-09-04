@@ -45,6 +45,7 @@ class _RecipeViewBuilderState extends State<RecipeViewBuilder> {
             )
           : SliverMasonryGrid(
               delegate: SliverChildBuilderDelegate(
+                addAutomaticKeepAlives: false,
                 (context, index) {
                   var recipe = widget.recipeList[index];
                   return AnimationConfiguration.staggeredGrid(

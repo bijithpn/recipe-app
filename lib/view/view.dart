@@ -9,6 +9,8 @@ export 'home/widget/glass_drop.dart';
 export 'home/widget/recipe_card.dart';
 export 'home/widget/search_widget.dart';
 export 'home/widget/widget.dart';
+export 'meals_planner/meals_planner.dart';
+export 'meals_planner/user_preference.dart';
 export 'onboarding/onboarding.dart';
 export 'onboarding/widgets/cards_stack.dart';
 export 'onboarding/widgets/image_section.dart';

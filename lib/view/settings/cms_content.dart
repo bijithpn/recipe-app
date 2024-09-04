@@ -22,6 +22,7 @@ class _CMSContentState extends State<CMSContent> {
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios,
+            color: Colors.black,
           ),
           onPressed: () {
             Navigator.pop(context);

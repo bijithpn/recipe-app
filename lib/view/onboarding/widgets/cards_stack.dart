@@ -25,7 +25,7 @@ class CardsStack extends StatelessWidget {
         SlideTransition(
           position: darkCardOffsetAnimation,
           child: SizedBox(
-              height: 500,
+              height: 430,
               child: Center(
                 child: darkCardChild,
               )),

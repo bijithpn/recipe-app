@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:recipe_app/data/services/notification_service.dart';
 import '../main.dart';
 
 import '../core/core.dart';
@@ -13,7 +14,7 @@ class HomeProvider extends ChangeNotifier {
   List<String> dishTypes = [];
   List<Recipe> filteredRecipeList = [];
   HomeState homeState = HomeState.isLoading;
-  final notificationService = NotificationService();
+  final notificationService = getIt<NotificationService>();
   final recipeDb = getIt<RecipeDatabase>();
   List<Recipe> recipeList = [];
   final recipeRepository = RecipeRepository();

@@ -25,36 +25,38 @@ class _SearchTileScreenState extends State<SearchTileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(
-              Icons.arrow_back_ios_new_outlined,
-              color: Colors.black,
-            )),
-        title: Text(
-          widget.tag,
-          style: Theme.of(context).textTheme.titleLarge,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(48.0),
+        child: AppBar(
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Icons.arrow_back_ios_new_outlined,
+                color: Colors.black,
+              )),
+          title: Text(
+            widget.tag,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
         ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-        child: CustomScrollView(
-          slivers: [
-            FutureBuilder(
-                future: _futureRecipeList,
-                builder: (_, snapshot) {
-                  List<Recipe> recipeList = snapshot.data ?? [];
-                  if (snapshot.hasData) {
-                    return RecipeViewBuilder(recipeList: recipeList);
-                  }
-                  return const SliverToBoxAdapter(
-                      child: Center(child: LottieLoader()));
-                }),
-          ],
-        ),
+        child: FutureBuilder(
+            future: _futureRecipeList,
+            builder: (_, snapshot) {
+              List<Recipe> recipeList = snapshot.data ?? [];
+              if (snapshot.hasData) {
+                return CustomScrollView(
+                  slivers: [
+                    RecipeViewBuilder(recipeList: recipeList),
+                  ],
+                );
+              }
+              return const Center(child: LottieLoader());
+            }),
       ),
     );
   }

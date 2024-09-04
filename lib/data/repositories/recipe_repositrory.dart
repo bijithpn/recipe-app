@@ -2,6 +2,7 @@ import 'package:recipe_app/data/data.dart';
 
 import '../../core/constants/api_config.dart';
 import '../../main.dart';
+import '../services/api_service.dart';
 
 class RecipeRepository {
   RecipeRepository();

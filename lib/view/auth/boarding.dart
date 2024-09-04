@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/core.dart';
@@ -39,7 +40,7 @@ class _AuthScreenState extends State<AuthScreen> {
             alignment: Alignment.bottomCenter,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
-              height: 300,
+              height: 320,
               decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -70,7 +71,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         color: Colors.black),
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 20,
                   ),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -79,20 +80,20 @@ class _AuthScreenState extends State<AuthScreen> {
                           minimumSize: const Size(double.infinity, 50),
                           maximumSize: const Size(double.infinity, 50)),
                       onPressed: () {
-                        Navigator.pushReplacementNamed(context, Routes.login);
+                        context.go(Routes.login);
                       },
                       child: Row(
                         children: [
                           Expanded(
                             child: Text(
                               "Get Started",
-                              textAlign: TextAlign.start,
+                              textAlign: TextAlign.center,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge!
                                   .copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
                             ),
                           ),
                           Container(
@@ -109,6 +110,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                         ],
                       )),
+                  const SizedBox(height: 15),
                   OutlinedButton(
                       style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.zero,
@@ -117,8 +119,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           minimumSize: const Size(double.infinity, 50),
                           maximumSize: const Size(double.infinity, 50)),
                       onPressed: () {
-                        Navigator.pushReplacementNamed(
-                            context, Routes.register);
+                        context.go(Routes.register);
                       },
                       child: Text(
                         "Sign UP",
@@ -126,6 +127,7 @@ class _AuthScreenState extends State<AuthScreen> {
                             fontWeight: FontWeight.bold,
                             color: ColorPalette.primary),
                       )),
+                  const SizedBox(height: 15),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.zero,
@@ -137,7 +139,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                 listen: false)
                             .signInAnonymously();
                         if (context.mounted && status) {
-                          Navigator.pushReplacementNamed(context, Routes.home);
+                          context.go(Routes.home);
                         }
                       },
                       child: Text(
@@ -145,6 +147,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                               fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                       )),
                 ],

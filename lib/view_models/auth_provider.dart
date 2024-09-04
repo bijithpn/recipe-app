@@ -2,78 +2,88 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hive/hive.dart';
+import 'package:recipe_app/data/api/auth_api.dart';
+import 'package:recipe_app/main.dart';
 
-import '../core/core.dart';
+import '../data/services/notification_service.dart';
 
 class AuthProvider with ChangeNotifier {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   User? _user;
-  bool _isFirstTime = true;
-
+  final _authApi = getIt<AuthApi>();
+  final _notificationService = getIt<NotificationService>();
   AuthProvider() {
-    _checkFirstTime();
-    _auth.authStateChanges().listen(_onAuthStateChanged);
+    _authApi.auth.authStateChanges().listen(_onAuthStateChanged);
   }
 
   User? get user => _user;
-  bool get isFirstTime => _isFirstTime;
-
-  String getIntialPath(BuildContext context) {
-    if (isFirstTime) {
-      return Routes.onboarding;
-    }
-    if (user == null || isSessionExpired) {
-      return Routes.boarding;
-    } else {
-      return Routes.home;
-    }
-  }
-
-  Future<void> _checkFirstTime() async {
-    final box = await Hive.openBox('settings');
-    _isFirstTime = box.get('isFirstTime', defaultValue: true);
-  }
-
-  Future<void> markAsOpened() async {
-    final box = await Hive.openBox('settings');
-    box.put('isFirstTime', false);
-  }
 
   void _onAuthStateChanged(User? user) {
     _user = user;
     notifyListeners();
   }
 
-  Future<void> signInWithEmail(String email, String password) async {
-    await _auth.signInWithEmailAndPassword(email: email, password: password);
-    _startSession();
+  Future<bool> signInWithEmail(String email, String password) async {
+    try {
+      await _authApi.login(email, password);
+      _startSession();
+      return true;
+    } catch (e) {
+      _notificationService.showSnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.symmetric(vertical: 20),
+          context: navigatorKey.currentContext!,
+          message: e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> signUpWithEmail(
+      {required String name,
+      required String email,
+      required String password}) async {
+    try {
+      await _authApi.signup(name, email, password);
+      _startSession();
+      return true;
+    } catch (e) {
+      _notificationService.showSnackBar(
+          context: navigatorKey.currentContext!, message: e.toString());
+      return false;
+    }
   }
 
   Future<void> signInWithGoogle() async {
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
 
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-    await FirebaseAuth.instance.signInWithCredential(credential);
-
-    _startSession();
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      _startSession();
+    } catch (e) {
+      _notificationService.showSnackBar(
+          context: navigatorKey.currentContext!, message: e.toString());
+    }
   }
 
   Future<bool> signInAnonymously() async {
     try {
-      await _auth.signInAnonymously();
+      await _authApi.signInAnonymously();
       return true;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case "operation-not-allowed":
-          debugPrint("Anonymous auth hasn't been enabled for this project.");
+          _notificationService.showSnackBar(
+              context: navigatorKey.currentContext!,
+              message: "Anonymous auth hasn't been enabled for this project.");
           break;
         default:
-          debugPrint("Unknown error.");
+          _notificationService.showSnackBar(
+              context: navigatorKey.currentContext!, message: "Unknown error.");
       }
     }
     _startSession();
@@ -93,7 +103,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> signOut() async {
-    await _auth.signOut();
+    await _authApi.signout();
     notifyListeners();
   }
 }

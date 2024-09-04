@@ -1,10 +1,15 @@
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_settings_ui/flutter_settings_ui.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+import 'package:recipe_app/core/routes/routes.dart';
+import 'package:recipe_app/data/api/auth_api.dart';
 import '../../core/core.dart';
 import 'package:shorebird_code_push/shorebird_code_push.dart';
+
+import '../../main.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -14,48 +19,13 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettinsgPageState extends State<SettingsPage> {
-  final String aboutUs = '''
-<body>
-    <p><strong>App Name:</strong> Recipe App</p>
-    <p>Recipe App is designed to help users explore and discover various cooking recipes. Users can search or view different recipes, see detailed instructions, and get inspired to cook something new.</p>
-    <p><strong>Features:</strong></p>
-    <ul>
-        <li>Recommended Recipes</li>
-        <li>Search by Ingredient</li>
-        <li>Search by Recipe</li>
-        <li>Save Favorite Recipes</li>
-        <li>Other Basic App Features</li>
-    </ul>
-    <p>This is a personal project created by Bijith PN. If you have any questions or need support, please contact us at <a href="mailto:bijithpn@gmail.com">bijithpn@gmail.com</a>.</p>
-</body>
-''';
-
   String appVersion = "1.0.0";
   bool isDarkTheme = false;
   bool notificationsEnabled = true;
-  final String privacy = '''
-<body>
-    <p>Your privacy is important to us. This Privacy Policy outlines how we handle your data.</p>
-    <p><strong>Data Collection:</strong> We use a local database to save favorite recipes and Firebase to save user login details.</p>
-    <p><strong>Data Usage:</strong> We use Firebase Analytics to provide better suggestions based on user activity.</p>
-    <p><strong>Third-Party Services:</strong> In addition to using Spoonacular for recipes, we collect user details for login purposes through Firebase and use favorite dishes for recommendations.</p>
-    <p><strong>User Rights:</strong> You can delete your data by deleting your account.</p>
-    <p><strong>Security Measures:</strong> Your data is securely protected by Firebase, a Google service known for its high-security standards.</p>
-</body>
-''';
 
   String selectedLanguage = 'English';
   Box? settingsBox;
   final shorebirdCodePush = ShorebirdCodePush();
-  final String terms = '''
-<body>
-    <p><strong>User Obligations:</strong> Users must use this application responsibly, especially when cooking recipes found within the app.</p>
-    <p><strong>Content Ownership:</strong> The recipes and images provided in the app are sourced from the Spoonacular API. This application merely facilitates access to these resources.</p>
-    <p><strong>Limitations of Liability:</strong> We are not responsible for any errors, omissions, or consequences arising from the use of the recipes provided by the app.</p>
-    <p><strong>Modifications:</strong> Only the developer, Bijith PN, is authorized to make modifications to this application.</p>
-    <p><strong>Governing Law:</strong> The governing law is not specified.</p>
-</body>
-''';
 
   @override
   void initState() {
@@ -202,7 +172,10 @@ class _SettinsgPageState extends State<SettingsPage> {
                         Navigator.pushNamed(
                           context,
                           Routes.cms,
-                          arguments: {'title': "About Us", 'content': aboutUs},
+                          arguments: {
+                            'title': "About Us",
+                            'content': AppStrings.aboutUs
+                          },
                         );
                       },
                     ),
@@ -219,7 +192,7 @@ class _SettinsgPageState extends State<SettingsPage> {
                           Routes.cms,
                           arguments: {
                             'title': "Privacy policy",
-                            'content': privacy
+                            'content': AppStrings.privacy
                           },
                         );
                       },
@@ -237,7 +210,7 @@ class _SettinsgPageState extends State<SettingsPage> {
                           Routes.cms,
                           arguments: {
                             'title': 'Terms of Service',
-                            'content': terms
+                            'content': AppStrings.terms
                           },
                         );
                       },
@@ -253,6 +226,20 @@ class _SettinsgPageState extends State<SettingsPage> {
                         await checkForUpdates();
                       },
                     ),
+                    SettingsTile.navigation(
+                      leading: Icon(Icons.logout_outlined,
+                          color: ColorPalette.primary),
+                      title: Text(
+                        'Logout',
+                        style: subHeadingStyle,
+                      ),
+                      onPressed: (context) async {
+                        await getIt<AuthApi>().signout();
+                        if (context.mounted) {
+                          context.go(Routes.login);
+                        }
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -260,7 +247,7 @@ class _SettinsgPageState extends State<SettingsPage> {
           }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Text(
-        "V${appVersion}",
+        "V$appVersion",
         style: Theme.of(context)
             .textTheme
             .bodyLarge!

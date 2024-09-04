@@ -17,7 +17,7 @@ class ImageWidget extends StatelessWidget {
   final Color? color;
 
   const ImageWidget({
-    Key? key,
+    super.key,
     required this.imageUrl,
     this.fit,
     this.height,
@@ -28,7 +28,7 @@ class ImageWidget extends StatelessWidget {
     this.decoration,
     this.padding,
     this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
