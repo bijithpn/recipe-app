@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hive/hive.dart';
 import 'package:recipe_app/data/api/auth_api.dart';
 import 'package:recipe_app/main.dart';
@@ -54,15 +53,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
-      );
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      await _authApi.signInWithGoogle();
       _startSession();
     } catch (e) {
       _notificationService.showSnackBar(
@@ -72,8 +63,8 @@ class AuthProvider with ChangeNotifier {
 
   Future<bool> signInAnonymously() async {
     try {
-      await _authApi.signInAnonymously();
-      return true;
+      var status = await _authApi.signInAnonymously();
+      return status;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case "operation-not-allowed":

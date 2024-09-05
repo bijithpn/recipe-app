@@ -22,11 +22,17 @@ class HomeProvider extends ChangeNotifier {
   List<String> selectedDiets = [];
   List<String> selectedDishTypes = [];
 
-  Future<List<Recipe>> getRecipes() async {
+  Future<List<Recipe>> getRecipes({
+    String? includeTags,
+    String? excludeTags,
+  }) async {
     homeState = HomeState.isLoading;
     notifyListeners();
     try {
-      recipeList = await recipeRepository.getRecipes();
+      recipeList = await recipeRepository.getRecipes(
+        includeTags: includeTags,
+        excludeTags: excludeTags,
+      );
       dishTypes = _getDishTypes(recipeList);
       dietTypes = _getDiets(recipeList);
       notifyListeners();

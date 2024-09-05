@@ -18,7 +18,7 @@ class _SearchTileScreenState extends State<SearchTileScreen> {
   late Future<List<Recipe>> _futureRecipeList;
   @override
   void initState() {
-    _futureRecipeList = RecipeRepository().getRecipes(tags: widget.tag);
+    _futureRecipeList = RecipeRepository().getRecipes(includeTags: widget.tag);
     super.initState();
   }
 

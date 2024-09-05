@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:recipe_app/data/models/user_model.dart';
 
@@ -9,26 +8,25 @@ import '../../utils/utils.dart';
 class AuthApi {
   final auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
-  String _currentUserId = '';
+
   UserModel? currentUser;
   bool isLoggedIn() {
     return auth.currentUser != null;
   }
 
-  String get currentUserId => _currentUserId;
-
-  Future<UserModel?> getUser() async {
-    final user = auth.currentUser;
-    if (user != null) {
-      final userDoc = await _firestore.collection('users').doc(user.uid).get();
-      if (userDoc.exists) {
-        final userData = userDoc.data() as Map<String, dynamic>;
-        userData['uid'] = auth.currentUser?.uid;
-        Utils.saveToLocalStorage(key: "userData", data: userData);
-      }
-    }
-    return null;
-  }
+  // Future<UserModel?> getUser() async {
+  //   final user = auth.currentUser;
+  //   if (user != null) {
+  //     final userDoc = await _firestore.collection('users').doc(user.uid).get();
+  //     if (userDoc.exists) {
+  //       final userData = UserModel.fromDocument(userDoc);
+  //       print(userData.toMap());
+  //       // userData['uid'] = auth.currentUser?.uid;
+  //       Utils.saveToLocalStorage(key: "userData", data: userData.toMap());
+  //     }
+  //   }
+  //   return null;
+  // }
 
   Future<void> login(String email, String password) async {
     try {
@@ -41,9 +39,8 @@ class AuthApi {
         final userDoc =
             await _firestore.collection('users').doc(user.uid).get();
         if (userDoc.exists) {
-          final userData = userDoc.data() as Map<String, dynamic>;
-          Utils.saveToLocalStorage(key: "userData", data: userData);
-          _currentUserId = userData['uid'] ?? "";
+          final userData = UserModel.fromDocument(userDoc);
+          Utils.saveToLocalStorage(key: "userData", data: userData.toMap());
         }
       }
     } on FirebaseAuthException catch (e) {
@@ -78,8 +75,14 @@ class AuthApi {
         await _firestore.collection('users').doc(user.uid).set({
           'email': email,
           'name': name,
+          'profileImg': name,
         });
-        _currentUserId = userCredential.user?.uid ?? "";
+        final userDoc =
+            await _firestore.collection('users').doc(user.uid).get();
+        if (userDoc.exists) {
+          final userData = UserModel.fromDocument(userDoc);
+          Utils.saveToLocalStorage(key: "userData", data: userData.toMap());
+        }
       }
     } on FirebaseAuthException catch (e) {
       if (e.message != null) {
@@ -102,14 +105,19 @@ class AuthApi {
       );
       final userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
-
       final user = userCredential.user;
       if (user != null) {
         await _firestore.collection('users').doc(user.uid).set({
           'email': userCredential.user?.email,
           'name': userCredential.user?.displayName,
+          'profileImg': userCredential.user?.displayName,
         });
-        _currentUserId = userCredential.user?.uid ?? "";
+        final userDoc =
+            await _firestore.collection('users').doc(user.uid).get();
+        if (userDoc.exists) {
+          final userData = UserModel.fromDocument(userDoc);
+          Utils.saveToLocalStorage(key: "userData", data: userData.toMap());
+        }
       }
     } on FirebaseAuthException catch (e) {
       if (e.message != null) {
@@ -122,18 +130,25 @@ class AuthApi {
 
   Future<bool> signInAnonymously() async {
     try {
-      await auth.signInAnonymously();
-      return true;
-    } on FirebaseAuthException catch (e) {
-      switch (e.code) {
-        case "operation-not-allowed":
-          debugPrint("Anonymous auth hasn't been enabled for this project.");
-          break;
-        default:
-          debugPrint("Unknown error.");
+      final userCredential = await auth.signInAnonymously();
+      final user = userCredential.user;
+      if (user != null) {
+        await _firestore.collection('users').doc(user.uid).set({
+          'email': userCredential.user?.email,
+          'name': userCredential.user?.displayName,
+          'profileImg': userCredential.user?.displayName,
+        });
+        final userDoc =
+            await _firestore.collection('users').doc(user.uid).get();
+        if (userDoc.exists) {
+          final userData = UserModel.fromDocument(userDoc);
+          Utils.saveToLocalStorage(key: "userData", data: userData.toMap());
+        }
       }
+      return true;
+    } catch (e) {
+      return Future.error(e.toString());
     }
-    return false;
   }
 
   Future<void> signout() async {
