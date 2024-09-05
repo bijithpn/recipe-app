@@ -44,6 +44,10 @@ class Utils {
     );
   }
 
+  static void clearLocalStorage() {
+    storageBox.erase();
+  }
+
   static dynamic getFomLocalStorage({required String key}) {
     return storageBox.read(key);
   }

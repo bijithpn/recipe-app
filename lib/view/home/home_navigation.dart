@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:recipe_app/utils/utils.dart';
 
 import '../../core/core.dart';
 import '../view.dart';
@@ -13,6 +15,8 @@ class HomeNavigation extends StatefulWidget {
 }
 
 class _HomeNavigationState extends State<HomeNavigation> {
+  final Map<String, dynamic>? userData =
+      Utils.getFomLocalStorage(key: StorageStrings.userData);
   int _selectedIndex = 0;
   final List<Widget> _screens = const [
     HomeScreen(),
@@ -21,6 +25,38 @@ class _HomeNavigationState extends State<HomeNavigation> {
     SearchRecipe(),
     SettingsPage(),
   ];
+
+  void checkMissingKeys(Map<String, dynamic> userData) {
+    final status =
+        Utils.getFomLocalStorage(key: StorageStrings.userPreferenceStatus);
+
+    if (status != null) return;
+
+    List<String> keysToCheck = [
+      'dietaryPreferences',
+      'mealTypes',
+      'tastePreferences',
+      'cuisineList',
+      'dietaryRestrictions'
+    ];
+
+    for (String key in keysToCheck) {
+      if (userData.containsKey(key) || userData[key].isEmpty) {
+        context.go(Routes.userPreference);
+        return;
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (userData != null) {
+        checkMissingKeys(userData!);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

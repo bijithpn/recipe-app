@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:recipe_app/core/constants/colors.dart';
 import 'package:recipe_app/core/constants/strings.dart';
+import 'package:recipe_app/core/core.dart';
 import 'package:recipe_app/data/repositories/user_respository.dart';
 import 'package:recipe_app/utils/utils.dart';
 
@@ -146,6 +148,11 @@ class _UserPreferenceState extends State<UserPreference> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              context.pop();
+            },
+            icon: const Icon(Icons.arrow_back_ios_rounded)),
         backgroundColor: ColorPalette.primary,
         title: Text(
           "Set Your Recipe Preferences",
@@ -156,12 +163,16 @@ class _UserPreferenceState extends State<UserPreference> {
         ),
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Utils.saveToLocalStorage(
+                  key: StorageStrings.userPreferenceStatus, data: true);
+              context.go(Routes.home);
+            },
             child: Text(
               "Skip",
               style: Theme.of(context)
                   .textTheme
-                  .bodyLarge!
+                  .titleLarge!
                   .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
             ),
           )
@@ -312,7 +323,6 @@ class _UserPreferenceState extends State<UserPreference> {
                                 onPressed: () async {
                                   final userData = Utils.getFomLocalStorage(
                                       key: StorageStrings.userData);
-                                  print(userData);
                                   userData['mealTypes'] = mealTypes;
                                   userData['tastePreferences'] =
                                       tastePreferences;
@@ -321,14 +331,23 @@ class _UserPreferenceState extends State<UserPreference> {
                                   userData['dietaryRestrictions'] =
                                       dietaryRestrictions;
                                   userData['cuisineList'] = cuisineList;
-
                                   await UserRespository.updateUserData(
                                       userData['uid'], userData);
-
                                   final data =
                                       await UserRespository.getUserData(
                                           userData['uid']);
-                                  print("${data?.name}");
+                                  if (data != null) {
+                                    Utils.saveToLocalStorage(
+                                        key: StorageStrings.userData,
+                                        data: data.toMap());
+                                    Utils.saveToLocalStorage(
+                                        key:
+                                            StorageStrings.userPreferenceStatus,
+                                        data: true);
+                                    if (context.mounted) {
+                                      context.go(Routes.home);
+                                    }
+                                  }
                                 },
                                 child: Text(
                                   "Submit",

@@ -63,4 +63,5 @@ class StorageStrings {
   static String firstTime = 'firstLunch';
   static String userData = 'userData';
   static String mealData = 'mealData';
+  static String userPreferenceStatus = 'userPreferenceStatus';
 }

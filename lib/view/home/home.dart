@@ -31,7 +31,12 @@ class _HomeScreenState extends State<HomeScreen> {
               (userData['cuisineList'] ?? []).join(",").toLowerCase();
       String? excludeTag =
           (userData['dietaryRestrictions'] ?? []).join(", ").toLowerCase();
+      excludeTag =
+          excludeTag!.replaceAll(",", "").trim().isEmpty ? null : excludeTag;
+      includeTag =
+          includeTag!.replaceAll(",", "").trim().isEmpty ? null : includeTag;
       final provider = Provider.of<HomeProvider>(context, listen: false);
+
       provider.getRecipes(
         includeTags: includeTag,
         excludeTags: excludeTag,
@@ -77,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       'Hello, ${userData['name']}',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyLarge!
+                                          .titleLarge!
                                           .copyWith(
                                               fontWeight: FontWeight.bold),
                                     ),

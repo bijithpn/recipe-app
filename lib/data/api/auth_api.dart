@@ -154,6 +154,7 @@ class AuthApi {
   Future<void> signout() async {
     try {
       await auth.signOut();
+      Utils.clearLocalStorage();
     } on FirebaseAuthException catch (e) {
       if (e.message != null) {
         return Future.error(e.message!);
