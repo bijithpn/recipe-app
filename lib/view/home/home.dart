@@ -21,26 +21,26 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      String? includeTag =
-          (userData['dietaryPreferences'] ?? []).join(",").toLowerCase() +
-              "," +
-              (userData['mealTypes'] ?? []).join(",").toLowerCase() +
-              "," +
-              (userData['tastePreferences'] ?? []).join(",").toLowerCase() +
-              "," +
-              (userData['cuisineList'] ?? []).join(",").toLowerCase();
-      String? excludeTag =
-          (userData['dietaryRestrictions'] ?? []).join(", ").toLowerCase();
-      excludeTag =
-          excludeTag!.replaceAll(",", "").trim().isEmpty ? null : excludeTag;
-      includeTag =
-          includeTag!.replaceAll(",", "").trim().isEmpty ? null : includeTag;
+      // String? includeTag =
+      //     (userData['dietaryPreferences'] ?? []).join(",").toLowerCase() +
+      //         "," +
+      //         (userData['mealTypes'] ?? []).join(",").toLowerCase() +
+      //         "," +
+      //         (userData['tastePreferences'] ?? []).join(",").toLowerCase() +
+      //         "," +
+      //         (userData['cuisineList'] ?? []).join(",").toLowerCase();
+      // String? excludeTag =
+      //     (userData['dietaryRestrictions'] ?? []).join(", ").toLowerCase();
+      // excludeTag =
+      //     excludeTag!.replaceAll(",", "").trim().isEmpty ? null : excludeTag;
+      // includeTag =
+      //     includeTag!.replaceAll(",", "").trim().isEmpty ? null : includeTag;
       final provider = Provider.of<HomeProvider>(context, listen: false);
 
       provider.getRecipes(
-        includeTags: includeTag,
-        excludeTags: excludeTag,
-      );
+          // includeTags: includeTag,
+          // excludeTags: excludeTag,
+          );
     });
     super.initState();
   }
@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      'Hello, ${userData['name']}',
+                                      'Hello, ${userData?['name'] ?? "username"}',
                                       style: Theme.of(context)
                                           .textTheme
                                           .titleLarge!
@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(100),
                                 child: RandomAvatar(
-                                  userData['profileImg'] ?? "User",
+                                  userData?['profileImg'] ?? "User",
                                   height: 50,
                                   width: 52,
                                 ),

@@ -95,26 +95,42 @@ class _LoginState extends State<Login> {
                     constraints: const BoxConstraints(maxHeight: 50),
                     height: size.height * .05,
                   ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: ColorPalette.primary,
-                        minimumSize: const Size(double.infinity, 50)),
-                    onPressed: () async {
-                      if (_formKey.currentState!.saveAndValidate()) {
-                        final email = _formKey.currentState!.value['email'];
-                        final password =
-                            _formKey.currentState!.value['password'];
-                        var loginStatus =
-                            await authProvider.signInWithEmail(email, password);
-                        if (loginStatus && context.mounted) {
-                          context.go(Routes.home);
+                  Consumer<AuthProvider>(builder: (_, provider, __) {
+                    return ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: ColorPalette.primary,
+                          minimumSize: provider.isInProgress
+                              ? const Size(45, 45)
+                              : const Size(double.infinity, 50)),
+                      onPressed: () async {
+                        if (_formKey.currentState!.saveAndValidate()) {
+                          final email = _formKey.currentState!.value['email'];
+                          final password =
+                              _formKey.currentState!.value['password'];
+                          var loginStatus = await authProvider.signInWithEmail(
+                              email, password);
+                          if (loginStatus && context.mounted) {
+                            context.go(Routes.home);
+                          }
                         }
-                      }
-                    },
-                    child: Text('Login',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: Colors.white, fontWeight: FontWeight.bold)),
-                  ),
+                      },
+                      child: provider.isInProgress
+                          ? const SizedBox(
+                              width: 45,
+                              height: 45,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 6,
+                              ),
+                            )
+                          : Text('Login',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold)),
+                    );
+                  }),
                   const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

@@ -1,86 +1,116 @@
-# Recipe App Documentation
+# 🍲 Flutter Recipe App
 
-## Table of Contents
+A comprehensive Flutter Recipe app that enables users to search, view details of recipes, and follow cooking instructions. Users can log in with Firebase authentication for a personalized experience, and their favorite recipes are saved locally using Hive. The app integrates the Spoonacular API to fetch high-quality recipe data, uses Provider for state management, Dio for network requests, and GoRouter for seamless navigation.
 
-1. [Introduction](#introduction)
-2. [App UI Overview](#app-ui-overview)
-   - [Home Screen](#home-screen)
-   - [Recipe Search](#recipe-search)
-   - [Recipe Details](#recipe-details)
-3. [Setting Up the Development Environment](#setting-up-the-development-environment)
-4. [Getting Spoonacular API Key](#getting-spoonacular-api-key)
-5. [Running the App in Development Mode](#running-the-app-in-development-mode)
-6. [Building the Release Version using Shorebird](#building-the-release-version-using-shorebird)
+## 📱 Features
 
-## Introduction
+- **Recipe Browsing and Search**
 
-This documentation provides an overview of the Recipe App and detailed instructions for setting up the development environment, running the app, and creating a release build using Shorebird.
+  - Discover a variety of recipes with filters based on dietary preferences, cuisine type, and ingredients.
+  - Search for recipes by name or ingredient with real-time filtering and suggestions.
 
-## App UI Overview
+- **Detailed Recipe View**
 
-### Home Screen
+  - Access detailed information for each recipe, including:
+    - **Ingredients list** with measurements.
+    - **Step-by-step cooking instructions** for easy follow-along.
+    - **Nutritional information** (if available).
+    - **Images and Videos** to visualize the final dish.
 
-<img src="https://raw.githubusercontent.com/bijithpn/recipe-app/master/screenshots/home.png" alt="image" width="150" height="auto">
+- **User Authentication with Firebase**
 
-The Home Screen displays a list of popular recipes fetched from the Spoonacular API. Users can scroll through the recipes and click on any recipe to view its details.
+  - Sign up or log in using Firebase for a personalized experience.
+  - Favorites are stored locally with Hive, enabling offline access to saved recipes.
 
-### Recipe Search
+- **Favorites and History**
 
-<img src="https://raw.githubusercontent.com/bijithpn/recipe-app/master/screenshots/search.png" alt="image" width="150" height="auto">
+  - Save favorite recipes for easy access.
+  - View recently viewed recipes, even offline.
 
-The Recipe Search screen allows users to search for recipes using keywords. The search results are displayed in a list format.
+- **Navigation and State Management**
+  - Efficient app navigation with GoRouter, including deep linking.
+  - Provider for state management ensures smooth, responsive updates across screens.
 
-### Recipe Details
-
-<img src="https://raw.githubusercontent.com/bijithpn/recipe-app/master/screenshots/details.png" alt="image" width="150" height="auto">
-
-The Recipe Details screen provides detailed information about a selected recipe, including ingredients, instructions, and nutritional information.
-
-## Setting Up the Development Environment
-
-1. **Install Flutter:**
-   Follow the instructions on the [Flutter installation guide](https://flutter.dev/docs/get-started/install) to set up Flutter on your machine.
-
-2. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/your-repo/recipe-app.git
-   cd recipe-app
-   ```
-
-## Building the Release Version using Shorebird
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Ensure you have the Shorebird CLI installed. If not, follow the [installation guide](https://docs.shorebird.dev/).
+- [Flutter SDK](https://flutter.dev/docs/get-started/install)
+- An IDE like [Android Studio](https://developer.android.com/studio) or [Visual Studio Code](https://code.visualstudio.com/)
+- API key from [Spoonacular](https://spoonacular.com/food-api) and Firebase setup.
 
-### Steps
+### Installation
 
-### Step 1: Login to Shorebird:
+1. **Clone the repository:**
 
-```bash
-shorebird login
+   ```bash
+   git clone https://github.com/bijithpn/recipe-app.git
+   cd recipe-app
+   ```
+
+2. **Install dependencies:**
+
+   ```bash
+   flutter pub get
+   ```
+
+3. **Set up API keys and Firebase**
+
+   - Sign up at [Spoonacular](https://spoonacular.com/food-api) to get an API key and add it to the environment file or configuration.
+   - Configure Firebase authentication by adding your `google-services.json` or `GoogleService-Info.plist` file for Android and iOS.
+
+4. **Run the app:**
+   ```bash
+   flutter run
+   ```
+
+## 📦 Dependencies
+
+- **State Management**: [Provider](https://pub.dev/packages/provider) - for managing app-wide state.
+- **Networking**: [Dio](https://pub.dev/packages/dio) - for efficient API calls and error handling.
+- **Local Database**: [Hive](https://pub.dev/packages/hive) - to save favorite recipes and user preferences offline.
+- **Navigation**: [GoRouter](https://pub.dev/packages/go_router) - for structured navigation and deep linking support.
+- **Authentication**: [Firebase Authentication](https://firebase.google.com/docs/auth) - for user login and account management.
+
+## 🗂️ Project Structure
+
+```plaintext
+lib/
+├── core/                  # store app constants & route data
+├── view_model/            # State management providers for recipes, user, and favorites
+├── data/                  # Repositories for API and local database handling
+│   ├── api/               # Spoonacular API integration with Dio
+│   └── model/             # Models for Recipe, Ingredients, and User data
+│   └── repositories/      # repositories class
+├── view/                  # Screens for search, recipe details, favorites, and more
+├── db/                    # Hive database integration
+├── utls/                  # utils functions
+├── widgets/               # Reusable components for UI
+└── main.dart              # Entry point of the application
 ```
 
-### Step 2: Set Up Shorebird for Your Project:
+## 📡 API Integration
 
-Navigate to your project directory and run:
+- **Spoonacular API:**  
+  The app uses the [Spoonacular API](https://api.spoonacular.com/) to fetch recipe data, including ingredients, instructions, and images.
 
-```bash
-shorebird init
-```
+  - Base URL: `https://api.spoonacular.com/`
+  - Required headers: `Authorization: YOUR_API_KEY`
 
-### Step 3: Build the Release Version
+- _More details on endpoints and parameters can be added here._
 
-Run the following command to build the release version of your app using Shorebird:
+## 📸 Screenshots
 
-```bash
-shorebird build apk
-```
+<img src="https://github.com/bijithpn/recipe-app/blob/dev/screenshots/recipe_app.gif?raw=true" alt="Recipe app" width="300"/>
 
-### Step 4: Locate the Release Build
+## 🔧 Contributing
 
-After the build process completes, the release APK will be available in the `build/shorebird` directory.
+1. Fork the repository.
+2. Create a feature branch (`git checkout -b feature/your-feature-name`).
+3. Commit your changes (`git commit -am 'Add new feature'`).
+4. Push to the branch (`git push origin feature/your-feature-name`).
+5. Create a new Pull Request.
 
-### Step 5: Deploy the APK
+## 📜 License
 
-You can now deploy the APK to your desired platform or distribute it for testing.
+This project is licensed under the MIT License.

@@ -15,6 +15,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   User? get user => _user;
+  bool isInProgress = false;
 
   void _onAuthStateChanged(User? user) {
     _user = user;
@@ -23,6 +24,8 @@ class AuthProvider with ChangeNotifier {
 
   Future<bool> signInWithEmail(String email, String password) async {
     try {
+      isInProgress = true;
+      notifyListeners();
       await _authApi.login(email, password);
       _startSession();
       return true;
@@ -33,6 +36,9 @@ class AuthProvider with ChangeNotifier {
           context: navigatorKey.currentContext!,
           message: e.toString());
       return false;
+    } finally {
+      isInProgress = false;
+      notifyListeners();
     }
   }
 
@@ -41,6 +47,8 @@ class AuthProvider with ChangeNotifier {
       required String email,
       required String password}) async {
     try {
+      isInProgress = true;
+      notifyListeners();
       await _authApi.signup(name, email, password);
       _startSession();
       return true;
@@ -48,6 +56,9 @@ class AuthProvider with ChangeNotifier {
       _notificationService.showSnackBar(
           context: navigatorKey.currentContext!, message: e.toString());
       return false;
+    } finally {
+      isInProgress = true;
+      notifyListeners();
     }
   }
 
