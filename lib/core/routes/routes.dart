@@ -37,6 +37,10 @@ class RouteGenerator {
         builder: (context, state) => const AuthScreen(),
       ),
       GoRoute(
+        path: Routes.userPreference,
+        builder: (context, state) => const UserPreference(),
+      ),
+      GoRoute(
         path: Routes.setting,
         builder: (context, state) => const SettingsPage(),
       ),
@@ -102,4 +106,5 @@ class Routes {
   static const String authScreen = '/authScreen';
   static const String setting = '/settings';
   static const String searchTile = '/searchTile';
+  static const String userPreference = '/userPreference';
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:random_avatar/random_avatar.dart';
+import 'package:recipe_app/core/constants/strings.dart';
+import 'package:recipe_app/utils/utils.dart';
 import '../view.dart';
 
 import '../../view_models/home_provider.dart';
@@ -14,24 +16,36 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final userData = Utils.getFomLocalStorage(key: StorageStrings.userData);
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // String? includeTag =
+      //     (userData['dietaryPreferences'] ?? []).join(",").toLowerCase() +
+      //         "," +
+      //         (userData['mealTypes'] ?? []).join(",").toLowerCase() +
+      //         "," +
+      //         (userData['tastePreferences'] ?? []).join(",").toLowerCase() +
+      //         "," +
+      //         (userData['cuisineList'] ?? []).join(",").toLowerCase();
+      // String? excludeTag =
+      //     (userData['dietaryRestrictions'] ?? []).join(", ").toLowerCase();
+      // excludeTag =
+      //     excludeTag!.replaceAll(",", "").trim().isEmpty ? null : excludeTag;
+      // includeTag =
+      //     includeTag!.replaceAll(",", "").trim().isEmpty ? null : includeTag;
       final provider = Provider.of<HomeProvider>(context, listen: false);
-      provider.getRecipes();
+
+      provider.getRecipes(
+          // includeTags: includeTag,
+          // excludeTags: excludeTag,
+          );
     });
-    getProfile();
     super.initState();
   }
 
   String profileSvg = '';
-  getProfile() {
-    profileSvg = RandomAvatarString(
-      DateTime.now().toIso8601String(),
-      trBackground: false,
-    );
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,10 +79,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      'Hello, Bijith',
+                                      'Hello, ${userData?['name'] ?? "username"}',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyLarge!
+                                          .titleLarge!
                                           .copyWith(
                                               fontWeight: FontWeight.bold),
                                     ),
@@ -90,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(100),
                                 child: RandomAvatar(
-                                  "bijith",
+                                  userData?['profileImg'] ?? "User",
                                   height: 50,
                                   width: 52,
                                 ),

@@ -2,6 +2,9 @@ import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:recipe_app/core/constants/colors.dart';
 
+import '../../core/core.dart';
+import '../../utils/utils.dart';
+
 class MealsPlanner extends StatefulWidget {
   const MealsPlanner({super.key});
 
@@ -11,13 +14,14 @@ class MealsPlanner extends StatefulWidget {
 
 class _MealsPlannerState extends State<MealsPlanner> {
   DateTime _focusDate = DateTime.now();
+  final userData = Utils.getFomLocalStorage(key: StorageStrings.userData);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
-          "Hello Bijith",
+          "Hello ${userData['name']}",
           style: Theme.of(context)
               .textTheme
               .titleLarge!

@@ -53,13 +53,13 @@ Future<void> initHive() async {
 }
 
 Future<void> initializeClient() async {
-  final apiClient = ApiClient();
-  final authApi = AuthApi();
   final notificatonService = NotificationService();
-  getIt.registerSingleton<RecipeDatabase>(RecipeDatabase.instance);
-  getIt.registerSingleton<ApiClient>(apiClient);
-  getIt.registerSingleton<AuthApi>(authApi);
   getIt.registerSingleton<NotificationService>(notificatonService);
+  final apiClient = ApiClient();
+  getIt.registerSingleton<ApiClient>(apiClient);
+  final authApi = AuthApi();
+  getIt.registerSingleton<AuthApi>(authApi);
+  getIt.registerSingleton<RecipeDatabase>(RecipeDatabase.instance);
 }
 
 class MyApp extends StatelessWidget {
@@ -102,16 +102,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-// class InitialRouteWidget extends StatelessWidget {
-//   const InitialRouteWidget({super.key});
-//   @override
-//   Widget build(BuildContext context) {
-//     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-//     String initialRoute = authProvider.getIntialPath(context);
-//     WidgetsBinding.instance.addPostFrameCallback((_) {
-//       Navigator.of(context).pushReplacementNamed(initialRoute);
-//     });
-//     return const SizedBox.shrink();
-//   }
-// }

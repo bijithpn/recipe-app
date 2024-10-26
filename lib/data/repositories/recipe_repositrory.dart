@@ -8,15 +8,20 @@ class RecipeRepository {
   RecipeRepository();
   final apiClient = getIt<ApiClient>();
 
-  Future<List<Recipe>> getRecipes(
-      {String tags = "breakfast,lunch,dinner"}) async {
+  Future<List<Recipe>> getRecipes({
+    String? includeTags,
+    String? excludeTags,
+  }) async {
     try {
       List<Recipe> recipeList = [];
-      final res = await apiClient.get(ApiEndpoint.getRecipes, queryParameters: {
+      var body = {
         "limitLicense": true,
         "number": 45,
-        "include-tags": tags.toLowerCase()
-      });
+        "include-tags": (includeTags ?? "breakfast,lunch,dinner").toLowerCase(),
+        "exclude-tags": (excludeTags ?? "").toLowerCase(),
+      };
+      final res =
+          await apiClient.get(ApiEndpoint.getRecipes, queryParameters: body);
       res.data['recipes']
           .map((e) => recipeList.add(Recipe.fromJson(e)))
           .toList();
